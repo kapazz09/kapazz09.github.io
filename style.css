@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', Arial, sans-serif;
     background-color: #d4f5d4;
     color: #333;
     margin: 40px;
@@ -7,6 +7,8 @@ body {
 
 h1 {
     color: #2980ef;
+    font-family: 'Yellowtail', cursive;
+    font-size: 48px;
 }
 
 .about {
@@ -14,6 +16,9 @@ h1 {
     padding: 20px;
     margin-top: 20px;
     border-radius: 8px;
+    font-size: 12px;
+    font-family: merriweather', serif;
+
 }
 
 .crypto-support {
@@ -65,4 +70,82 @@ h1 {
         width: 32px;
         height: 32px;
     }
+}
+
+.header {
+    position: relative;
+    padding-right: 60px;
+}
+
+.social-icons {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.social-icons img {
+    width: 24px;
+    height: 24px;
+}
+
+.header-top {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.btc-ticker {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    text-align: center;
+}
+
+.btc-price {
+    font-size: 26px;
+    font-weight: bold;
+    color: #f7931a;
+    margin: 10px 0 6px 0;
+}
+
+.btc-change {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.btc-change.positive {
+    color: #16a34a;
+}
+
+.btc-change.negative {
+    color: #dc2626;
+}
+
+.music-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.fuel-heading {
+    font-size: 24px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #f7931a, #ffb84d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.5px;
 }

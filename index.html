@@ -3,6 +3,11 @@
 
 <head>
     <title>Profil Saya</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Yellowtail&display=swap"
+        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,11 +15,37 @@
 
 <body>
     <div class="header">
-        <img src="foto.jpeg" alt="Foto Profil" class="profile-photo">
+        <div class="social-icons">
+            <a href="https://wa.me/6285237722911" target="_blank">
+                <img src="https://cdn.simpleicons.org/whatsapp/25D366" width="24" height="24">
+            </a>
+            <a href="https://instagram.com/pazkahbire09" target="_blank">
+                <img src="https://cdn.simpleicons.org/instagram/E4405F" width="24" height="24">
+            </a>
+            <a href="https://facebook.com/PazkahBire" target="_blank">
+                <img src="https://cdn.simpleicons.org/facebook/1877F2" width="24" height="24">
+            </a>
+            <a href="https://tiktok.com/@pazkahbire09" target="_blank">
+                <img src="https://cdn.simpleicons.org/tiktok/000000" width="24" height="24">
+            </a>
+            <audio id="bgMusic" src="musik.mp3" loop></audio>
+            <button onclick="toggleMusic()" class="music-btn">🔊</button>
+        </div>
+
+        <div class="header-top">
+            <img src="foto.jpeg" alt="Foto Profil" class="profile-photo">
+            <div class="btc-ticker">
+                <img src="https://cdn.simpleicons.org/bitcoin/f7931a" width="40" height="40">
+                <p id="btc-price" class="btc-price">Loading...</p>
+                <p id="btc-change" class="btc-change">--</p>
+            </div>
+        </div>
+
         <h1>Halo, I'm Pazkah</h1>
         <p>saya sedang belajar coding.</p>
         <p>saya juga tertarik dengan Bitcoin dan teknologi blockchain</p>
     </div>
+
     <div class="about">
         <h2>Tentang Saya</h2>
         <p>Saya bekerja di bidang pelayanan kesehatan, dan di luar pekerjaan saya memiliki ketertarikan besar pada
@@ -42,8 +73,7 @@
     </div>
 
     <div class="crypto-support">
-        <h2>Support Me</h2>
-
+        <h2 class="fuel-heading">Fuel the Mission</h2>
         <div class="crypto-icons">
             <img src="https://cdn.simpleicons.org/bitcoin/f7931a" width="50" height="50" class="icon-crypto"
                 alt="Bitcoin BTC" onclick="toggleQR('btc')" style="cursor:pointer;">
@@ -84,6 +114,22 @@
     </div>
 
     <script>
+        fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true')
+            .then(response => response.json())
+            .then(data => {
+                const price = data.bitcoin.usd.toLocaleString('en-US');
+                const change = data.bitcoin.usd_24h_change;
+
+                document.getElementById('btc-price').textContent = '$' + price;
+
+                const changeEl = document.getElementById('btc-change');
+                const sign = change >= 0 ? '+' : '';
+                changeEl.textContent = sign + change.toFixed(1) + '% (24h)';
+                changeEl.className = change >= 0 ? 'btc-change positive' : 'btc-change negative';
+            })
+            .catch(error => {
+                document.getElementById('btc-price').textContent = 'N/A';
+            });
         function toggleQR(coin) {
             const qrBox = document.getElementById('qr-' + coin);
             const detailBox = document.getElementById('detail-' + coin);
@@ -103,6 +149,14 @@
             } else {
                 qrBox.innerHTML = '';
                 detailBox.style.display = 'none';
+            }
+        }
+        function toggleMusic() {
+            const audio = document.getElementById('bgMusic');
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
             }
         }
     </script>
