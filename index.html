@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Profil Saya</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <div class="header">
+        <img src="foto.jpeg" alt="Foto Profil" class="profile-photo">
+        <h1>Halo, I'm Pazkah</h1>
+        <p>saya sedang belajar coding.</p>
+        <p>saya juga tertarik dengan Bitcoin dan teknologi blockchain</p>
+    </div>
+    <div class="about">
+        <h2>Tentang Saya</h2>
+        <p>Saya bekerja di bidang pelayanan kesehatan, dan di luar pekerjaan saya memiliki ketertarikan besar pada
+            Bitcoin serta teknologi blockchain.</p>
+        <p>Selama lebih dari satu tahun terakhir, saya secara konsisten mempelajari Bitcoin, mulai dari sejarah,
+            filosofi, mekanisme Proof of Work, mining (solo maupun pool), UTXO, Lightning Network, hingga keamanan aset
+            digital melalui self-custody.</p>
+
+        <p>Fokus pembelajaran saya meliputi:</p>
+        <ul>
+            <li>Bitcoin Self-Custody & Hardware Wallet Security</li>
+            <li>UTXO Management & Coin Control</li>
+            <li>Lightning Network</li>
+            <li>Mining & Mining Pool</li>
+            <li>On-chain Analysis</li>
+            <li>Privasi dan Keamanan Bitcoin</li>
+            <li>Bitcoin Improvement Proposal (BIP)</li>
+        </ul>
+
+        <p>Saya percaya bahwa memahami cara kerja Bitcoin jauh lebih penting daripada sekadar membeli dan menyimpannya.
+            Karena itu saya terus belajar, bereksperimen, dan membangun berbagai proyek kecil untuk memperdalam
+            pemahaman saya mengenai Bitcoin dan teknologi open-source.</p>
+        <p>Jika perjalanan belajar ini bermanfaat atau menginspirasi, dukungan Anda akan sangat berarti untuk membantu
+            saya terus belajar, membuat konten edukasi, dan membangun tools yang berguna bagi komunitas Bitcoin.</p>
+    </div>
+
+    <div class="crypto-support">
+        <h2>Support Me</h2>
+
+        <div class="crypto-icons">
+            <img src="https://cdn.simpleicons.org/bitcoin/f7931a" width="50" height="50" class="icon-crypto"
+                alt="Bitcoin BTC" onclick="toggleQR('btc')" style="cursor:pointer;">
+            <img src="https://cdn.simpleicons.org/ethereum/3c3c3d" width="50" height="50" class="icon-crypto"
+                alt="Ethereum ETH" onclick="toggleQR('eth')" style="cursor:pointer;">
+            <img src="https://cdn.simpleicons.org/tether/26a17b" width="50" height="50" class="icon-crypto"
+                alt="USDT BEP20" onclick="toggleQR('usdt')" style="cursor:pointer;">
+            <img src="https://cdn.simpleicons.org/binance/F0B90B" width="50" height="50" class="icon-crypto" alt="BNB"
+                onclick="toggleQR('bnb')" style="cursor:pointer;">
+            <img src="https://cdn.simpleicons.org/xrp/25A768" width="50" height="50" class="icon-crypto" alt="XRP"
+                onclick="toggleQR('xrp')" style="cursor:pointer;">
+            <img src="https://cdn.simpleicons.org/solana/9945FF" width="50" height="50" class="icon-crypto"
+                alt="Solana SOL" onclick="toggleQR('sol')" style="cursor:pointer;">
+            <img src="https://cdn.simpleicons.org/lightning/2196f3" width="50" height="50" class="icon-crypto"
+                alt="Lightning Address" onclick="toggleQR('lightning')" style="cursor:pointer;">
+        </div>
+
+        <div id="qr-btc" class="qr-box"></div>
+        <p id="detail-btc" class="crypto-detail">bc1qrm2295j3zhqaxx48evmgwmxnnypc66uzs4ej5x</p>
+
+        <div id="qr-eth" class="qr-box"></div>
+        <p id="detail-eth" class="crypto-detail">0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137</p>
+
+        <div id="qr-usdt" class="qr-box"></div>
+        <p id="detail-usdt" class="crypto-detail">0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137 (BEP20)</p>
+
+        <div id="qr-bnb" class="qr-box"></div>
+        <p id="detail-bnb" class="crypto-detail">0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137</p>
+
+        <div id="qr-xrp" class="qr-box"></div>
+        <p id="detail-xrp" class="crypto-detail">rhKT1k4EbfqcCKLDqtFjTJojgDm7m1HiGj</p>
+
+        <div id="qr-sol" class="qr-box"></div>
+        <p id="detail-sol" class="crypto-detail">F5fWxfQqv9FWGHhbVEfnZE94GwL5gJdEv71hdkaeaa8U</p>
+
+        <div id="qr-lightning" class="qr-box"></div>
+        <p id="detail-lightning" class="crypto-detail">kapazz09@blink.sv</p>
+    </div>
+
+    <script>
+        function toggleQR(coin) {
+            const qrBox = document.getElementById('qr-' + coin);
+            const detailBox = document.getElementById('detail-' + coin);
+            const addresses = {
+                btc: 'bc1qrm2295j3zhqaxx48evmgwmxnnypc66uzs4ej5x',
+                eth: '0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137',
+                usdt: '0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137',
+                bnb: '0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137',
+                xrp: 'rhKT1k4EbfqcCKLDqtFjTJojgDm7m1HiGj',
+                sol: 'F5fWxfQqv9FWGHhbVEfnZE94GwL5gJdEv71hdkaeaa8U',
+                lightning: 'kapazz09@blink.sv'
+            };
+
+            if (qrBox.innerHTML === '') {
+                new QRCode(qrBox, addresses[coin]);
+                detailBox.style.display = 'block';
+            } else {
+                qrBox.innerHTML = '';
+                detailBox.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+
+</html>
