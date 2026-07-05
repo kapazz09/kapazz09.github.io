@@ -12,7 +12,7 @@ h1 {
     font-weight: bold;
     font-size: 48px;
     -webkit-text-stroke: 0.1px #e9c90f;
-    text-stroke: 0.1px #ffa600;
+    text-stroke: 0.1px #f1b84e;
 }
 
 .bio-text {
@@ -53,8 +53,8 @@ h1 {
 }
 
 .profile-photo {
-    width: 90px;
-    height: 90px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
 }
