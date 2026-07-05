@@ -14,40 +14,47 @@
 </head>
 
 <body>
+    <video autoplay muted loop playsinline class="bg-video">
+        <source src="bg-video.mp4" type="video/mp4">
+    </video>
+
     <div class="header">
-        <div class="social-icons">
-            <a href="https://wa.me/6285237722911" target="_blank">
-                <img src="https://cdn.simpleicons.org/whatsapp/25D366" width="24" height="24">
-            </a>
-            <a href="https://instagram.com/pazkahbire09" target="_blank">
-                <img src="https://cdn.simpleicons.org/instagram/E4405F" width="24" height="24">
-            </a>
-            <a href="https://facebook.com/PazkahBire" target="_blank">
-                <img src="https://cdn.simpleicons.org/facebook/1877F2" width="24" height="24">
-            </a>
-            <a href="https://tiktok.com/@pazkahbire09" target="_blank">
-                <img src="https://cdn.simpleicons.org/tiktok/000000" width="24" height="24">
-            </a>
-            <audio id="bgMusic" src="musik.mp3" loop></audio>
-            <button onclick="toggleMusic()" class="music-btn">🔊</button>
-        </div>
+        <button onclick="toggleMusic()" class="music-btn">🔊</button>
+        <audio id="bgMusic" src="musik.mp3" loop></audio>
 
         <div class="header-top">
-            <img src="foto.jpeg" alt="Foto Profil" class="profile-photo">
+            <div class="photo-column">
+                <img src="foto.jpeg" alt="Foto Profil" class="profile-photo">
+                <div class="social-icons">
+                    <a href="https://wa.me/6285237722911" target="_blank">
+                        <img src="https://cdn.simpleicons.org/whatsapp/25D366" width="28" height="28">
+                    </a>
+                    <a href="https://instagram.com/pazkahbire09" target="_blank">
+                        <img src="https://cdn.simpleicons.org/instagram/E4405F" width="28" height="28">
+                    </a>
+                    <a href="https://www.facebook.com/pazkah" target="_blank">
+                        <img src="https://cdn.simpleicons.org/facebook/1877F2" width="28" height="28">
+                    </a>
+                    <a href="https://tiktok.com/@pazkahbire" target="_blank">
+                        <img src="https://cdn.simpleicons.org/tiktok/000000" width="28" height="28">
+                    </a>
+                </div>
+            </div>
+
             <div class="btc-ticker">
-                <img src="https://cdn.simpleicons.org/bitcoin/f7931a" width="40" height="40">
+                <img src="https://cdn.simpleicons.org/bitcoin/f7931a" width="32" height="32">
                 <p id="btc-price" class="btc-price">Loading...</p>
                 <p id="btc-change" class="btc-change">--</p>
             </div>
         </div>
 
         <h1>Halo, I'm Pazkah</h1>
-        <p>saya sedang belajar coding.</p>
-        <p>saya juga tertarik dengan Bitcoin dan teknologi blockchain</p>
+        <p class="bio-text">saya sedang belajar coding.</p>
+        <p class="bio-text">saya juga tertarik dengan Bitcoin dan teknologi blockchain</p>
     </div>
 
     <div class="about">
-        <h2>Tentang Saya</h2>
+        <h2>About Me</h2>
         <p>Saya bekerja di bidang pelayanan kesehatan, dan di luar pekerjaan saya memiliki ketertarikan besar pada
             Bitcoin serta teknologi blockchain.</p>
         <p>Selama lebih dari satu tahun terakhir, saya secara konsisten mempelajari Bitcoin, mulai dari sejarah,

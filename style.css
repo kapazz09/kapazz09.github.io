@@ -1,14 +1,24 @@
 body {
     font-family: 'Inter', Arial, sans-serif;
-    background-color: #d4f5d4;
     color: #333;
     margin: 40px;
+    position: relative;
+    min-height: 100vh;
 }
 
 h1 {
     color: #2980ef;
     font-family: 'Yellowtail', cursive;
+    font-weight: bold;
     font-size: 48px;
+    -webkit-text-stroke: 0.1px #e9c90f;
+    text-stroke: 0.1px #ffa600;
+}
+
+.bio-text {
+    color: #ffffff;
+    font-weight: 400;
+    font-style: italic;
 }
 
 .about {
@@ -17,15 +27,18 @@ h1 {
     margin-top: 20px;
     border-radius: 8px;
     font-size: 12px;
-    font-family: merriweather', serif;
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+    position: relative;
+    z-index: 1;
 
 }
 
 .crypto-support {
-    background-color: #ffffff;
+    background-color: #f0f6e4;
     padding: 20px;
     margin-top: 20px;
     border-radius: 8px;
+    z-index: 1;
 }
 
 .crypto-icons {
@@ -40,8 +53,8 @@ h1 {
 }
 
 .profile-photo {
-    width: 120px;
-    height: 120px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -57,69 +70,94 @@ h1 {
 }
 
 @media (max-width: 600px) {
-    body {
-        margin: 15px;
+    .profile-photo {
+        width: 70px;
+        height: 70px;
     }
 
-    .crypto-icons {
-        flex-wrap: wrap;
-        gap: 12px;
+    .btc-ticker {
+        padding: 8px 12px;
+        max-width: 160px;
     }
 
-    .icon-crypto {
-        width: 32px;
-        height: 32px;
+    .btc-price {
+        font-size: 14px;
     }
+
+    .btc-change {
+        font-size: 10px;
+    }
+
+    .social-icons img {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.crypto-icons {
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.icon-crypto {
+    width: 32px;
+    height: 32px;
 }
 
 .header {
     position: relative;
-    padding-right: 60px;
+    z-index: 1;
 }
 
-.social-icons {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.social-icons img {
-    width: 24px;
-    height: 24px;
+.music-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 100;
 }
 
 .header-top {
     display: flex;
     align-items: center;
-    gap: 25px;
-    flex-wrap: wrap;
-    width: 100%;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: nowrap;
+}
+
+.profile-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
 }
 
 .btc-ticker {
     background-color: #ffffff;
     border-radius: 8px;
-    padding: 20px 30px;
+    padding: 12px 18px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     flex: 1;
+    max-width: 220px;
     text-align: center;
 }
 
 .btc-price {
-    font-size: 26px;
+    font-size: 18px;
     font-weight: bold;
-    color: #f7931a;
-    margin: 10px 0 6px 0;
+    color: #f3911a;
+    margin: 6px 0 4px 0;
 }
 
 .btc-change {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
     margin: 0;
 }
@@ -132,13 +170,38 @@ h1 {
     color: #dc2626;
 }
 
-.music-btn {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
+.photo-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+}
+
+.social-icons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
     margin-top: 10px;
 }
+
+.social-icons img {
+    width: 30px;
+    height: 30px;
+    background-color: #e2d4d4;
+    border-radius: 50%;
+    padding: 6px;
+    box-sizing: border-box;
+}
+
+.btc-change.positive {
+    color: #16a34a;
+}
+
+.btc-change.negative {
+    color: #dc2626;
+}
+
 
 .fuel-heading {
     font-size: 24px;
@@ -148,4 +211,15 @@ h1 {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     letter-spacing: 0.5px;
+}
+
+.bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    filter: blur(1px);
 }
