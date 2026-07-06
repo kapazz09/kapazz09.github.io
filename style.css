@@ -22,7 +22,7 @@ h1 {
 }
 
 .about {
-    background-color: #e6cccc;
+    background-color: rgba(230, 204, 204, 0.9);
     padding: 20px;
     margin-top: 20px;
     border-radius: 8px;
@@ -34,7 +34,7 @@ h1 {
 }
 
 .crypto-support {
-    background-color: #f0f6e4;
+    background-color: rgba(240, 246, 228, 0.9);
     padding: 20px;
     margin-top: 20px;
     border-radius: 8px;
@@ -50,6 +50,12 @@ h1 {
 .crypto-detail {
     display: none;
     margin-top: 10px;
+    word-break: break-all;
+    font-size: 13px;
+    line-height: 1.6;
+    background-color: #f7f7f7;
+    padding: 10px;
+    border-radius: 6px;
 }
 
 .profile-photo {
