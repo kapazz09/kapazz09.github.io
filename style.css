@@ -239,3 +239,21 @@ h1 {
 .learning-list a:hover {
     color: #f7931a;
 }
+
+.qr-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.qr-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    background: white;
+    border-radius: 50%;
+    padding: 4px;
+    display: none;
+}
