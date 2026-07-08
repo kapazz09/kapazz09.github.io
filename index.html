@@ -46,45 +46,47 @@
                 <img src="https://cdn.simpleicons.org/bitcoin/f7931a" width="32" height="32">
                 <p id="btc-price" class="btc-price">Loading...</p>
                 <p id="btc-change" class="btc-change">--</p>
+                <p class="live-tag">• live price update •</p>
             </div>
         </div>
 
-        <h1>Halo, I'm Pazkah</h1>
-        <p class="bio-text">saya sedang belajar coding</p>
-        <p class="bio-text">saya juga tertarik dengan Bitcoin dan teknologi blockchain</p>
+        <h1>Building My Bitcoin Journey</h1>
+        <p class="bio-text">Bitcoin • Self Custody • Lightning</p>
+        <p class="bio-text">Learning Bitcoin, building tools, and sharing knowledge with everyone</p>
     </div>
 
-    <div class="about">
+    <div class="about fade-in">
         <h2>About Me</h2>
         <p>Saya bekerja di bidang pelayanan kesehatan, dan di luar pekerjaan saya memiliki ketertarikan besar pada
             Bitcoin serta teknologi blockchain.</p>
         <p>Selama lebih dari satu tahun terakhir, saya secara konsisten mempelajari Bitcoin, mulai dari sejarah,
             filosofi, mekanisme Proof of Work, mining (solo maupun pool), UTXO, Lightning Network, hingga keamanan aset
             digital melalui self-custody.</p>
-
-        <p>Fokus pembelajaran saya meliputi:</p>
-        <ul class="learning-list">
-            <li><a href="https://youtube.com/playlist?list=PL_5dSqXuoyfxWUJh27-Y8WDAWxnMZv7pP&si=o0ZjGl55S-p7SHPE"
-                    target="_blank">Apa itu Bitcoin</a></li>
-            <li><a href="2-Self-Custody-Cold-Wallet.pdf" target="_blank">Self Custody Cold Wallet</a></li>
-            <li><a href="3-UTXO-Fee-Alamat-Wallet.pdf" target="_blank">UTXO, Fee, Alamat Wallet</a></li>
-            <li><a href="4-Privasi-dan-Keamanan.pdf" target="_blank">Privasi dan Keamanan</a></li>
-            <li><a href="5-Lightning-Network.pdf" target="_blank">Lightning Network</a></li>
-            <li><a href="6-Bitcoin-Improvement-Proposal-BIP.pdf" target="_blank">Bitcoin Improvement Proposal
-                    (BIP)</a></li>
-            <li><a href="7-Mining-dan-Mining-Pool.pdf" target="_blank">Mining dan Mining Pool</a></li>
-            <li><a href="8-On-Chain-Analysis.pdf" target="_blank">On Chain Analysis</a></li>
-        </ul>
-
         <p>Saya percaya bahwa memahami cara kerja Bitcoin jauh lebih penting daripada sekadar membeli dan menyimpannya.
             Karena itu saya terus belajar, bereksperimen, dan membangun berbagai proyek kecil untuk memperdalam
             pemahaman saya mengenai Bitcoin dan teknologi open-source.</p>
-        <p>Jika perjalanan belajar ini bermanfaat atau menginspirasi, dukungan Anda akan sangat berarti untuk membantu
-            saya terus belajar, membuat konten edukasi, dan membangun tools yang berguna bagi komunitas Bitcoin.</p>
     </div>
 
-    <div class="crypto-support">
-        <h2 class="fuel-heading">Fuel the Mission</h2>
+    <div class="materials-section slide-up">
+        <h2>📚 Free Learning Materials</h2>
+        <ul class="learning-list">
+            <li><a href="https://youtube.com/playlist?list=PL_5dSqXuoyfxWUJh27-Y8WDAWxnMZv7pP&si=o0ZjGl55S-p7SHPE"
+                    target="_blank">Apa itu Bitcoin</a></li>
+            <li><a href="2-self-custody-cold-wallet.pdf" target="_blank">Self Custody Cold Wallet</a></li>
+            <li><a href="3-utxo-fee-alamat-wallet.pdf" target="_blank">UTXO, Fee, Alamat Wallet</a></li>
+            <li><a href="4-privasi-dan-keamanan.pdf" target="_blank">Privasi dan Keamanan</a></li>
+            <li><a href="5-lightning-network.pdf" target="_blank">Lightning Network</a></li>
+            <li><a href="6-Bitcoin-Improvement-Proposal-BIP.pdf" target="_blank">Bitcoin Improvement Proposal-BIP</a>
+            </li>
+            <li><a href="7-mining-dan-mining-pool.pdf" target="_blank">Mining dan Mining Pool</a></li>
+            <li><a href="8-on-chain-analysis.pdf" target="_blank">On Chain Analysis</a></li>
+        </ul>
+    </div>
+
+    <div class="crypto-support fade-in">
+        <h2 class="fuel-heading">❤️ Support My Bitcoin Journey</h2>
+        <p class="fuel-subtitle">If my learning materials help you, feel free to support my journey</p>
+
         <div class="crypto-icons">
             <img src="https://cdn.simpleicons.org/bitcoin/f7931a" width="50" height="50" class="icon-crypto"
                 alt="Bitcoin BTC" onclick="toggleQR('btc')" style="cursor:pointer;">
@@ -153,6 +155,12 @@
                 Network</strong><br>kapazz09@blink.sv</p>
     </div>
 
+    <footer class="site-footer">
+        <p>Built with HTML • CSS • JavaScript</p>
+        <p>Hosted on GitHub Pages</p>
+        <p>Made with ❤️ by Paskah</p>
+    </footer>
+
     <script>
         fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true')
             .then(response => response.json())
@@ -170,6 +178,18 @@
             .catch(error => {
                 document.getElementById('btc-price').textContent = 'N/A';
             });
+        const animatedElements = document.querySelectorAll('.fade-in, .slide-up');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                } else {
+                    entry.target.classList.remove('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        animatedElements.forEach(el => observer.observe(el));
         function toggleQR(coin) {
             const addresses = {
                 btc: 'bc1qrm2295j3zhqaxx48evmgwmxnnypc66uzs4ej5x',
