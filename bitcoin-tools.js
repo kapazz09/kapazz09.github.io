@@ -34,8 +34,12 @@ const BitcoinTools = {
         this.bindEvents();
         this.loadPrice();
         this.renderQuiz();
+        this.loadFearGreed();
+        this.loadMempoolStatus();
         this.autoRefresh = setInterval(() => {
             this.loadPrice();
+            this.loadFearGreed();
+            this.loadMempoolStatus();
         }, 300000);
     },
 
@@ -134,16 +138,11 @@ const BitcoinTools = {
     async loadPrice() {
         try {
             const response = await fetch(
-                "https://api.coinbase.com/v2/prices/spot?currency=USD"
+                "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,idr"
             );
             const data = await response.json();
-            this.btcPrice = parseFloat(data.data.amount);
-
-            const rateResponse = await fetch(
-                "https://open.er-api.com/v6/latest/USD"
-            );
-            const rateData = await rateResponse.json();
-            this.exchangeRate = rateData.rates.IDR;
+            this.btcPrice = data.bitcoin.usd;
+            this.exchangeRate = data.bitcoin.idr / data.bitcoin.usd;
 
             this.updatePriceDisplay();
             console.log("BTC :", this.btcPrice);
@@ -594,6 +593,63 @@ const BitcoinTools = {
         this.quizIndex = 0;
         this.quizScore = 0;
         this.renderQuiz();
+    },
+
+    //------------------------------------------------
+    // FEAR & GREED INDEX
+    //------------------------------------------------
+
+    loadFearGreed() {
+        fetch("https://api.alternative.me/fng/")
+            .then(res => res.json())
+            .then(data => {
+                const entry = data.data[0];
+                const value = parseInt(entry.value);
+                const classification = entry.value_classification;
+
+                const valueEl = document.getElementById("fngValue");
+                if (valueEl) valueEl.textContent = value + " - " + classification;
+
+                const pointer = document.getElementById("fngPointer");
+                if (pointer) pointer.style.left = value + "%";
+            })
+            .catch(() => {
+                const valueEl = document.getElementById("fngValue");
+                if (valueEl) valueEl.textContent = "Gagal memuat data";
+            });
+    },
+
+    //------------------------------------------------
+    // MEMPOOL STATUS
+    //------------------------------------------------
+
+    loadMempoolStatus() {
+        fetch("https://mempool.space/api/v1/fees/recommended")
+            .then(res => res.json())
+            .then(data => {
+                const feeEl = document.getElementById("mempoolFee");
+                const nextBlockEl = document.getElementById("mempoolNextBlock");
+                if (feeEl) feeEl.textContent = data.halfHourFee + " sat/vB";
+                if (nextBlockEl) nextBlockEl.textContent = data.fastestFee + " sat/vB";
+            })
+            .catch(() => {
+                const feeEl = document.getElementById("mempoolFee");
+                if (feeEl) feeEl.textContent = "Gagal memuat";
+            });
+
+        fetch("https://mempool.space/api/mempool")
+            .then(res => res.json())
+            .then(data => {
+                const sizeEl = document.getElementById("mempoolSize");
+                if (sizeEl) {
+                    const mb = (data.vsize / 1000000).toFixed(2);
+                    sizeEl.textContent = data.count.toLocaleString("en-US") + " tx (" + mb + " MB)";
+                }
+            })
+            .catch(() => {
+                const sizeEl = document.getElementById("mempoolSize");
+                if (sizeEl) sizeEl.textContent = "Gagal memuat";
+            });
     }
 
 };

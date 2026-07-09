@@ -58,7 +58,8 @@
 
     <div class="about fade-in">
         <h2>About Me</h2>
-        <p>Saya bekerja di bidang pelayanan kesehatan, dan di luar pekerjaan saya memiliki ketertarikan besar pada
+        <p>Hello.. Nama saya Pazkah, Saya bekerja di bidang pelayanan kesehatan, dan di luar pekerjaan saya memiliki
+            ketertarikan besar pada
             Bitcoin serta teknologi blockchain.</p>
         <p>Selama lebih dari satu tahun terakhir, saya secara konsisten mempelajari Bitcoin, mulai dari sejarah,
             filosofi, mekanisme Proof of Work, mining (solo maupun pool), UTXO, Lightning Network, hingga keamanan aset
@@ -93,7 +94,7 @@
 
         <div class="toolkit-icons">
 
-            <div class="tool-icon" onclick="showTool('dca',this)">
+            <div class="tool-icon active" onclick="showTool('dca',this)">
                 <i data-lucide="chart-column-increasing"></i>
                 <span>DCA Calculator</span>
             </div>
@@ -136,14 +137,8 @@
         </div>
 
         <div class="tool-display">
-            <div id="tool-placeholder" class="tool-panel active">
-                <div class="coming-card">
-                    <i data-lucide="mouse-pointer-click"></i>
-                    <h3>Pilih Tool</h3>
-                    <span>Klik salah satu icon di atas untuk mulai</span>
-                </div>
-            </div>
-            <div id="tool-dca" class="tool-panel">
+
+            <div id="tool-dca" class="tool-panel active">
                 <div class="tool-header">
                     <div class="tool-title">
                         <i data-lucide="chart-column-increasing"></i>
@@ -470,6 +465,40 @@
                 </div>
             </div>
 
+        </div>
+
+    </div>
+
+    <div class="live-widgets fade-in">
+
+        <div class="widget-card">
+            <h3>😨 Fear &amp; Greed Index</h3>
+            <div class="fng-meter">
+                <div class="fng-bar">
+                    <div class="fng-pointer" id="fngPointer"></div>
+                </div>
+                <div class="fng-labels">
+                    <span>Extreme Fear</span>
+                    <span>Extreme Greed</span>
+                </div>
+            </div>
+            <p class="fng-value" id="fngValue">Loading...</p>
+        </div>
+
+        <div class="widget-card">
+            <h3>⛓ Mempool Status</h3>
+            <div class="result-row">
+                <span>Current Fee</span>
+                <strong id="mempoolFee">Loading...</strong>
+            </div>
+            <div class="result-row">
+                <span>Next Block Fee</span>
+                <strong id="mempoolNextBlock">Loading...</strong>
+            </div>
+            <div class="result-row">
+                <span>Mempool Size</span>
+                <strong id="mempoolSize">Loading...</strong>
+            </div>
         </div>
 
     </div>
