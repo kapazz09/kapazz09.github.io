@@ -5,6 +5,7 @@
     <title>Profil Saya</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Yellowtail&display=swap"
         rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -83,6 +84,396 @@
         </ul>
     </div>
 
+    <div class="toolkit-section fade-in">
+
+        <h2>🧰 Bitcoin Toolkit</h2>
+        <p class="toolkit-subtitle">
+            Interactive Bitcoin tools to help you learn and calculate.
+        </p>
+
+        <div class="toolkit-icons">
+
+            <div class="tool-icon" onclick="showTool('dca',this)">
+                <i data-lucide="chart-column-increasing"></i>
+                <span>DCA Calculator</span>
+            </div>
+
+            <div class="tool-icon" onclick="showTool('sat',this)">
+                <i data-lucide="repeat"></i>
+                <span>BTC ↔ SAT</span>
+            </div>
+
+            <div class="tool-icon" onclick="showTool('price',this)">
+                <i data-lucide="badge-dollar-sign"></i>
+                <span>Price Converter</span>
+            </div>
+
+            <div class="tool-icon" onclick="showTool('fee',this)">
+                <i data-lucide="zap"></i>
+                <span>Lightning Fee</span>
+            </div>
+
+            <div class="tool-icon" onclick="showTool('mining',this)">
+                <i data-lucide="pickaxe"></i>
+                <span>Mining Profit</span>
+            </div>
+
+            <div class="tool-icon" onclick="showTool('utxo',this)">
+                <i data-lucide="package"></i>
+                <span>UTXO Calculator</span>
+            </div>
+
+            <div class="tool-icon" onclick="showTool('average',this)">
+                <i data-lucide="chart-line"></i>
+                <span>Average Buy</span>
+            </div>
+
+            <div class="tool-icon" onclick="showTool('quiz',this)">
+                <i data-lucide="brain"></i>
+                <span>Bitcoin Quiz</span>
+            </div>
+
+        </div>
+
+        <div class="tool-display">
+            <div id="tool-placeholder" class="tool-panel active">
+                <div class="coming-card">
+                    <i data-lucide="mouse-pointer-click"></i>
+                    <h3>Pilih Tool</h3>
+                    <span>Klik salah satu icon di atas untuk mulai</span>
+                </div>
+            </div>
+            <div id="tool-dca" class="tool-panel">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <i data-lucide="chart-column-increasing"></i>
+                        <div>
+                            <h3>DCA Calculator</h3>
+                            <p>Build Bitcoin gradually using Dollar Cost Averaging.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-content">
+                    <div class="dca-card">
+                        <div class="dca-field">
+                            <label>Monthly Investment</label>
+                            <div class="input-box">
+                                <span id="monthlySymbol">$</span>
+                                <input type="number" id="dcaMonthly" placeholder="100" value="100">
+                            </div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Current BTC Price</label>
+                            <div class="dca-toolbar">
+                                <button id="currencyBtn" class="tool-btn">USD</button>
+                                <button id="refreshPriceBtn" class="tool-btn">Refresh Price</button>
+                            </div>
+                            <div class="input-box">
+                                <span id="priceSymbol">$</span>
+                                <input type="number" id="btcPrice" readonly>
+                            </div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Investment Period (Years)</label>
+                            <div class="input-box">
+                                <span>🗓</span>
+                                <input type="number" id="dcaYears" value="5">
+                            </div>
+                        </div>
+                        <button class="calculate-btn">Calculate</button>
+                    </div>
+                    <div class="result-card" id="dcaResult" style="display:none;">
+                        <h3>Result</h3>
+                        <div class="result-row"><span>Total Invested</span><strong id="totalInvested"></strong></div>
+                        <div class="result-row"><span>BTC Accumulated</span><strong id="btcAccumulated"></strong></div>
+                        <div class="result-row"><span>Current Value</span><strong id="currentValue"></strong></div>
+                        <div class="result-row"><span>Average Buy Price</span><strong id="averageBuy"></strong></div>
+                        <div class="result-row"><span>Profit / Loss</span><strong id="profitLoss"></strong></div>
+                        <div class="result-row"><span>Profit (%)</span><strong id="profitPercent"></strong></div>
+                        <button id="copyResultBtn" class="copy-btn">Copy Result</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tool-sat" class="tool-panel">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <i data-lucide="repeat"></i>
+                        <div>
+                            <h3>BTC ↔ Satoshi Converter</h3>
+                            <p>1 BTC = 100,000,000 satoshi. Isi salah satu kolom.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-content">
+                    <div class="dca-card">
+                        <div class="dca-field">
+                            <label>Bitcoin (BTC)</label>
+                            <div class="input-box">
+                                <span>₿</span>
+                                <input type="number" id="satBtcInput" placeholder="0.001" step="any">
+                            </div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Satoshi (sat)</label>
+                            <div class="input-box">
+                                <span>sat</span>
+                                <input type="number" id="satSatInput" placeholder="100000" step="any">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tool-price" class="tool-panel">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <i data-lucide="badge-dollar-sign"></i>
+                        <div>
+                            <h3>Price Converter</h3>
+                            <p>Konversi antara BTC, USD, dan IDR pakai harga live.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-content">
+                    <div class="dca-card">
+                        <div class="dca-field">
+                            <label>Bitcoin (BTC)</label>
+                            <div class="input-box">
+                                <span>₿</span>
+                                <input type="number" id="priceBtcInput" placeholder="0.01" step="any">
+                            </div>
+                        </div>
+                        <div class="dca-field">
+                            <label>US Dollar (USD)</label>
+                            <div class="input-box">
+                                <span>$</span>
+                                <input type="number" id="priceUsdInput" placeholder="600" step="any">
+                            </div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Rupiah (IDR)</label>
+                            <div class="input-box">
+                                <span>Rp</span>
+                                <input type="number" id="priceIdrInput" placeholder="9000000" step="any">
+                            </div>
+                        </div>
+                    </div>
+                    <p style="font-size:12px;color:#888;margin-top:10px;">
+                        *Buka tool "DCA Calculator" dan klik "Refresh Price" dulu supaya harga live termuat.
+                    </p>
+                </div>
+            </div>
+
+            <div id="tool-fee" class="tool-panel">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <i data-lucide="zap"></i>
+                        <div>
+                            <h3>Lightning Fee Estimator</h3>
+                            <p>Perkiraan biaya kirim via Lightning Network (edukasi, bukan angka pasti).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-content">
+                    <div class="dca-card">
+                        <div class="dca-field">
+                            <label>Jumlah Kirim (sat)</label>
+                            <div class="input-box">
+                                <span>sat</span>
+                                <input type="number" id="feeSatInput" placeholder="50000" value="50000">
+                            </div>
+                        </div>
+                        <button class="calculate-btn" id="feeCalcBtn">Estimasi Fee</button>
+                    </div>
+                    <div class="result-card" id="feeResult" style="display:none;">
+                        <h3>Estimasi</h3>
+                        <div class="result-row"><span>Base Fee (typical)</span><strong id="feeBase"></strong></div>
+                        <div class="result-row"><span>Fee Rate (typical 0.05%)</span><strong id="feeRate"></strong>
+                        </div>
+                        <div class="result-row"><span>Total Estimasi Fee</span><strong id="feeTotal"></strong></div>
+                    </div>
+                    <p style="font-size:12px;color:#888;margin-top:10px;">
+                        *Fee aktual tergantung rute dan node yang dilewati. Ini hanya estimasi berdasarkan parameter
+                        umum di jaringan Lightning.
+                    </p>
+                </div>
+            </div>
+
+            <div id="tool-mining" class="tool-panel">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <i data-lucide="pickaxe"></i>
+                        <div>
+                            <h3>Mining Profit Calculator</h3>
+                            <p>Estimasi profit mining harian (perkiraan, bukan angka pasti).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-content">
+                    <div class="dca-card">
+                        <div class="dca-field">
+                            <label>Hashrate Anda (TH/s)</label>
+                            <div class="input-box">
+                                <span>TH/s</span>
+                                <input type="number" id="miningHashrate" placeholder="100" value="100">
+                            </div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Konsumsi Daya (Watt)</label>
+                            <div class="input-box">
+                                <span>W</span>
+                                <input type="number" id="miningPower" placeholder="3000" value="3000">
+                            </div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Biaya Listrik per kWh ($)</label>
+                            <div class="input-box">
+                                <span>$</span>
+                                <input type="number" id="miningElecCost" placeholder="0.10" value="0.10" step="any">
+                            </div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Pool Fee (%)</label>
+                            <div class="input-box">
+                                <span>%</span>
+                                <input type="number" id="miningPoolFee" placeholder="1" value="1" step="any">
+                            </div>
+                        </div>
+                        <div class="dca-toolbar">
+                            <button id="loadNetworkBtn" class="tool-btn">Load Network Data</button>
+                        </div>
+                        <p id="networkHashrateInfo" style="font-size:12px;color:#888;margin-top:8px;">Network hashrate
+                            belum dimuat.</p>
+                        <button class="calculate-btn" id="miningCalcBtn">Calculate Profit</button>
+                    </div>
+                    <div class="result-card" id="miningResult" style="display:none;">
+                        <h3>Estimasi Harian</h3>
+                        <div class="result-row"><span>BTC Ditambang</span><strong id="miningBTC"></strong></div>
+                        <div class="result-row"><span>Pendapatan (USD)</span><strong id="miningRevenue"></strong></div>
+                        <div class="result-row"><span>Biaya Listrik (USD)</span><strong id="miningCost"></strong></div>
+                        <div class="result-row"><span>Profit Bersih (USD)</span><strong id="miningProfit"></strong>
+                        </div>
+                    </div>
+                    <p style="font-size:12px;color:#888;margin-top:10px;">
+                        *Estimasi disederhanakan. Tidak memperhitungkan perubahan difficulty, harga BTC yang fluktuatif,
+                        atau downtime.
+                    </p>
+                </div>
+            </div>
+
+            <div id="tool-utxo" class="tool-panel">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <i data-lucide="package"></i>
+                        <div>
+                            <h3>UTXO & Fee Calculator</h3>
+                            <p>Estimasi ukuran transaksi dan fee (native SegWit).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-content">
+                    <div class="dca-card">
+                        <div class="dca-field">
+                            <label>Jumlah Input (UTXO)</label>
+                            <div class="input-box">
+                                <span>#</span>
+                                <input type="number" id="utxoInputs" value="1">
+                            </div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Jumlah Output</label>
+                            <div class="input-box">
+                                <span>#</span>
+                                <input type="number" id="utxoOutputs" value="2">
+                            </div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Fee Rate (sat/vB)</label>
+                            <div class="dca-toolbar">
+                                <button id="loadFeeRateBtn" class="tool-btn">Load Current Fee Rate</button>
+                            </div>
+                            <div class="input-box">
+                                <span>sat/vB</span>
+                                <input type="number" id="utxoFeeRate" value="10">
+                            </div>
+                        </div>
+                        <button class="calculate-btn" id="utxoCalcBtn">Calculate</button>
+                    </div>
+                    <div class="result-card" id="utxoResult" style="display:none;">
+                        <h3>Estimasi</h3>
+                        <div class="result-row"><span>Ukuran Transaksi</span><strong id="utxoSize"></strong></div>
+                        <div class="result-row"><span>Estimasi Fee (sat)</span><strong id="utxoFeeSat"></strong></div>
+                        <div class="result-row"><span>Estimasi Fee (USD)</span><strong id="utxoFeeUsd"></strong></div>
+                    </div>
+                    <p style="font-size:12px;color:#888;margin-top:10px;">
+                        *Estimasi berdasarkan rumus umum native SegWit (P2WPKH): 10.5 + (input × 68) + (output × 31)
+                        vBytes.
+                    </p>
+                </div>
+            </div>
+
+            <div id="tool-average" class="tool-panel">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <i data-lucide="chart-line"></i>
+                        <div>
+                            <h3>Average Buy Calculator</h3>
+                            <p>Hitung rata-rata harga beli dari beberapa transaksi.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-content">
+                    <div class="dca-card">
+                        <div id="avgBuyRows">
+                            <div class="avg-buy-row">
+                                <div class="input-box">
+                                    <span>$</span>
+                                    <input type="number" class="avgAmountUSD" placeholder="Amount Spent">
+                                </div>
+                                <div class="input-box">
+                                    <span>@</span>
+                                    <input type="number" class="avgPriceAtBuy" placeholder="BTC Price saat beli">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dca-toolbar">
+                            <button id="addAvgRowBtn" class="tool-btn">+ Tambah Transaksi</button>
+                        </div>
+                        <button class="calculate-btn" id="avgCalcBtn">Hitung Rata-Rata</button>
+                    </div>
+                    <div class="result-card" id="avgResult" style="display:none;">
+                        <h3>Hasil</h3>
+                        <div class="result-row"><span>Total Dibelanjakan</span><strong id="avgTotalSpent"></strong>
+                        </div>
+                        <div class="result-row"><span>Total BTC</span><strong id="avgTotalBTC"></strong></div>
+                        <div class="result-row"><span>Rata-Rata Harga Beli</span><strong id="avgPrice"></strong></div>
+                        <div class="result-row"><span>Harga BTC Sekarang</span><strong id="avgCurrentPrice"></strong>
+                        </div>
+                        <div class="result-row"><span>Profit / Loss</span><strong id="avgProfitLoss"></strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tool-quiz" class="tool-panel">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <i data-lucide="brain"></i>
+                        <div>
+                            <h3>Bitcoin Quiz</h3>
+                            <p>Uji pemahaman dasar Anda tentang Bitcoin.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-content">
+                    <div class="dca-card" id="quizContainer"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
     <div class="crypto-support fade-in">
         <h2 class="fuel-heading">❤️ Support My Bitcoin Journey</h2>
         <p class="fuel-subtitle">If my learning materials help you, feel free to support my journey</p>
@@ -108,51 +499,78 @@
             <div id="qr-btc" class="qr-box"></div>
             <img src="https://cdn.simpleicons.org/bitcoin/f7931a" class="qr-logo" alt="">
         </div>
-        <p id="detail-btc" class="crypto-detail"><strong style="color:#f7931a;">Bitcoin (Native
-                SegWit)</strong><br>bc1qrm2295j3zhqaxx48evmgwmxnnypc66uzs4ej5x</p>
+        <p id="detail-btc" class="crypto-detail">
+            <strong style="color:#f7931a;">Bitcoin (Native SegWit)</strong><br>
+            <span class="copy-address" onclick="copyAddress(this)"
+                data-address="bc1qrm2295j3zhqaxx48evmgwmxnnypc66uzs4ej5x">bc1qrm2295j3zhqaxx48evmgwmxnnypc66uzs4ej5x
+                <span class="copy-icon">📋</span></span>
+        </p>
 
         <div class="qr-wrapper">
             <div id="qr-eth" class="qr-box"></div>
             <img src="https://cdn.simpleicons.org/ethereum/3c3c3d" class="qr-logo" alt="">
         </div>
-        <p id="detail-eth" class="crypto-detail"><strong style="color:#627eea;">Ethereum
-                (ERC20)</strong><br>0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137</p>
+        <p id="detail-eth" class="crypto-detail">
+            <strong style="color:#627eea;">Ethereum (ERC20)</strong><br>
+            <span class="copy-address" onclick="copyAddress(this)"
+                data-address="0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137">0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137
+                <span class="copy-icon">📋</span></span>
+        </p>
 
         <div class="qr-wrapper">
             <div id="qr-usdt" class="qr-box"></div>
             <img src="https://cdn.simpleicons.org/tether/26a17b" class="qr-logo" alt="">
         </div>
-        <p id="detail-usdt" class="crypto-detail"><strong style="color:#26a17b;">USDT</strong> <strong
-                style="color:#f0b90b;">(BEP20 - BNB Smart Chain)</strong><br>0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137
+        <p id="detail-usdt" class="crypto-detail">
+            <strong style="color:#26a17b;">USDT</strong> <strong style="color:#f0b90b;">(BEP20 - BNB Smart
+                Chain)</strong><br>
+            <span class="copy-address" onclick="copyAddress(this)"
+                data-address="0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137">0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137
+                <span class="copy-icon">📋</span></span>
         </p>
 
         <div class="qr-wrapper">
             <div id="qr-bnb" class="qr-box"></div>
             <img src="https://cdn.simpleicons.org/binance/F0B90B" class="qr-logo" alt="">
         </div>
-        <p id="detail-bnb" class="crypto-detail"><strong style="color:#f0b90b;">BNB (BEP20 - BNB Smart
-                Chain)</strong><br>0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137</p>
+        <p id="detail-bnb" class="crypto-detail">
+            <strong style="color:#f0b90b;">BNB (BEP20 - BNB Smart Chain)</strong><br>
+            <span class="copy-address" onclick="copyAddress(this)"
+                data-address="0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137">0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137
+                <span class="copy-icon">📋</span></span>
+        </p>
 
         <div class="qr-wrapper">
             <div id="qr-xrp" class="qr-box"></div>
             <img src="https://cdn.simpleicons.org/xrp/25A768" class="qr-logo" alt="">
         </div>
-        <p id="detail-xrp" class="crypto-detail"><strong style="color:#00aae4;">XRP (XRP
-                Ledger)</strong><br>rhKT1k4EbfqcCKLDqtFjTJojgDm7m1HiGj</p>
+        <p id="detail-xrp" class="crypto-detail">
+            <strong style="color:#00aae4;">XRP (XRP Ledger)</strong><br>
+            <span class="copy-address" onclick="copyAddress(this)"
+                data-address="rhKT1k4EbfqcCKLDqtFjTJojgDm7m1HiGj">rhKT1k4EbfqcCKLDqtFjTJojgDm7m1HiGj <span
+                    class="copy-icon">📋</span></span>
+        </p>
 
         <div class="qr-wrapper">
             <div id="qr-sol" class="qr-box"></div>
             <img src="https://cdn.simpleicons.org/solana/9945FF" class="qr-logo" alt="">
         </div>
-        <p id="detail-sol" class="crypto-detail"><strong style="color:#9945FF;">Solana
-                (SOL)</strong><br>F5fWxfQqv9FWGHhbVEfnZE94GwL5gJdEv71hdkaeaa8U</p>
+        <p id="detail-sol" class="crypto-detail">
+            <strong style="color:#9945FF;">Solana (SOL)</strong><br>
+            <span class="copy-address" onclick="copyAddress(this)"
+                data-address="F5fWxfQqv9FWGHhbVEfnZE94GwL5gJdEv71hdkaeaa8U">F5fWxfQqv9FWGHhbVEfnZE94GwL5gJdEv71hdkaeaa8U
+                <span class="copy-icon">📋</span></span>
+        </p>
 
         <div class="qr-wrapper">
             <div id="qr-lightning" class="qr-box"></div>
             <img src="https://cdn.simpleicons.org/lightning/2196f3" class="qr-logo" alt="">
         </div>
-        <p id="detail-lightning" class="crypto-detail"><strong style="color:#f7b500;">Lightning
-                Network</strong><br>kapazz09@blink.sv</p>
+        <p id="detail-lightning" class="crypto-detail">
+            <strong style="color:#f7b500;">Lightning Network</strong><br>
+            <span class="copy-address" onclick="copyAddress(this)" data-address="kapazz09@blink.sv">kapazz09@blink.sv
+                <span class="copy-icon">📋</span></span>
+        </p>
     </div>
 
     <footer class="site-footer">
@@ -161,75 +579,8 @@
         <p>Made with ❤️ by Paskah</p>
     </footer>
 
-    <script>
-        fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true')
-            .then(response => response.json())
-            .then(data => {
-                const price = data.bitcoin.usd.toLocaleString('en-US');
-                const change = data.bitcoin.usd_24h_change;
-
-                document.getElementById('btc-price').textContent = '$' + price;
-
-                const changeEl = document.getElementById('btc-change');
-                const sign = change >= 0 ? '+' : '';
-                changeEl.textContent = sign + change.toFixed(1) + '% (24h)';
-                changeEl.className = change >= 0 ? 'btc-change positive' : 'btc-change negative';
-            })
-            .catch(error => {
-                document.getElementById('btc-price').textContent = 'N/A';
-            });
-        const animatedElements = document.querySelectorAll('.fade-in, .slide-up');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                } else {
-                    entry.target.classList.remove('visible');
-                }
-            });
-        }, { threshold: 0.15 });
-
-        animatedElements.forEach(el => observer.observe(el));
-        function toggleQR(coin) {
-            const addresses = {
-                btc: 'bc1qrm2295j3zhqaxx48evmgwmxnnypc66uzs4ej5x',
-                eth: '0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137',
-                usdt: '0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137',
-                bnb: '0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137',
-                xrp: 'rhKT1k4EbfqcCKLDqtFjTJojgDm7m1HiGj',
-                sol: 'F5fWxfQqv9FWGHhbVEfnZE94GwL5gJdEv71hdkaeaa8U',
-                lightning: 'kapazz09@blink.sv'
-            };
-
-            const allCoins = Object.keys(addresses);
-            const clickedBox = document.getElementById('qr-' + coin);
-            const wasOpen = clickedBox.innerHTML !== '';
-
-            allCoins.forEach(c => {
-                const box = document.getElementById('qr-' + c);
-                const detail = document.getElementById('detail-' + c);
-                const logo = box.parentElement.querySelector('.qr-logo');
-                box.innerHTML = '';
-                detail.style.display = 'none';
-                logo.style.display = 'none';
-            });
-
-            if (!wasOpen) {
-                new QRCode(clickedBox, addresses[coin]);
-                document.getElementById('detail-' + coin).style.display = 'block';
-                clickedBox.parentElement.querySelector('.qr-logo').style.display = 'block';
-            }
-        }
-        function toggleMusic() {
-            const audio = document.getElementById('bgMusic');
-            if (audio.paused) {
-                audio.play();
-            } else {
-                audio.pause();
-            }
-        }
-    </script>
-
+    <script src="script.js"></script>
+    <script src="bitcoin-tools.js"></script>
 </body>
 
 </html>
