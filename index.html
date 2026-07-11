@@ -13,6 +13,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta name="description"
+        content="Belajar Bitcoin dari nol — self-custody, Lightning Network, dan berbagi ilmu untuk semua orang.">
+    <meta property="og:title" content="Pazkah Bitcoin Journey">
+    <meta property="og:description"
+        content="Belajar Bitcoin dari nol — self-custody, Lightning Network, dan berbagi ilmu untuk semua orang.">
+    <meta property="og:image" content="https://kapazz09.github.io/foto.jpeg">
+    <meta property="og:url" content="https://kapazz09.github.io/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Pazkah Bitcoin Journey">
+    <meta name="twitter:description"
+        content="Belajar Bitcoin dari nol — self-custody, Lightning Network, dan berbagi ilmu untuk semua orang.">
+    <meta name="twitter:image" content="https://kapazz09.github.io/foto.jpeg">
 </head>
 
 <body>
@@ -58,15 +71,33 @@
 
     <div class="about fade-in">
         <h2>About Me</h2>
-        <p>Hello.. Nama saya Pazkah, Saya bekerja di bidang pelayanan kesehatan, dan di luar pekerjaan saya memiliki
-            ketertarikan besar pada
-            Bitcoin serta teknologi blockchain.</p>
-        <p>Selama lebih dari satu tahun terakhir, saya secara konsisten mempelajari Bitcoin, mulai dari sejarah,
-            filosofi, mekanisme Proof of Work, mining (solo maupun pool), UTXO, Lightning Network, hingga keamanan aset
-            digital melalui self-custody.</p>
+        <p>Hello, i'm Pazkah.. Saya bekerja di bidang pelayanan kesehatan, dan perjalanan saya mengenal Bitcoin dimulai
+            dari cara yang tidak terduga: ditipu.</p>
+        <p>Semua berawal dari obrolan di Telegram. Seseorang menghubungi saya, kami mengobrol beberapa hari, sampai
+            akhirnya dia meminta saya mengerjakan sebuah tugas memakai akunnya di salah satu platform. Saya kerjakan
+            dengan serius, dan dalam dua hari tugas itu selesai — akun itu mendapat komisi sebesar 2.000 USDT.</p>
+        <p>Saat itu saya bahkan tidak tahu apa itu crypto, apalagi USDT. Saya cuma melapor ke orang itu: "Komisi sudah
+            cair." Dia terdengar sangat senang di telepon. Beberapa jam kemudian, akun itu sudah tidak bisa saya akses —
+            password-nya sudah diganti.</p>
+        <p>Rasa penasaran itulah titik baliknya. Saya mulai mencari tahu apa sebenarnya USDT itu, dan menemukan bahwa
+            itu adalah stablecoin yang nilainya dipatok 1:1 ke dolar Amerika. Begitu saya paham, penyesalan datang —
+            andai saya tahu lebih cepat, mungkin 2.000 USDT itu bisa jadi milik saya.</p>
+        <p>Saya coba hubungi orang itu lagi, minta bagian saya. Dia menyuruh saya download wallet, lalu mengirim 100
+            USDT — jauh dari yang saya harapkan, tapi cukup untuk membuat saya terus menggali lebih dalam.</p>
+        <p>Dari situ saya menemukan Bitcoin — cryptocurrency pertama di dunia. Saat itu harganya sekitar $117.000, atau
+            sekitar 1,9 miliar rupiah per koin. Saya terheran-heran: bagaimana bisa 1 koin digital semahal itu?</p>
+        <p>Dari rasa heran itu, saya mulai belajar dari nol — sejarah dan filosofi Bitcoin, cara kerja Proof of Work,
+            keamanan lewat self-custody, UTXO dan fee transaksi, privasi, Lightning Network, hingga mining dan on-chain
+            analysis. Semakin dalam saya pelajari, semakin saya yakin dan percaya — barulah setelah cukup paham, saya
+            mulai DCA (Dollar Cost Averaging) sedikit demi sedikit, dan terus konsisten sampai hari ini.</p>
+        <p>Saat ini saya menyimpan Bitcoin menggunakan hardware wallet, dengan sistem backup seed phrase dan passphrase
+            berbahan logam yang disimpan di beberapa lokasi terpisah, serta telah melakukan simulasi recovery beberapa
+            kali untuk memastikan aset saya tetap aman.</p>
         <p>Saya percaya bahwa memahami cara kerja Bitcoin jauh lebih penting daripada sekadar membeli dan menyimpannya.
-            Karena itu saya terus belajar, bereksperimen, dan membangun berbagai proyek kecil untuk memperdalam
-            pemahaman saya mengenai Bitcoin dan teknologi open-source.</p>
+            Karena itu saya terus belajar, bereksperimen, dan membangun berbagai proyek kecil — termasuk situs ini —
+            untuk memperdalam pemahaman saya sekaligus berbagi ke orang lain.</p>
+        <p>Jika perjalanan belajar ini bermanfaat atau menginspirasi, dukungan Anda akan sangat berarti untuk membantu
+            saya terus belajar, membuat konten edukasi, dan membangun tools yang berguna bagi komunitas Bitcoin.</p>
     </div>
 
     <div class="materials-section slide-up">
@@ -94,7 +125,7 @@
 
         <div class="toolkit-icons">
 
-            <div class="tool-icon active" onclick="showTool('dca',this)">
+            <div class="tool-icon" onclick="showTool('dca',this)">
                 <i data-lucide="chart-column-increasing"></i>
                 <span>DCA Calculator</span>
             </div>
@@ -138,7 +169,15 @@
 
         <div class="tool-display">
 
-            <div id="tool-dca" class="tool-panel active">
+            <div id="tool-placeholder" class="tool-panel active">
+                <div class="coming-card">
+                    <i data-lucide="mouse-pointer-click"></i>
+                    <h3>Pilih Tool</h3>
+                    <span>Klik salah satu icon di atas untuk mulai</span>
+                </div>
+            </div>
+
+            <div id="tool-dca" class="tool-panel">
                 <div class="tool-header">
                     <div class="tool-title">
                         <i data-lucide="chart-column-increasing"></i>
