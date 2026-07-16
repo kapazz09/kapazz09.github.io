@@ -872,12 +872,109 @@ h1 {
 /* Average Buy Calculator - baris input sejajar */
 .avg-buy-row {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     gap: 10px;
     margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.avg-buy-row .avgDate {
+    padding: 12px;
+    border: 2px solid #ececec;
+    border-radius: 14px;
+    font-size: 14px;
 }
 
 .avg-buy-row .input-box {
     flex: 1;
+    min-width: 160px;
+}
+
+.avg-buy-row .avgFetchedPrice {
+    width: 100%;
+    font-size: 11px;
+    color: #888;
+    margin: 0;
+}
+
+/* Bitcoin Glossary */
+.glossary-list {
+    margin-top: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.glossary-item {
+    background: #fafafa;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 10px;
+}
+
+.glossary-item strong {
+    color: #f7931a;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.glossary-item p {
+    margin: 0;
+    font-size: 13px;
+    color: #555;
+}
+
+/* Lightning Channel Capacity bar */
+.channel-bar {
+    display: flex;
+    height: 24px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.channel-bar-local {
+    background: #f7931a;
+    transition: width 0.4s ease;
+}
+
+.channel-bar-remote {
+    background: #3b82f6;
+    transition: width 0.4s ease;
+}
+
+/* Wallet Checker disclaimer */
+.wallet-disclaimer {
+    font-size: 12px;
+    color: #c2410c;
+    background: #fff7ed;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* About Me - Baca Selengkapnya */
+.about-extra {
+    display: none;
+}
+
+.read-more-btn {
+    background: none;
+    border: 2px solid #f7931a;
+    color: #f7931a;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.2s;
+}
+
+.read-more-btn:hover {
+    background: #f7931a;
+    color: white;
 }
 
 /* Bitcoin Quiz - tombol pilihan jawaban */
@@ -947,4 +1044,18 @@ h1 {
     font-size: 16px;
     margin-top: 12px;
     color: #333;
+}
+
+/* Tombol Scan QR di Wallet Checker */
+.scan-qr-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 8px;
+}
+
+#qrReaderWallet video {
+    width: 100% !important;
+    border-radius: 12px;
 }

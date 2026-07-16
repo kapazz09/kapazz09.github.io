@@ -1,6 +1,6 @@
 /*==================================================
     BITCOIN TOOLKIT
-    Version : 3.0
+    Version : 4.0
     Author  : Kapazz09
 ==================================================*/
 
@@ -15,6 +15,9 @@ const BitcoinTools = {
     currency: "USD",
     autoRefresh: null,
     networkHashrateHs: 0,
+    html5QrCode: null,
+    isConverting: false,
+    historicalCache: {},
 
     quizData: [
         { q: "Siapa nama yang digunakan sebagai pencipta Bitcoin?", options: ["Vitalik Buterin", "Craig Wright", "Satoshi Nakamoto", "Hal Finney"], answer: 2 },
@@ -73,6 +76,54 @@ const BitcoinTools = {
     quizPlaying: [],
     quizQuestionCount: 15,
 
+    glossaryData: [
+        { term: "UTXO", def: "Unspent Transaction Output — sisa dana dari transaksi sebelumnya yang belum dibelanjakan." },
+        { term: "Satoshi (sat)", def: "Satuan terkecil Bitcoin. 1 BTC = 100.000.000 satoshi." },
+        { term: "Self-Custody", def: "Prinsip di mana pemilik Bitcoin memegang sendiri private key-nya, bukan dipegang pihak ketiga seperti exchange." },
+        { term: "Seed Phrase", def: "Rangkaian 12-24 kata yang menjadi kunci utama untuk memulihkan akses ke wallet Bitcoin." },
+        { term: "Cold Wallet", def: "Wallet yang tidak terhubung ke internet, dipakai untuk menyimpan Bitcoin secara aman jangka panjang." },
+        { term: "Hot Wallet", def: "Wallet yang terhubung ke internet, biasanya dipakai untuk transaksi sehari-hari." },
+        { term: "Private Key", def: "Kunci rahasia yang membuktikan kepemilikan atas Bitcoin di suatu alamat." },
+        { term: "Public Key / Address", def: "Alamat yang bisa dibagikan ke orang lain untuk menerima Bitcoin." },
+        { term: "Lightning Network", def: "Layer 2 di atas Bitcoin yang memungkinkan transaksi cepat dan murah lewat channel pembayaran." },
+        { term: "Mempool", def: "Kumpulan transaksi yang sudah disiarkan tapi belum masuk ke dalam blok manapun." },
+        { term: "Halving", def: "Peristiwa setiap sekitar 4 tahun di mana reward blok mining dipotong setengah." },
+        { term: "Proof of Work", def: "Mekanisme konsensus Bitcoin yang mengharuskan miner memecahkan teka-teki komputasi untuk menambang blok." },
+        { term: "Hash Rate", def: "Total daya komputasi yang dipakai untuk menambang dan mengamankan jaringan Bitcoin." },
+        { term: "Node", def: "Komputer yang menyimpan salinan blockchain dan memvalidasi transaksi secara independen." },
+        { term: "Fee Rate (sat/vB)", def: "Biaya yang dibayarkan per unit ukuran transaksi (vByte) agar transaksi diproses lebih cepat." },
+        { term: "Address Reuse", def: "Praktik memakai alamat Bitcoin yang sama berulang kali, mengurangi privasi." },
+        { term: "CoinJoin", def: "Teknik menggabungkan beberapa transaksi dari pengguna berbeda untuk meningkatkan privasi." },
+        { term: "BIP", def: "Bitcoin Improvement Proposal — dokumen resmi usulan perubahan/penambahan pada protokol Bitcoin." },
+        { term: "SegWit", def: "Segregated Witness — upgrade protokol yang memisahkan data tanda tangan dari data transaksi utama." },
+        { term: "Taproot", def: "Upgrade Bitcoin yang meningkatkan privasi dan efisiensi smart contract sederhana di Bitcoin." },
+        { term: "Inbound Liquidity", def: "Kapasitas channel Lightning untuk menerima pembayaran masuk." },
+        { term: "Outbound Liquidity", def: "Kapasitas channel Lightning untuk mengirim pembayaran keluar." },
+        { term: "DCA (Dollar Cost Averaging)", def: "Strategi investasi dengan membeli aset secara rutin dalam jumlah tetap, tanpa memedulikan harga naik/turun." },
+        { term: "ASIC", def: "Application-Specific Integrated Circuit — perangkat keras khusus yang dirancang hanya untuk mining Bitcoin." },
+        { term: "Genesis Block", def: "Blok pertama yang pernah ditambang dalam sejarah blockchain Bitcoin." },
+        { term: "Blockchain", def: "Buku besar digital terdistribusi yang mencatat semua transaksi Bitcoin secara permanen dan transparan." },
+        { term: "Decentralization", def: "Prinsip di mana tidak ada satu pihak pun yang mengontrol seluruh jaringan Bitcoin." },
+        { term: "Full Node", def: "Komputer yang menyimpan seluruh riwayat blockchain dan memverifikasi setiap transaksi secara independen, tanpa bergantung pihak lain." },
+        { term: "Pruned Node", def: "Full node yang menghapus data blok lama setelah diverifikasi, untuk menghemat ruang penyimpanan." },
+        { term: "Multisig (Multi-signature)", def: "Alamat Bitcoin yang membutuhkan lebih dari satu kunci privat untuk mengotorisasi transaksi, meningkatkan keamanan." },
+        { term: "Mining Pool", def: "Kelompok miner yang menggabungkan daya komputasi untuk memperbesar peluang mendapat reward, lalu dibagi sesuai kontribusi." },
+        { term: "Difficulty Adjustment", def: "Penyesuaian otomatis tingkat kesulitan mining setiap ~2 minggu agar waktu antar blok tetap sekitar 10 menit." },
+        { term: "Block Reward", def: "Bitcoin baru yang diberikan kepada miner sebagai imbalan berhasil menambang sebuah blok." },
+        { term: "Consensus", def: "Mekanisme di mana seluruh node jaringan sepakat pada satu versi blockchain yang valid." },
+        { term: "HODL", def: "Istilah slang komunitas crypto untuk menahan (tidak menjual) aset dalam jangka panjang, apapun kondisi pasar." },
+        { term: "FOMO", def: "Fear of Missing Out — rasa takut ketinggalan, sering mendorong keputusan beli/jual impulsif saat harga bergerak cepat." },
+        { term: "Stablecoin", def: "Cryptocurrency yang nilainya dipatok ke aset stabil seperti dolar AS, contohnya USDT dan USDC." },
+        { term: "Altcoin", def: "Sebutan untuk semua cryptocurrency selain Bitcoin." },
+        { term: "Custodial Wallet", def: "Wallet yang private key-nya dipegang pihak ketiga (misal exchange), bukan oleh pemilik aset sendiri." },
+        { term: "Non-Custodial Wallet", def: "Wallet yang private key-nya sepenuhnya dikontrol oleh pemilik aset — inti dari prinsip self-custody." },
+        { term: "Replace-By-Fee (RBF)", def: "Fitur yang memungkinkan transaksi belum terkonfirmasi diganti dengan versi fee lebih tinggi agar diproses lebih cepat." },
+        { term: "Dust", def: "Jumlah Bitcoin yang sangat kecil, seringkali lebih murah fee untuk membelanjakannya daripada nilai dust itu sendiri." },
+        { term: "Merkle Tree", def: "Struktur data yang merangkum seluruh transaksi dalam satu blok menjadi satu hash ringkas, mempercepat proses verifikasi." },
+        { term: "51% Attack", def: "Skenario saat satu pihak menguasai lebih dari separuh hash rate jaringan, berpotensi memanipulasi transaksi." },
+        { term: "KYC (Know Your Customer)", def: "Proses verifikasi identitas yang biasanya diwajibkan exchange sebelum pengguna bisa bertransaksi." }
+    ],
+
     //------------------------------------------------
     // INIT
     //------------------------------------------------
@@ -83,6 +134,8 @@ const BitcoinTools = {
         this.renderQuiz();
         this.loadFearGreed();
         this.loadMempoolStatus();
+        this.loadHalvingData();
+        this.renderGlossary("");
         this.autoRefresh = setInterval(() => {
             this.loadPrice();
             this.loadFearGreed();
@@ -95,240 +148,224 @@ const BitcoinTools = {
     //------------------------------------------------
 
     bindEvents() {
-        const calcBtn = document.querySelector(".calculate-btn");
-        if (calcBtn) {
-            calcBtn.addEventListener("click", () => {
-                this.calculateDCA();
-            });
-        }
+        const calcBtn = document.getElementById("dcaCalcBtn");
+        if (calcBtn) calcBtn.addEventListener("click", () => this.calculateDCA());
 
         const refreshBtn = document.getElementById("refreshPriceBtn");
-        if (refreshBtn) {
-            refreshBtn.addEventListener("click", () => {
-                this.loadPrice();
-            });
-        }
-
-        const currencyBtn = document.getElementById("currencyBtn");
-        if (currencyBtn) {
-            currencyBtn.addEventListener("click", () => {
-                this.toggleCurrency();
-            });
-        }
+        if (refreshBtn) refreshBtn.addEventListener("click", () => this.loadPrice());
 
         const copyBtn = document.getElementById("copyResultBtn");
-        if (copyBtn) {
-            copyBtn.addEventListener("click", () => {
-                this.copyResult();
+        if (copyBtn) copyBtn.addEventListener("click", () => this.copyResult());
+
+        const convBtc = document.getElementById("convBtcInput");
+        const convSat = document.getElementById("convSatInput");
+        const convUsd = document.getElementById("convUsdInput");
+        const convIdr = document.getElementById("convIdrInput");
+        if (convBtc) convBtc.addEventListener("input", () => this.convertCurrency("btc"));
+        if (convSat) convSat.addEventListener("input", () => this.convertCurrency("sat"));
+        if (convUsd) convUsd.addEventListener("input", () => this.convertCurrency("usd"));
+        if (convIdr) convIdr.addEventListener("input", () => this.convertCurrency("idr"));
+
+        const channelCalcBtn = document.getElementById("channelCalcBtn");
+        if (channelCalcBtn) channelCalcBtn.addEventListener("click", () => this.calculateChannelCapacity());
+
+        const loadNetworkBtn = document.getElementById("loadNetworkBtn");
+        if (loadNetworkBtn) loadNetworkBtn.addEventListener("click", () => this.loadNetworkHashrate());
+
+        const miningCalcBtn = document.getElementById("miningCalcBtn");
+        if (miningCalcBtn) miningCalcBtn.addEventListener("click", () => this.calculateMiningProfit());
+
+        const loadFeeRateBtn = document.getElementById("loadFeeRateBtn");
+        if (loadFeeRateBtn) loadFeeRateBtn.addEventListener("click", () => this.loadFeeRate());
+
+        const utxoCalcBtn = document.getElementById("utxoCalcBtn");
+        if (utxoCalcBtn) utxoCalcBtn.addEventListener("click", () => this.calculateUTXO());
+
+        const addAvgRowBtn = document.getElementById("addAvgRowBtn");
+        if (addAvgRowBtn) addAvgRowBtn.addEventListener("click", () => this.addAvgRow());
+
+        const avgCalcBtn = document.getElementById("avgCalcBtn");
+        if (avgCalcBtn) avgCalcBtn.addEventListener("click", () => this.calculateAverageBuy());
+
+        const avgRowsContainer = document.getElementById("avgBuyRows");
+        if (avgRowsContainer) {
+            avgRowsContainer.addEventListener("change", (e) => {
+                if (e.target.classList.contains("avgDate")) {
+                    this.onAvgDateChange(e.target.closest(".avg-buy-row"));
+                }
             });
         }
 
-        // --- BTC <-> Satoshi Converter ---
-        const satBtcInput = document.getElementById("satBtcInput");
-        const satSatInput = document.getElementById("satSatInput");
-        if (satBtcInput && satSatInput) {
-            satBtcInput.addEventListener("input", () => this.convertFromBTC());
-            satSatInput.addEventListener("input", () => this.convertFromSat());
-        }
+        const walletCheckBtn = document.getElementById("walletCheckBtn");
+        if (walletCheckBtn) walletCheckBtn.addEventListener("click", () => this.loadWalletBalance());
 
-        // --- Price Converter (BTC / USD / IDR) ---
-        const priceBtcInput = document.getElementById("priceBtcInput");
-        const priceUsdInput = document.getElementById("priceUsdInput");
-        const priceIdrInput = document.getElementById("priceIdrInput");
-        if (priceBtcInput && priceUsdInput && priceIdrInput) {
-            priceBtcInput.addEventListener("input", () => this.convertPrice("btc"));
-            priceUsdInput.addEventListener("input", () => this.convertPrice("usd"));
-            priceIdrInput.addEventListener("input", () => this.convertPrice("idr"));
-        }
+        const glossarySearch = document.getElementById("glossarySearch");
+        if (glossarySearch) glossarySearch.addEventListener("input", (e) => this.renderGlossary(e.target.value));
 
-        // --- Lightning Fee Estimator ---
-        const feeCalcBtn = document.getElementById("feeCalcBtn");
-        if (feeCalcBtn) {
-            feeCalcBtn.addEventListener("click", () => this.calculateLightningFee());
-        }
+        const walletScanBtn = document.getElementById("walletScanBtn");
+        if (walletScanBtn) walletScanBtn.addEventListener("click", () => this.startWalletScan());
 
-        // --- Mining Profit ---
-        const loadNetworkBtn = document.getElementById("loadNetworkBtn");
-        if (loadNetworkBtn) {
-            loadNetworkBtn.addEventListener("click", () => this.loadNetworkHashrate());
-        }
-        const miningCalcBtn = document.getElementById("miningCalcBtn");
-        if (miningCalcBtn) {
-            miningCalcBtn.addEventListener("click", () => this.calculateMiningProfit());
-        }
-
-        // --- UTXO Calculator ---
-        const loadFeeRateBtn = document.getElementById("loadFeeRateBtn");
-        if (loadFeeRateBtn) {
-            loadFeeRateBtn.addEventListener("click", () => this.loadFeeRate());
-        }
-        const utxoCalcBtn = document.getElementById("utxoCalcBtn");
-        if (utxoCalcBtn) {
-            utxoCalcBtn.addEventListener("click", () => this.calculateUTXO());
-        }
-
-        // --- Average Buy ---
-        const addAvgRowBtn = document.getElementById("addAvgRowBtn");
-        if (addAvgRowBtn) {
-            addAvgRowBtn.addEventListener("click", () => this.addAvgRow());
-        }
-        const avgCalcBtn = document.getElementById("avgCalcBtn");
-        if (avgCalcBtn) {
-            avgCalcBtn.addEventListener("click", () => this.calculateAverageBuy());
-        }
+        const walletScanCloseBtn = document.getElementById("walletScanCloseBtn");
+        if (walletScanCloseBtn) walletScanCloseBtn.addEventListener("click", () => this.stopWalletScan());
     },
 
     //------------------------------------------------
-    // LOAD BTC PRICE
+    // LOAD BTC PRICE (live, dipakai semua tool)
     //------------------------------------------------
 
     async loadPrice() {
         try {
-            const response = await fetch(
-                "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,idr"
-            );
+            const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,idr");
             const data = await response.json();
             this.btcPrice = data.bitcoin.usd;
             this.exchangeRate = data.bitcoin.idr / data.bitcoin.usd;
-
             this.updatePriceDisplay();
-            console.log("BTC :", this.btcPrice);
         } catch (error) {
             console.error("Price Error :", error);
             this.showOfflinePrice();
         }
     },
 
-    //------------------------------------------------
-    // UPDATE PRICE DISPLAY
-    //------------------------------------------------
-
     updatePriceDisplay() {
-        const input = document.getElementById("btcPrice");
-        if (!input) return;
-
-        if (this.currency === "USD") {
-            input.value = this.btcPrice.toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        } else {
-            input.value = Math.round(
-                this.btcPrice * this.exchangeRate
-            ).toLocaleString("id-ID");
-        }
+        const display = document.getElementById("dcaLivePriceDisplay");
+        if (!display) return;
+        const idrText = this.exchangeRate
+            ? " / Rp" + Math.round(this.btcPrice * this.exchangeRate).toLocaleString("id-ID")
+            : "";
+        display.textContent = "$" + this.btcPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + idrText;
     },
-
-    //------------------------------------------------
-    // OFFLINE
-    //------------------------------------------------
 
     showOfflinePrice() {
-        const input = document.getElementById("btcPrice");
-        if (!input) return;
-        input.value = "Unable to load";
+        const display = document.getElementById("dcaLivePriceDisplay");
+        if (display) display.textContent = "Gagal memuat harga";
     },
 
     //------------------------------------------------
-    // CHANGE CURRENCY (juga ganti simbol $ <-> Rp)
-    //------------------------------------------------
-
-    toggleCurrency() {
-        const oldCurrency = this.currency;
-        this.currency = this.currency === "USD" ? "IDR" : "USD";
-
-        const btn = document.getElementById("currencyBtn");
-        if (btn) btn.textContent = this.currency;
-
-        const symbol = this.currency === "USD" ? "$" : "Rp";
-        const monthlySymbol = document.getElementById("monthlySymbol");
-        const priceSymbol = document.getElementById("priceSymbol");
-        if (monthlySymbol) monthlySymbol.textContent = symbol;
-        if (priceSymbol) priceSymbol.textContent = symbol;
-
-        // Konversi nilai Monthly Investment mengikuti perubahan mata uang
-        const monthlyInput = document.getElementById("dcaMonthly");
-        if (monthlyInput && monthlyInput.value && this.exchangeRate) {
-            const val = parseFloat(monthlyInput.value);
-            if (!isNaN(val)) {
-                if (oldCurrency === "USD" && this.currency === "IDR") {
-                    monthlyInput.value = Math.round(val * this.exchangeRate);
-                } else if (oldCurrency === "IDR" && this.currency === "USD") {
-                    monthlyInput.value = (val / this.exchangeRate).toFixed(2);
-                }
-            }
-        }
-
-        this.updatePriceDisplay();
-    },
-
-    //------------------------------------------------
-    // DCA CALCULATOR
+    // DCA CALCULATOR (Simulasi Historis)
     //------------------------------------------------
 
     calculateDCA() {
-        const monthlyInput = document.getElementById("dcaMonthly");
-        const yearsInput = document.getElementById("dcaYears");
-        const resultCard = document.getElementById("dcaResult");
+        const amount = parseFloat(document.getElementById("dcaAmount").value);
+        const currency = document.getElementById("dcaCurrencySelect").value;
+        const frequency = document.getElementById("dcaFrequency").value;
+        const startDateStr = document.getElementById("dcaStartDate").value;
+        const endDateStr = document.getElementById("dcaEndDate").value;
 
-        const monthlyRaw = parseFloat(monthlyInput.value);
-        const years = parseFloat(yearsInput.value);
-
-        if (!monthlyRaw || !years || monthlyRaw <= 0 || years <= 0) {
-            alert("Mohon isi Monthly Investment dan Investment Period dengan angka yang valid.");
+        if (!amount || amount <= 0 || !startDateStr || !endDateStr) {
+            alert("Mohon isi Jumlah per Pembelian, Tanggal Mulai, dan Tanggal Akhir dengan benar.");
             return;
         }
 
-        if (!this.btcPrice || this.btcPrice === 0) {
-            alert("Harga BTC belum termuat. Coba klik 'Refresh Price' dulu.");
+        const startDate = new Date(startDateStr);
+        const endDate = new Date(endDateStr);
+
+        if (startDate >= endDate) {
+            alert("Tanggal Mulai harus lebih awal dari Tanggal Akhir.");
+            return;
+        }
+        if (!this.btcPrice) {
+            alert("Harga BTC live belum termuat. Klik 'Refresh Live Price' dulu.");
             return;
         }
 
-        // Konversi input ke USD dulu (kalkulasi internal selalu dalam USD)
-        let monthlyUSD = monthlyRaw;
-        if (this.currency === "IDR" && this.exchangeRate) {
-            monthlyUSD = monthlyRaw / this.exchangeRate;
+        const purchaseDates = [];
+        let cursor = new Date(startDate);
+        while (cursor <= endDate) {
+            purchaseDates.push(new Date(cursor));
+            if (frequency === "daily") cursor.setDate(cursor.getDate() + 1);
+            else if (frequency === "weekly") cursor.setDate(cursor.getDate() + 7);
+            else cursor.setMonth(cursor.getMonth() + 1);
         }
 
-        const totalMonths = years * 12;
-        const totalInvestedUSD = monthlyUSD * totalMonths;
+        if (purchaseDates.length === 0) {
+            alert("Tidak ada tanggal pembelian dalam rentang ini.");
+            return;
+        }
+        if (purchaseDates.length > 800) {
+            alert("Rentang tanggal dan frekuensi ini menghasilkan terlalu banyak pembelian (" + purchaseDates.length + "x). Perpendek rentang atau pilih frekuensi lebih jarang.");
+            return;
+        }
 
-        // Catatan: memakai harga BTC SAAT INI sebagai estimasi tetap tiap bulan
-        // (simplifikasi, bukan data historis harga).
-        const btcAccumulated = totalInvestedUSD / this.btcPrice;
-        const currentValueUSD = btcAccumulated * this.btcPrice;
-        const averageBuyPriceUSD = this.btcPrice;
-        const profitLossUSD = currentValueUSD - totalInvestedUSD;
-        const profitPercent = (profitLossUSD / totalInvestedUSD) * 100;
+        const btn = document.getElementById("dcaCalcBtn");
+        const originalBtnText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = "Memuat data historis...";
 
-        const symbol = this.currency === "USD" ? "$" : "Rp";
-        const toDisplay = (usdVal) => {
-            if (this.currency === "IDR" && this.exchangeRate) {
-                return symbol + Math.round(usdVal * this.exchangeRate).toLocaleString("id-ID");
+        const fromUnix = Math.floor(startDate.getTime() / 1000);
+        const toUnix = Math.floor(endDate.getTime() / 1000) + 86400;
+
+        Promise.all([
+            fetch("https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=" + fromUnix + "&to=" + toUnix).then(r => r.json()),
+            fetch("https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=idr&from=" + fromUnix + "&to=" + toUnix).then(r => r.json())
+        ]).then(([usdData, idrData]) => {
+            const usdPrices = usdData.prices;
+            const idrPrices = idrData.prices;
+
+            if (!usdPrices || usdPrices.length === 0) {
+                throw new Error("no data");
             }
-            return symbol + usdVal.toLocaleString("en-US", { maximumFractionDigits: 2 });
-        };
 
-        document.getElementById("totalInvested").textContent = toDisplay(totalInvestedUSD);
-        document.getElementById("btcAccumulated").textContent = btcAccumulated.toFixed(8) + " BTC";
-        document.getElementById("currentValue").textContent = toDisplay(currentValueUSD);
-        document.getElementById("averageBuy").textContent = toDisplay(averageBuyPriceUSD);
+            const findClosestPrice = (priceArray, targetDate) => {
+                const targetTime = targetDate.getTime();
+                let closest = priceArray[0];
+                let minDiff = Math.abs(priceArray[0][0] - targetTime);
+                for (let i = 1; i < priceArray.length; i++) {
+                    const diff = Math.abs(priceArray[i][0] - targetTime);
+                    if (diff < minDiff) {
+                        minDiff = diff;
+                        closest = priceArray[i];
+                    }
+                }
+                return closest[1];
+            };
 
-        const absProfitDisplay = this.currency === "IDR" && this.exchangeRate
-            ? Math.round(Math.abs(profitLossUSD) * this.exchangeRate).toLocaleString("id-ID")
-            : Math.abs(profitLossUSD).toLocaleString("en-US", { maximumFractionDigits: 2 });
+            let totalBTC = 0;
+            let totalSpentUSD = 0;
+            let totalSpentIDR = 0;
 
-        document.getElementById("profitLoss").textContent = (profitLossUSD >= 0 ? "+" : "-") + symbol + absProfitDisplay;
-        document.getElementById("profitPercent").textContent = (profitPercent >= 0 ? "+" : "") + profitPercent.toFixed(2) + "%";
+            purchaseDates.forEach(date => {
+                const priceUsdAtDate = findClosestPrice(usdPrices, date);
+                const priceIdrAtDate = findClosestPrice(idrPrices, date);
 
-        resultCard.style.display = "block";
+                const btcBought = currency === "usd" ? (amount / priceUsdAtDate) : (amount / priceIdrAtDate);
+
+                totalBTC += btcBought;
+                totalSpentUSD += btcBought * priceUsdAtDate;
+                totalSpentIDR += btcBought * priceIdrAtDate;
+            });
+
+            const avgPriceUSD = totalSpentUSD / totalBTC;
+            const avgPriceIDR = totalSpentIDR / totalBTC;
+            const currentValueUSD = totalBTC * this.btcPrice;
+            const currentValueIDR = this.exchangeRate ? totalBTC * this.btcPrice * this.exchangeRate : 0;
+            const profitLossUSD = currentValueUSD - totalSpentUSD;
+            const profitLossIDR = currentValueIDR - totalSpentIDR;
+            const profitPercent = (profitLossUSD / totalSpentUSD) * 100;
+
+            document.getElementById("dcaPurchaseCount").textContent = purchaseDates.length + "x pembelian";
+            document.getElementById("totalInvested").textContent =
+                "$" + totalSpentUSD.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " / Rp" + Math.round(totalSpentIDR).toLocaleString("id-ID");
+            document.getElementById("btcAccumulated").textContent = totalBTC.toFixed(8) + " BTC";
+            document.getElementById("averageBuy").textContent =
+                "$" + avgPriceUSD.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " / Rp" + Math.round(avgPriceIDR).toLocaleString("id-ID");
+            document.getElementById("currentValue").textContent =
+                "$" + currentValueUSD.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " / Rp" + Math.round(currentValueIDR).toLocaleString("id-ID");
+            document.getElementById("profitLoss").textContent =
+                (profitLossUSD >= 0 ? "+$" : "-$") + Math.abs(profitLossUSD).toLocaleString("en-US", { maximumFractionDigits: 2 }) +
+                " / " + (profitLossIDR >= 0 ? "+Rp" : "-Rp") + Math.abs(Math.round(profitLossIDR)).toLocaleString("id-ID");
+            document.getElementById("profitPercent").textContent = (profitPercent >= 0 ? "+" : "") + profitPercent.toFixed(2) + "%";
+
+            document.getElementById("dcaResult").style.display = "block";
+        }).catch(() => {
+            alert("Gagal memuat data historis. Coba perpendek rentang tanggal, atau coba lagi beberapa saat.");
+        }).finally(() => {
+            btn.disabled = false;
+            btn.textContent = originalBtnText;
+        });
     },
 
-    //------------------------------------------------
-    // COPY RESULT
-    //------------------------------------------------
-
     copyResult() {
+        const purchaseCount = document.getElementById("dcaPurchaseCount").textContent;
         const totalInvested = document.getElementById("totalInvested").textContent;
         const btcAccumulated = document.getElementById("btcAccumulated").textContent;
         const currentValue = document.getElementById("currentValue").textContent;
@@ -336,15 +373,9 @@ const BitcoinTools = {
         const profitLoss = document.getElementById("profitLoss").textContent;
         const profitPercent = document.getElementById("profitPercent").textContent;
 
-        const text =
-            "DCA Calculator Result\n" +
-            "----------------------\n" +
-            "Total Invested: " + totalInvested + "\n" +
-            "BTC Accumulated: " + btcAccumulated + "\n" +
-            "Current Value: " + currentValue + "\n" +
-            "Average Buy Price: " + averageBuy + "\n" +
-            "Profit/Loss: " + profitLoss + "\n" +
-            "Profit (%): " + profitPercent;
+        const text = "DCA Simulator Result\n----------------------\nJumlah Pembelian: " + purchaseCount +
+            "\nTotal Invest: " + totalInvested + "\nBTC Terkumpul: " + btcAccumulated + "\nAverage Buy: " + averageBuy +
+            "\nNilai Sekarang: " + currentValue + "\nProfit/Loss: " + profitLoss + "\nProfit (%): " + profitPercent;
 
         navigator.clipboard.writeText(text).then(() => {
             alert("Hasil berhasil disalin ke clipboard!");
@@ -354,92 +385,75 @@ const BitcoinTools = {
     },
 
     //------------------------------------------------
-    // BTC <-> SATOSHI CONVERTER
+    // CURRENCY CONVERTER (BTC / SAT / USD / IDR gabungan)
     //------------------------------------------------
 
-    convertFromBTC() {
-        const btcInput = document.getElementById("satBtcInput");
-        const satInput = document.getElementById("satSatInput");
-        const btcVal = parseFloat(btcInput.value);
-        if (isNaN(btcVal)) {
-            satInput.value = "";
-            return;
-        }
-        satInput.value = Math.round(btcVal * 100000000);
-    },
+    convertCurrency(source) {
+        if (this.isConverting) return;
+        this.isConverting = true;
 
-    convertFromSat() {
-        const btcInput = document.getElementById("satBtcInput");
-        const satInput = document.getElementById("satSatInput");
-        const satVal = parseFloat(satInput.value);
-        if (isNaN(satVal)) {
-            btcInput.value = "";
-            return;
-        }
-        btcInput.value = (satVal / 100000000).toFixed(8);
-    },
+        const btcInput = document.getElementById("convBtcInput");
+        const satInput = document.getElementById("convSatInput");
+        const usdInput = document.getElementById("convUsdInput");
+        const idrInput = document.getElementById("convIdrInput");
 
-    //------------------------------------------------
-    // PRICE CONVERTER (BTC / USD / IDR)
-    //------------------------------------------------
-
-    convertPrice(source) {
-        if (!this.btcPrice || this.btcPrice === 0) {
-            alert("Harga BTC belum termuat. Buka tool 'DCA Calculator' dan klik 'Refresh Price' dulu.");
-            return;
-        }
-
-        const idrRate = this.exchangeRate || 0;
-        const btcInput = document.getElementById("priceBtcInput");
-        const usdInput = document.getElementById("priceUsdInput");
-        const idrInput = document.getElementById("priceIdrInput");
+        let btc = null;
 
         if (source === "btc") {
-            const btc = parseFloat(btcInput.value);
-            if (isNaN(btc)) return;
-            const usd = btc * this.btcPrice;
-            usdInput.value = usd.toFixed(2);
-            if (idrRate) idrInput.value = Math.round(usd * idrRate);
+            btc = parseFloat(btcInput.value);
+        } else if (source === "sat") {
+            const sat = parseFloat(satInput.value);
+            if (!isNaN(sat)) btc = sat / 100000000;
         } else if (source === "usd") {
             const usd = parseFloat(usdInput.value);
-            if (isNaN(usd)) return;
-            const btc = usd / this.btcPrice;
-            btcInput.value = btc.toFixed(8);
-            if (idrRate) idrInput.value = Math.round(usd * idrRate);
+            if (!isNaN(usd) && this.btcPrice) btc = usd / this.btcPrice;
         } else if (source === "idr") {
-            if (!idrRate) return;
             const idr = parseFloat(idrInput.value);
-            if (isNaN(idr)) return;
-            const usd = idr / idrRate;
-            btcInput.value = (usd / this.btcPrice).toFixed(8);
-            usdInput.value = usd.toFixed(2);
+            if (!isNaN(idr) && this.btcPrice && this.exchangeRate) {
+                btc = idr / (this.btcPrice * this.exchangeRate);
+            }
         }
-    },
 
-    //------------------------------------------------
-    // LIGHTNING FEE ESTIMATOR
-    //------------------------------------------------
-
-    calculateLightningFee() {
-        const satInput = document.getElementById("feeSatInput");
-        const sat = parseFloat(satInput.value);
-
-        if (!sat || sat <= 0) {
-            alert("Masukkan jumlah sat yang valid.");
+        if (btc === null || isNaN(btc)) {
+            this.isConverting = false;
             return;
         }
 
-        const baseFee = 1;
-        const feeRatePercent = 0.05;
+        if (source !== "btc") btcInput.value = btc.toFixed(8);
+        if (source !== "sat") satInput.value = Math.round(btc * 100000000);
+        if (source !== "usd" && this.btcPrice) usdInput.value = (btc * this.btcPrice).toFixed(2);
+        if (source !== "idr" && this.btcPrice && this.exchangeRate) {
+            idrInput.value = Math.round(btc * this.btcPrice * this.exchangeRate);
+        }
 
-        const rateFee = sat * (feeRatePercent / 100);
-        const total = baseFee + rateFee;
+        this.isConverting = false;
+    },
 
-        document.getElementById("feeBase").textContent = baseFee + " sat";
-        document.getElementById("feeRate").textContent = rateFee.toFixed(2) + " sat";
-        document.getElementById("feeTotal").textContent = total.toFixed(2) + " sat";
+    //------------------------------------------------
+    // CHANNEL CAPACITY CALCULATOR (Lightning)
+    //------------------------------------------------
 
-        document.getElementById("feeResult").style.display = "block";
+    calculateChannelCapacity() {
+        const total = parseFloat(document.getElementById("channelTotal").value);
+        const local = parseFloat(document.getElementById("channelLocal").value);
+
+        if (!total || total <= 0 || isNaN(local) || local < 0 || local > total) {
+            alert("Pastikan Local Balance tidak melebihi Total Kapasitas, dan kedua angka valid.");
+            return;
+        }
+
+        const remote = total - local;
+        const localPercent = (local / total) * 100;
+
+        const barLocal = document.getElementById("channelBarLocal");
+        const barRemote = document.getElementById("channelBarRemote");
+        if (barLocal) barLocal.style.width = localPercent + "%";
+        if (barRemote) barRemote.style.width = (100 - localPercent) + "%";
+
+        document.getElementById("channelOutbound").textContent = local.toLocaleString("en-US") + " sat";
+        document.getElementById("channelInbound").textContent = remote.toLocaleString("en-US") + " sat";
+
+        document.getElementById("channelResult").style.display = "block";
     },
 
     //------------------------------------------------
@@ -485,7 +499,7 @@ const BitcoinTools = {
         const yourHashrateHs = hashrateTH * 1e12;
         const share = yourHashrateHs / this.networkHashrateHs;
         const blocksPerDay = 144;
-        const blockReward = 3.125; // reward per block pasca-halving 2024
+        const blockReward = 3.125;
 
         let dailyBTC = share * blocksPerDay * blockReward;
         dailyBTC = dailyBTC * (1 - poolFee / 100);
@@ -495,10 +509,13 @@ const BitcoinTools = {
         const dailyCostUSD = dailyKWh * elecCost;
         const dailyProfitUSD = dailyRevenueUSD - dailyCostUSD;
 
+        const idrRate = this.exchangeRate || 0;
+        const fmt = (usd) => "$" + usd.toFixed(2) + (idrRate ? " / Rp" + Math.round(usd * idrRate).toLocaleString("id-ID") : "");
+
         document.getElementById("miningBTC").textContent = dailyBTC.toFixed(8) + " BTC";
-        document.getElementById("miningRevenue").textContent = "$" + dailyRevenueUSD.toFixed(2);
-        document.getElementById("miningCost").textContent = "$" + dailyCostUSD.toFixed(2);
-        document.getElementById("miningProfit").textContent = (dailyProfitUSD >= 0 ? "+$" : "-$") + Math.abs(dailyProfitUSD).toFixed(2);
+        document.getElementById("miningRevenue").textContent = fmt(dailyRevenueUSD);
+        document.getElementById("miningCost").textContent = fmt(dailyCostUSD);
+        document.getElementById("miningProfit").textContent = (dailyProfitUSD >= 0 ? "+" : "-") + fmt(Math.abs(dailyProfitUSD));
 
         document.getElementById("miningResult").style.display = "block";
     },
@@ -532,18 +549,19 @@ const BitcoinTools = {
         const vBytes = 10.5 + (inputs * 68) + (outputs * 31);
         const feeSats = vBytes * feeRate;
         const feeUsd = this.btcPrice ? (feeSats / 1e8) * this.btcPrice : null;
+        const feeIdr = (feeUsd !== null && this.exchangeRate) ? feeUsd * this.exchangeRate : null;
 
         document.getElementById("utxoSize").textContent = vBytes.toFixed(1) + " vBytes";
         document.getElementById("utxoFeeSat").textContent = Math.round(feeSats) + " sat";
         document.getElementById("utxoFeeUsd").textContent = feeUsd !== null
-            ? "$" + feeUsd.toFixed(4)
+            ? "$" + feeUsd.toFixed(4) + (feeIdr !== null ? " / Rp" + Math.round(feeIdr).toLocaleString("id-ID") : "")
             : "Refresh price dulu di DCA Calculator";
 
         document.getElementById("utxoResult").style.display = "block";
     },
 
     //------------------------------------------------
-    // AVERAGE BUY CALCULATOR
+    // AVERAGE BUY CALCULATOR (Opsi A: harga historis otomatis)
     //------------------------------------------------
 
     addAvgRow() {
@@ -551,49 +569,272 @@ const BitcoinTools = {
         const row = document.createElement("div");
         row.className = "avg-buy-row";
         row.innerHTML =
-            '<div class="input-box"><span>$</span><input type="number" class="avgAmountUSD" placeholder="Amount Spent"></div>' +
-            '<div class="input-box"><span>@</span><input type="number" class="avgPriceAtBuy" placeholder="BTC Price saat beli"></div>';
+            '<input type="date" class="avgDate">' +
+            '<div class="input-box">' +
+            '<select class="avgCurrency"><option value="usd">$</option><option value="idr">Rp</option></select>' +
+            '<input type="number" class="avgAmount" placeholder="Jumlah dibelanjakan">' +
+            '</div>' +
+            '<p class="avgFetchedPrice">Pilih tanggal untuk memuat harga</p>';
         container.appendChild(row);
     },
 
-    calculateAverageBuy() {
-        const amountInputs = document.querySelectorAll(".avgAmountUSD");
-        const priceInputs = document.querySelectorAll(".avgPriceAtBuy");
+    async fetchHistoricalPrice(dateInputValue) {
+        const parts = dateInputValue.split("-");
+        const year = parts[0];
+        const month = parts[1];
+        const day = parts[2];
+        const formattedDate = day + "-" + month + "-" + year;
 
-        let totalSpent = 0;
-        let totalBTC = 0;
-
-        for (let i = 0; i < amountInputs.length; i++) {
-            const amount = parseFloat(amountInputs[i].value);
-            const price = parseFloat(priceInputs[i].value);
-            if (amount > 0 && price > 0) {
-                totalSpent += amount;
-                totalBTC += amount / price;
-            }
+        if (this.historicalCache[formattedDate]) {
+            return this.historicalCache[formattedDate];
         }
 
-        if (totalBTC === 0) {
-            alert("Isi minimal 1 baris transaksi dengan angka yang valid.");
+        const res = await fetch("https://api.coingecko.com/api/v3/coins/bitcoin/history?date=" + formattedDate);
+        const data = await res.json();
+        const result = { usd: data.market_data.current_price.usd, idr: data.market_data.current_price.idr };
+        this.historicalCache[formattedDate] = result;
+        return result;
+    },
+
+    async onAvgDateChange(rowEl) {
+        const dateInput = rowEl.querySelector(".avgDate");
+        const priceDisplay = rowEl.querySelector(".avgFetchedPrice");
+        if (!dateInput.value) return;
+
+        priceDisplay.textContent = "Memuat harga historis...";
+        try {
+            const price = await this.fetchHistoricalPrice(dateInput.value);
+            rowEl.dataset.priceUsd = price.usd;
+            rowEl.dataset.priceIdr = price.idr;
+            priceDisplay.textContent = "Harga saat itu: $" + price.usd.toLocaleString("en-US", { maximumFractionDigits: 2 }) +
+                " / Rp" + Math.round(price.idr).toLocaleString("id-ID");
+        } catch (e) {
+            priceDisplay.textContent = "Gagal memuat harga untuk tanggal ini. Coba tanggal lain.";
+        }
+    },
+
+    calculateAverageBuy() {
+        const rows = document.querySelectorAll("#avgBuyRows .avg-buy-row");
+        let totalBTC = 0;
+        let totalSpentUSD = 0;
+        let totalSpentIDR = 0;
+        let validCount = 0;
+
+        rows.forEach(row => {
+            const amountInput = row.querySelector(".avgAmount");
+            const currencySelect = row.querySelector(".avgCurrency");
+            const amount = parseFloat(amountInput.value);
+            const currency = currencySelect.value;
+            const priceUsd = parseFloat(row.dataset.priceUsd);
+            const priceIdr = parseFloat(row.dataset.priceIdr);
+
+            if (!amount || amount <= 0 || !priceUsd || !priceIdr) return;
+
+            let btcBought;
+            if (currency === "usd") {
+                btcBought = amount / priceUsd;
+            } else {
+                btcBought = amount / priceIdr;
+            }
+
+            totalBTC += btcBought;
+            totalSpentUSD += btcBought * priceUsd;
+            totalSpentIDR += btcBought * priceIdr;
+            validCount++;
+        });
+
+        if (validCount === 0 || totalBTC === 0) {
+            alert("Isi minimal 1 baris dengan tanggal dan jumlah, pastikan harga historis sudah termuat (lihat teks di bawah tanggal).");
+            return;
+        }
+        if (!this.btcPrice) {
+            alert("Harga BTC live belum termuat. Buka DCA Calculator dan klik 'Refresh Price' dulu.");
             return;
         }
 
-        const avgPrice = totalSpent / totalBTC;
+        const avgPriceUSD = totalSpentUSD / totalBTC;
+        const avgPriceIDR = totalSpentIDR / totalBTC;
+        const currentValueUSD = totalBTC * this.btcPrice;
+        const currentValueIDR = totalBTC * this.btcPrice * this.exchangeRate;
+        const profitLossUSD = currentValueUSD - totalSpentUSD;
+        const profitLossIDR = currentValueIDR - totalSpentIDR;
+        const profitPercent = (profitLossUSD / totalSpentUSD) * 100;
 
-        document.getElementById("avgTotalSpent").textContent = "$" + totalSpent.toLocaleString("en-US", { maximumFractionDigits: 2 });
+        document.getElementById("avgTotalSpent").textContent =
+            "$" + totalSpentUSD.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " / Rp" + Math.round(totalSpentIDR).toLocaleString("id-ID");
         document.getElementById("avgTotalBTC").textContent = totalBTC.toFixed(8) + " BTC";
-        document.getElementById("avgPrice").textContent = "$" + avgPrice.toLocaleString("en-US", { maximumFractionDigits: 2 });
-
-        if (this.btcPrice) {
-            const currentValue = totalBTC * this.btcPrice;
-            const profitLoss = currentValue - totalSpent;
-            document.getElementById("avgCurrentPrice").textContent = "$" + this.btcPrice.toLocaleString("en-US", { maximumFractionDigits: 2 });
-            document.getElementById("avgProfitLoss").textContent = (profitLoss >= 0 ? "+$" : "-$") + Math.abs(profitLoss).toLocaleString("en-US", { maximumFractionDigits: 2 });
-        } else {
-            document.getElementById("avgCurrentPrice").textContent = "Refresh price dulu";
-            document.getElementById("avgProfitLoss").textContent = "-";
-        }
+        document.getElementById("avgPrice").textContent =
+            "$" + avgPriceUSD.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " / Rp" + Math.round(avgPriceIDR).toLocaleString("id-ID");
+        document.getElementById("avgCurrentPrice").textContent =
+            "$" + this.btcPrice.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " / Rp" + Math.round(this.btcPrice * this.exchangeRate).toLocaleString("id-ID");
+        document.getElementById("avgProfitLoss").textContent =
+            (profitLossUSD >= 0 ? "+$" : "-$") + Math.abs(profitLossUSD).toLocaleString("en-US", { maximumFractionDigits: 2 }) +
+            " / " + (profitLossIDR >= 0 ? "+Rp" : "-Rp") + Math.abs(Math.round(profitLossIDR)).toLocaleString("id-ID") +
+            " (" + (profitPercent >= 0 ? "+" : "") + profitPercent.toFixed(2) + "%)";
 
         document.getElementById("avgResult").style.display = "block";
+    },
+
+    //------------------------------------------------
+    // WALLET BALANCE CHECKER
+    //------------------------------------------------
+
+    loadWalletBalance() {
+        const address = document.getElementById("walletAddressInput").value.trim();
+        if (!address) {
+            alert("Masukkan alamat Bitcoin terlebih dahulu.");
+            return;
+        }
+
+        fetch("https://mempool.space/api/address/" + address)
+            .then(res => {
+                if (!res.ok) throw new Error("not found");
+                return res.json();
+            })
+            .then(addressData => {
+                const funded = addressData.chain_stats.funded_txo_sum;
+                const spent = addressData.chain_stats.spent_txo_sum;
+                const balance = funded - spent;
+                const txCount = addressData.chain_stats.tx_count;
+                const balanceBTC = balance / 1e8;
+
+                const setText = (id, text) => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = text;
+                };
+
+                setText("walletBalance", balanceBTC.toFixed(8) + " BTC");
+                setText("walletReceived", (funded / 1e8).toFixed(8) + " BTC");
+                setText("walletTxCount", txCount.toLocaleString("en-US"));
+
+                if (this.btcPrice) {
+                    const usdValue = balanceBTC * this.btcPrice;
+                    const idrValue = this.exchangeRate ? usdValue * this.exchangeRate : null;
+                    setText("walletBalanceFiat",
+                        "$" + usdValue.toLocaleString("en-US", { maximumFractionDigits: 2 }) +
+                        (idrValue !== null ? " / Rp" + Math.round(idrValue).toLocaleString("id-ID") : ""));
+                } else {
+                    setText("walletBalanceFiat", "Refresh price dulu di DCA Calculator");
+                }
+
+                const resultCard = document.getElementById("walletResult");
+                if (resultCard) resultCard.style.display = "block";
+
+                setText("walletUtxoCount", "Memuat...");
+                fetch("https://mempool.space/api/address/" + address + "/utxo")
+                    .then(res => {
+                        if (!res.ok) throw new Error("utxo fetch failed");
+                        return res.json();
+                    })
+                    .then(utxoData => {
+                        setText("walletUtxoCount", utxoData.length.toLocaleString("en-US"));
+                    })
+                    .catch(() => {
+                        setText("walletUtxoCount", "Tidak dapat dimuat (alamat terlalu aktif)");
+                    });
+            })
+            .catch(() => {
+                alert("Alamat tidak ditemukan atau gagal memuat data. Pastikan alamat valid.");
+            });
+    },
+
+    //------------------------------------------------
+    // SCAN QR ALAMAT BITCOIN (kamera)
+    //------------------------------------------------
+
+    startWalletScan() {
+        if (typeof Html5Qrcode === "undefined") {
+            alert("Fitur scan QR belum siap dimuat. Coba refresh halaman.");
+            return;
+        }
+
+        const readerDiv = document.getElementById("qrReaderWallet");
+        const closeBtn = document.getElementById("walletScanCloseBtn");
+        if (readerDiv) readerDiv.style.display = "block";
+        if (closeBtn) closeBtn.style.display = "inline-block";
+
+        this.html5QrCode = new Html5Qrcode("qrReaderWallet");
+        this.html5QrCode.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: 220 },
+            (decodedText) => {
+                let address = decodedText.trim();
+                if (address.toLowerCase().indexOf("bitcoin:") === 0) {
+                    address = address.substring(8).split("?")[0];
+                }
+                const input = document.getElementById("walletAddressInput");
+                if (input) input.value = address;
+                this.stopWalletScan();
+            },
+            () => {
+                // diabaikan — normal terjadi berkali-kali selagi kamera mencari QR code
+            }
+        ).catch(() => {
+            alert("Tidak bisa mengakses kamera. Pastikan izin kamera diaktifkan, atau masukkan alamat secara manual.");
+            if (readerDiv) readerDiv.style.display = "none";
+            if (closeBtn) closeBtn.style.display = "none";
+        });
+    },
+
+    stopWalletScan() {
+        if (this.html5QrCode) {
+            this.html5QrCode.stop().then(() => {
+                this.html5QrCode.clear();
+                const readerDiv = document.getElementById("qrReaderWallet");
+                const closeBtn = document.getElementById("walletScanCloseBtn");
+                if (readerDiv) readerDiv.style.display = "none";
+                if (closeBtn) closeBtn.style.display = "none";
+            }).catch(() => { });
+        }
+    },
+
+    //------------------------------------------------
+    // HALVING COUNTDOWN
+    //------------------------------------------------
+
+    loadHalvingData() {
+        const container = document.getElementById("halvingContainer");
+        fetch("https://mempool.space/api/blocks/tip/height")
+            .then(res => res.json())
+            .then(currentHeight => {
+                const halvingInterval = 210000;
+                const nextHalvingBlock = Math.ceil((currentHeight + 1) / halvingInterval) * halvingInterval;
+                const blocksRemaining = nextHalvingBlock - currentHeight;
+                const minutesRemaining = blocksRemaining * 10;
+                const daysRemaining = (minutesRemaining / 60 / 24).toFixed(1);
+
+                if (container) {
+                    container.innerHTML =
+                        '<div class="result-row"><span>Block Saat Ini</span><strong>' + currentHeight.toLocaleString("en-US") + '</strong></div>' +
+                        '<div class="result-row"><span>Block Halving Berikutnya</span><strong>' + nextHalvingBlock.toLocaleString("en-US") + '</strong></div>' +
+                        '<div class="result-row"><span>Sisa Block</span><strong>' + blocksRemaining.toLocaleString("en-US") + '</strong></div>' +
+                        '<div class="result-row"><span>Estimasi Waktu Tersisa</span><strong>~' + daysRemaining + ' hari</strong></div>' +
+                        '<p style="font-size:12px;color:#888;margin-top:10px;">*Estimasi berdasarkan rata-rata waktu blok 10 menit, bisa sedikit berbeda dari waktu aktual.</p>';
+                }
+            })
+            .catch(() => {
+                if (container) container.innerHTML = '<p style="color:#c2410c;">Gagal memuat data. Coba lagi nanti.</p>';
+            });
+    },
+
+    //------------------------------------------------
+    // BITCOIN GLOSSARY
+    //------------------------------------------------
+
+    renderGlossary(filter) {
+        const container = document.getElementById("glossaryList");
+        if (!container) return;
+        const filterLower = (filter || "").toLowerCase();
+        const filtered = this.glossaryData.filter(item => item.term.toLowerCase().includes(filterLower));
+
+        if (filtered.length === 0) {
+            container.innerHTML = '<p style="color:#888;">Istilah tidak ditemukan.</p>';
+            return;
+        }
+
+        container.innerHTML = filtered.map(item =>
+            '<div class="glossary-item"><strong>' + item.term + '</strong><p>' + item.def + '</p></div>'
+        ).join("");
     },
 
     //------------------------------------------------
@@ -601,7 +842,6 @@ const BitcoinTools = {
     //------------------------------------------------
 
     startQuiz() {
-        // Acak urutan seluruh 50 soal, lalu ambil 15 soal pertama untuk sesi ini
         const shuffled = [...this.quizData].sort(() => Math.random() - 0.5);
         this.quizPlaying = shuffled.slice(0, this.quizQuestionCount);
         this.quizIndex = 0;
@@ -613,7 +853,6 @@ const BitcoinTools = {
         const container = document.getElementById("quizContainer");
         if (!container) return;
 
-        // Kalau belum ada sesi berjalan, tampilkan tombol mulai
         if (this.quizPlaying.length === 0) {
             container.innerHTML =
                 '<p style="color:#888;">Kuis berisi ' + this.quizQuestionCount + ' soal acak dari total 50 soal materi Bitcoin.</p>' +
@@ -625,7 +864,7 @@ const BitcoinTools = {
             const total = this.quizPlaying.length;
             const percent = (this.quizScore / total) * 100;
             const resultMsg = percent >= 70
-                ? "Solid! Anda paham dasar-dasar Bitcoin dengan baik 🔥"
+                ? "Solid! Anda paham dasar-dasar Bitcoin dengan baik \u{1F525}"
                 : "Kembali Mempelajari Materi yang ada agar menjadi Bitcoiner";
 
             container.innerHTML =
@@ -644,8 +883,7 @@ const BitcoinTools = {
 
         container.innerHTML =
             '<p style="color:#888;font-size:13px;">Soal ' + (this.quizIndex + 1) + ' dari ' + this.quizPlaying.length + '</p>' +
-            '<h3 style="margin-bottom:20px;">' + current.q + '</h3>' +
-            optionsHTML;
+            '<h3 style="margin-bottom:20px;">' + current.q + '</h3>' + optionsHTML;
     },
 
     answerQuiz(selectedIndex) {

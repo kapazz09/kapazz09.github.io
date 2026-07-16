@@ -127,9 +127,22 @@ function showTool(tool, element) {
 }
 
 // ==================================================
+// ABOUT ME: BACA SELENGKAPNYA TOGGLE
+// ==================================================
+function toggleAboutMore(btn) {
+    const extra = document.getElementById('aboutExtra');
+    const isHidden = extra.style.display === 'none' || extra.style.display === '';
+    extra.style.display = isHidden ? 'block' : 'none';
+    btn.textContent = isHidden ? 'Tutup' : 'Baca Selengkapnya';
+}
+
+// ==================================================
 // INISIALISASI SAAT HALAMAN SELESAI DIMUAT
 // ==================================================
 document.addEventListener('DOMContentLoaded', () => {
+    const extra = document.getElementById('aboutExtra');
+    if (extra) extra.style.display = 'none';
+
     if (window.lucide) {
         lucide.createIcons();
     }

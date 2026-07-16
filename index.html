@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="description"
@@ -71,33 +72,47 @@
 
     <div class="about fade-in">
         <h2>About Me</h2>
-        <p>Hello, i'm Pazkah.. Saya bekerja di bidang pelayanan kesehatan, dan perjalanan saya mengenal Bitcoin dimulai
-            dari cara yang tidak terduga: ditipu.</p>
+        <p>Hello, saya Pazkah.. Saya bekerja di bidang pelayanan kesehatan, dan perjalanan saya mengenal Bitcoin dimulai
+            dari cara yang tidak terduga: ditipu 😤🤬.</p>
         <p>Semua berawal dari obrolan di Telegram. Seseorang menghubungi saya, kami mengobrol beberapa hari, sampai
             akhirnya dia meminta saya mengerjakan sebuah tugas memakai akunnya di salah satu platform. Saya kerjakan
             dengan serius, dan dalam dua hari tugas itu selesai — akun itu mendapat komisi sebesar 2.000 USDT.</p>
-        <p>Saat itu saya bahkan tidak tahu apa itu crypto, apalagi USDT. Saya cuma melapor ke orang itu: "Komisi sudah
-            cair." Dia terdengar sangat senang di telepon. Beberapa jam kemudian, akun itu sudah tidak bisa saya akses —
-            password-nya sudah diganti.</p>
-        <p>Rasa penasaran itulah titik baliknya. Saya mulai mencari tahu apa sebenarnya USDT itu, dan menemukan bahwa
-            itu adalah stablecoin yang nilainya dipatok 1:1 ke dolar Amerika. Begitu saya paham, penyesalan datang —
-            andai saya tahu lebih cepat, mungkin 2.000 USDT itu bisa jadi milik saya.</p>
-        <p>Saya coba hubungi orang itu lagi, minta bagian saya. Dia menyuruh saya download wallet, lalu mengirim 100
-            USDT — jauh dari yang saya harapkan, tapi cukup untuk membuat saya terus menggali lebih dalam.</p>
-        <p>Dari situ saya menemukan Bitcoin — cryptocurrency pertama di dunia. Saat itu harganya sekitar $117.000, atau
-            sekitar 1,9 miliar rupiah per koin. Saya terheran-heran: bagaimana bisa 1 koin digital semahal itu?</p>
-        <p>Dari rasa heran itu, saya mulai belajar dari nol — sejarah dan filosofi Bitcoin, cara kerja Proof of Work,
-            keamanan lewat self-custody, UTXO dan fee transaksi, privasi, Lightning Network, hingga mining dan on-chain
-            analysis. Semakin dalam saya pelajari, semakin saya yakin dan percaya — barulah setelah cukup paham, saya
-            mulai DCA (Dollar Cost Averaging) sedikit demi sedikit, dan terus konsisten sampai hari ini.</p>
-        <p>Saat ini saya menyimpan Bitcoin menggunakan hardware wallet, dengan sistem backup seed phrase dan passphrase
-            berbahan logam yang disimpan di beberapa lokasi terpisah, serta telah melakukan simulasi recovery beberapa
-            kali untuk memastikan aset saya tetap aman.</p>
-        <p>Saya percaya bahwa memahami cara kerja Bitcoin jauh lebih penting daripada sekadar membeli dan menyimpannya.
-            Karena itu saya terus belajar, bereksperimen, dan membangun berbagai proyek kecil — termasuk situs ini —
-            untuk memperdalam pemahaman saya sekaligus berbagi ke orang lain.</p>
-        <p>Jika perjalanan belajar ini bermanfaat atau menginspirasi, dukungan Anda akan sangat berarti untuk membantu
-            saya terus belajar, membuat konten edukasi, dan membangun tools yang berguna bagi komunitas Bitcoin.</p>
+        <div class="about-extra" id="aboutExtra">
+            <p>Saat itu saya bahkan tidak tahu apa itu crypto, apalagi USDT. Saya cuma melapor ke orang itu: "Komisi
+                sudah
+                cair." Dia terdengar sangat senang di telepon. Beberapa jam kemudian, akun itu sudah tidak bisa saya
+                akses —
+                password-nya sudah diganti.</p>
+            <p>Rasa penasaran itulah titik baliknya. Saya mulai mencari tahu apa sebenarnya USDT itu, dan menemukan
+                bahwa
+                itu adalah stablecoin yang nilainya dipatok 1:1 ke dolar Amerika. Begitu saya paham, penyesalan datang —
+                andai saya tahu lebih cepat, mungkin 2.000 USDT itu bisa jadi milik saya.</p>
+            <p>Saya coba hubungi orang itu lagi, minta bagian saya. Dia menyuruh saya download wallet, lalu mengirim 100
+                USDT — jauh dari yang saya harapkan, tapi cukup untuk membuat saya terus menggali lebih dalam.</p>
+            <p>Dari situ saya menemukan Bitcoin — cryptocurrency pertama di dunia. Saat itu harganya sekitar $117.000,
+                atau
+                sekitar 1,9 miliar rupiah per koin. Saya terheran-heran: bagaimana bisa 1 koin digital semahal itu?</p>
+            <p>Dari rasa heran itu, saya mulai belajar dari nol — sejarah dan filosofi Bitcoin, cara kerja Proof of
+                Work,
+                keamanan lewat self-custody, UTXO dan fee transaksi, privasi, Lightning Network, hingga mining dan
+                on-chain
+                analysis. Semakin dalam saya pelajari, semakin saya yakin dan percaya — barulah setelah cukup paham,
+                saya
+                mulai DCA (Dollar Cost Averaging) sedikit demi sedikit, dan terus konsisten sampai hari ini.</p>
+            <p>Saat ini saya menyimpan Bitcoin menggunakan hardware wallet, dengan sistem backup seed phrase dan
+                passphrase
+                berbahan logam yang disimpan di beberapa lokasi terpisah, serta telah melakukan simulasi recovery
+                beberapa
+                kali untuk memastikan aset saya tetap aman.</p>
+            <p>Saya percaya bahwa memahami cara kerja Bitcoin jauh lebih penting daripada sekadar membeli dan
+                menyimpannya.
+                Karena itu saya terus belajar, bereksperimen, dan membangun berbagai proyek kecil — termasuk situs ini —
+                untuk memperdalam pemahaman saya sekaligus berbagi ke orang lain.</p>
+            <p>Jika perjalanan belajar ini bermanfaat atau menginspirasi, dukungan Anda akan sangat berarti untuk
+                membantu
+                saya terus belajar, membuat konten edukasi, dan membangun tools yang berguna bagi komunitas Bitcoin.</p>
+        </div>
+        <button class="read-more-btn" onclick="toggleAboutMore(this)">Baca Selengkapnya</button>
     </div>
 
     <div class="materials-section slide-up">
@@ -125,24 +140,34 @@
 
         <div class="toolkit-icons">
 
+            <div class="tool-icon" onclick="showTool('quiz',this)">
+                <i data-lucide="brain"></i>
+                <span>Bitcoin Quiz</span>
+            </div>
+
+            <div class="tool-icon" onclick="showTool('glossary',this)">
+                <i data-lucide="book-open"></i>
+                <span>Glossary</span>
+            </div>
+
             <div class="tool-icon" onclick="showTool('dca',this)">
                 <i data-lucide="chart-column-increasing"></i>
                 <span>DCA Calculator</span>
             </div>
 
-            <div class="tool-icon" onclick="showTool('sat',this)">
+            <div class="tool-icon" onclick="showTool('converter',this)">
                 <i data-lucide="repeat"></i>
-                <span>BTC ↔ SAT</span>
+                <span>Currency Converter</span>
             </div>
 
-            <div class="tool-icon" onclick="showTool('price',this)">
-                <i data-lucide="badge-dollar-sign"></i>
-                <span>Price Converter</span>
+            <div class="tool-icon" onclick="showTool('average',this)">
+                <i data-lucide="chart-line"></i>
+                <span>Average Buy</span>
             </div>
 
-            <div class="tool-icon" onclick="showTool('fee',this)">
-                <i data-lucide="zap"></i>
-                <span>Lightning Fee</span>
+            <div class="tool-icon" onclick="showTool('halving',this)">
+                <i data-lucide="hourglass"></i>
+                <span>Halving Countdown</span>
             </div>
 
             <div class="tool-icon" onclick="showTool('mining',this)">
@@ -155,14 +180,14 @@
                 <span>UTXO Calculator</span>
             </div>
 
-            <div class="tool-icon" onclick="showTool('average',this)">
-                <i data-lucide="chart-line"></i>
-                <span>Average Buy</span>
+            <div class="tool-icon" onclick="showTool('channel',this)">
+                <i data-lucide="zap"></i>
+                <span>Channel Capacity</span>
             </div>
 
-            <div class="tool-icon" onclick="showTool('quiz',this)">
-                <i data-lucide="brain"></i>
-                <span>Bitcoin Quiz</span>
+            <div class="tool-icon" onclick="showTool('wallet',this)">
+                <i data-lucide="search"></i>
+                <span>Wallet Checker</span>
             </div>
 
         </div>
@@ -177,65 +202,123 @@
                 </div>
             </div>
 
+            <div id="tool-quiz" class="tool-panel">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <i data-lucide="brain"></i>
+                        <div>
+                            <h3>Bitcoin Quiz</h3>
+                            <p>Uji pemahaman dasar Anda tentang Bitcoin. 15 soal acak dari total 50 soal.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-content">
+                    <div class="dca-card" id="quizContainer"></div>
+                </div>
+            </div>
+
+            <div id="tool-glossary" class="tool-panel">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <i data-lucide="book-open"></i>
+                        <div>
+                            <h3>Bitcoin Glossary</h3>
+                            <p>Kamus istilah dasar seputar Bitcoin.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-content">
+                    <div class="dca-card">
+                        <div class="input-box">
+                            <span>🔍</span>
+                            <input type="text" id="glossarySearch" placeholder="Cari istilah...">
+                        </div>
+                    </div>
+                    <div id="glossaryList" class="glossary-list"></div>
+                </div>
+            </div>
+
             <div id="tool-dca" class="tool-panel">
                 <div class="tool-header">
                     <div class="tool-title">
                         <i data-lucide="chart-column-increasing"></i>
                         <div>
                             <h3>DCA Calculator</h3>
-                            <p>Build Bitcoin gradually using Dollar Cost Averaging.</p>
+                            <p>Simulasi DCA historis — lihat hasilnya jika Anda menabung rutin di periode tertentu.</p>
                         </div>
                     </div>
                 </div>
                 <div class="tool-content">
                     <div class="dca-card">
                         <div class="dca-field">
-                            <label>Monthly Investment</label>
-                            <div class="input-box">
-                                <span id="monthlySymbol">$</span>
-                                <input type="number" id="dcaMonthly" placeholder="100" value="100">
-                            </div>
-                        </div>
-                        <div class="dca-field">
-                            <label>Current BTC Price</label>
+                            <label>Harga BTC Live</label>
                             <div class="dca-toolbar">
-                                <button id="currencyBtn" class="tool-btn">USD</button>
-                                <button id="refreshPriceBtn" class="tool-btn">Refresh Price</button>
+                                <button id="refreshPriceBtn" class="tool-btn">🔄 Refresh Live Price</button>
                             </div>
+                            <p id="dcaLivePriceDisplay" style="font-size:14px;color:#888;margin-top:6px;">Memuat...</p>
+                        </div>
+                        <div class="dca-field">
+                            <label>Jumlah per Pembelian</label>
                             <div class="input-box">
-                                <span id="priceSymbol">$</span>
-                                <input type="number" id="btcPrice" readonly>
+                                <select id="dcaCurrencySelect">
+                                    <option value="usd">$</option>
+                                    <option value="idr">Rp</option>
+                                </select>
+                                <input type="number" id="dcaAmount" placeholder="10" value="10">
                             </div>
                         </div>
                         <div class="dca-field">
-                            <label>Investment Period (Years)</label>
+                            <label>Frekuensi</label>
                             <div class="input-box">
-                                <span>🗓</span>
-                                <input type="number" id="dcaYears" value="5">
+                                <span>🔁</span>
+                                <select id="dcaFrequency">
+                                    <option value="daily">Harian</option>
+                                    <option value="weekly">Mingguan</option>
+                                    <option value="monthly" selected>Bulanan</option>
+                                </select>
                             </div>
                         </div>
-                        <button class="calculate-btn">Calculate</button>
+                        <div class="dca-field">
+                            <label>Tanggal Mulai</label>
+                            <div class="input-box">
+                                <span>📅</span>
+                                <input type="date" id="dcaStartDate">
+                            </div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Tanggal Akhir</label>
+                            <div class="input-box">
+                                <span>📅</span>
+                                <input type="date" id="dcaEndDate">
+                            </div>
+                        </div>
+                        <button class="calculate-btn" id="dcaCalcBtn">Simulasikan</button>
                     </div>
                     <div class="result-card" id="dcaResult" style="display:none;">
-                        <h3>Result</h3>
-                        <div class="result-row"><span>Total Invested</span><strong id="totalInvested"></strong></div>
-                        <div class="result-row"><span>BTC Accumulated</span><strong id="btcAccumulated"></strong></div>
-                        <div class="result-row"><span>Current Value</span><strong id="currentValue"></strong></div>
-                        <div class="result-row"><span>Average Buy Price</span><strong id="averageBuy"></strong></div>
+                        <h3>Hasil Simulasi</h3>
+                        <div class="result-row"><span>Jumlah Pembelian</span><strong id="dcaPurchaseCount"></strong>
+                        </div>
+                        <div class="result-row"><span>Total Invest</span><strong id="totalInvested"></strong></div>
+                        <div class="result-row"><span>Total BTC Terkumpul</span><strong id="btcAccumulated"></strong>
+                        </div>
+                        <div class="result-row"><span>Average Buy</span><strong id="averageBuy"></strong></div>
+                        <div class="result-row"><span>Nilai Sekarang</span><strong id="currentValue"></strong></div>
                         <div class="result-row"><span>Profit / Loss</span><strong id="profitLoss"></strong></div>
                         <div class="result-row"><span>Profit (%)</span><strong id="profitPercent"></strong></div>
                         <button id="copyResultBtn" class="copy-btn">Copy Result</button>
                     </div>
+                    <p style="font-size:12px;color:#888;margin-top:10px;">*Harga historis per tanggal diambil dari
+                        CoinGecko. Untuk rentang panjang, granularitas data mendekati harian.</p>
                 </div>
             </div>
 
-            <div id="tool-sat" class="tool-panel">
+            <div id="tool-converter" class="tool-panel">
                 <div class="tool-header">
                     <div class="tool-title">
                         <i data-lucide="repeat"></i>
                         <div>
-                            <h3>BTC ↔ Satoshi Converter</h3>
-                            <p>1 BTC = 100,000,000 satoshi. Isi salah satu kolom.</p>
+                            <h3>Currency Converter</h3>
+                            <p>Konversi BTC, Satoshi, USD, dan IDR — saling terhubung otomatis.</p>
                         </div>
                     </div>
                 </div>
@@ -243,207 +326,27 @@
                     <div class="dca-card">
                         <div class="dca-field">
                             <label>Bitcoin (BTC)</label>
-                            <div class="input-box">
-                                <span>₿</span>
-                                <input type="number" id="satBtcInput" placeholder="0.001" step="any">
-                            </div>
+                            <div class="input-box"><span>₿</span><input type="number" id="convBtcInput"
+                                    placeholder="0.001" step="any"></div>
                         </div>
                         <div class="dca-field">
                             <label>Satoshi (sat)</label>
-                            <div class="input-box">
-                                <span>sat</span>
-                                <input type="number" id="satSatInput" placeholder="100000" step="any">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tool-price" class="tool-panel">
-                <div class="tool-header">
-                    <div class="tool-title">
-                        <i data-lucide="badge-dollar-sign"></i>
-                        <div>
-                            <h3>Price Converter</h3>
-                            <p>Konversi antara BTC, USD, dan IDR pakai harga live.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="tool-content">
-                    <div class="dca-card">
-                        <div class="dca-field">
-                            <label>Bitcoin (BTC)</label>
-                            <div class="input-box">
-                                <span>₿</span>
-                                <input type="number" id="priceBtcInput" placeholder="0.01" step="any">
-                            </div>
+                            <div class="input-box"><span>sat</span><input type="number" id="convSatInput"
+                                    placeholder="100000" step="any"></div>
                         </div>
                         <div class="dca-field">
                             <label>US Dollar (USD)</label>
-                            <div class="input-box">
-                                <span>$</span>
-                                <input type="number" id="priceUsdInput" placeholder="600" step="any">
-                            </div>
+                            <div class="input-box"><span>$</span><input type="number" id="convUsdInput" placeholder="60"
+                                    step="any"></div>
                         </div>
                         <div class="dca-field">
                             <label>Rupiah (IDR)</label>
-                            <div class="input-box">
-                                <span>Rp</span>
-                                <input type="number" id="priceIdrInput" placeholder="9000000" step="any">
-                            </div>
+                            <div class="input-box"><span>Rp</span><input type="number" id="convIdrInput"
+                                    placeholder="900000" step="any"></div>
                         </div>
                     </div>
-                    <p style="font-size:12px;color:#888;margin-top:10px;">
-                        *Buka tool "DCA Calculator" dan klik "Refresh Price" dulu supaya harga live termuat.
-                    </p>
-                </div>
-            </div>
-
-            <div id="tool-fee" class="tool-panel">
-                <div class="tool-header">
-                    <div class="tool-title">
-                        <i data-lucide="zap"></i>
-                        <div>
-                            <h3>Lightning Fee Estimator</h3>
-                            <p>Perkiraan biaya kirim via Lightning Network (edukasi, bukan angka pasti).</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="tool-content">
-                    <div class="dca-card">
-                        <div class="dca-field">
-                            <label>Jumlah Kirim (sat)</label>
-                            <div class="input-box">
-                                <span>sat</span>
-                                <input type="number" id="feeSatInput" placeholder="50000" value="50000">
-                            </div>
-                        </div>
-                        <button class="calculate-btn" id="feeCalcBtn">Estimasi Fee</button>
-                    </div>
-                    <div class="result-card" id="feeResult" style="display:none;">
-                        <h3>Estimasi</h3>
-                        <div class="result-row"><span>Base Fee (typical)</span><strong id="feeBase"></strong></div>
-                        <div class="result-row"><span>Fee Rate (typical 0.05%)</span><strong id="feeRate"></strong>
-                        </div>
-                        <div class="result-row"><span>Total Estimasi Fee</span><strong id="feeTotal"></strong></div>
-                    </div>
-                    <p style="font-size:12px;color:#888;margin-top:10px;">
-                        *Fee aktual tergantung rute dan node yang dilewati. Ini hanya estimasi berdasarkan parameter
-                        umum di jaringan Lightning.
-                    </p>
-                </div>
-            </div>
-
-            <div id="tool-mining" class="tool-panel">
-                <div class="tool-header">
-                    <div class="tool-title">
-                        <i data-lucide="pickaxe"></i>
-                        <div>
-                            <h3>Mining Profit Calculator</h3>
-                            <p>Estimasi profit mining harian (perkiraan, bukan angka pasti).</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="tool-content">
-                    <div class="dca-card">
-                        <div class="dca-field">
-                            <label>Hashrate Anda (TH/s)</label>
-                            <div class="input-box">
-                                <span>TH/s</span>
-                                <input type="number" id="miningHashrate" placeholder="100" value="100">
-                            </div>
-                        </div>
-                        <div class="dca-field">
-                            <label>Konsumsi Daya (Watt)</label>
-                            <div class="input-box">
-                                <span>W</span>
-                                <input type="number" id="miningPower" placeholder="3000" value="3000">
-                            </div>
-                        </div>
-                        <div class="dca-field">
-                            <label>Biaya Listrik per kWh ($)</label>
-                            <div class="input-box">
-                                <span>$</span>
-                                <input type="number" id="miningElecCost" placeholder="0.10" value="0.10" step="any">
-                            </div>
-                        </div>
-                        <div class="dca-field">
-                            <label>Pool Fee (%)</label>
-                            <div class="input-box">
-                                <span>%</span>
-                                <input type="number" id="miningPoolFee" placeholder="1" value="1" step="any">
-                            </div>
-                        </div>
-                        <div class="dca-toolbar">
-                            <button id="loadNetworkBtn" class="tool-btn">Load Network Data</button>
-                        </div>
-                        <p id="networkHashrateInfo" style="font-size:12px;color:#888;margin-top:8px;">Network hashrate
-                            belum dimuat.</p>
-                        <button class="calculate-btn" id="miningCalcBtn">Calculate Profit</button>
-                    </div>
-                    <div class="result-card" id="miningResult" style="display:none;">
-                        <h3>Estimasi Harian</h3>
-                        <div class="result-row"><span>BTC Ditambang</span><strong id="miningBTC"></strong></div>
-                        <div class="result-row"><span>Pendapatan (USD)</span><strong id="miningRevenue"></strong></div>
-                        <div class="result-row"><span>Biaya Listrik (USD)</span><strong id="miningCost"></strong></div>
-                        <div class="result-row"><span>Profit Bersih (USD)</span><strong id="miningProfit"></strong>
-                        </div>
-                    </div>
-                    <p style="font-size:12px;color:#888;margin-top:10px;">
-                        *Estimasi disederhanakan. Tidak memperhitungkan perubahan difficulty, harga BTC yang fluktuatif,
-                        atau downtime.
-                    </p>
-                </div>
-            </div>
-
-            <div id="tool-utxo" class="tool-panel">
-                <div class="tool-header">
-                    <div class="tool-title">
-                        <i data-lucide="package"></i>
-                        <div>
-                            <h3>UTXO & Fee Calculator</h3>
-                            <p>Estimasi ukuran transaksi dan fee (native SegWit).</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="tool-content">
-                    <div class="dca-card">
-                        <div class="dca-field">
-                            <label>Jumlah Input (UTXO)</label>
-                            <div class="input-box">
-                                <span>#</span>
-                                <input type="number" id="utxoInputs" value="1">
-                            </div>
-                        </div>
-                        <div class="dca-field">
-                            <label>Jumlah Output</label>
-                            <div class="input-box">
-                                <span>#</span>
-                                <input type="number" id="utxoOutputs" value="2">
-                            </div>
-                        </div>
-                        <div class="dca-field">
-                            <label>Fee Rate (sat/vB)</label>
-                            <div class="dca-toolbar">
-                                <button id="loadFeeRateBtn" class="tool-btn">Load Current Fee Rate</button>
-                            </div>
-                            <div class="input-box">
-                                <span>sat/vB</span>
-                                <input type="number" id="utxoFeeRate" value="10">
-                            </div>
-                        </div>
-                        <button class="calculate-btn" id="utxoCalcBtn">Calculate</button>
-                    </div>
-                    <div class="result-card" id="utxoResult" style="display:none;">
-                        <h3>Estimasi</h3>
-                        <div class="result-row"><span>Ukuran Transaksi</span><strong id="utxoSize"></strong></div>
-                        <div class="result-row"><span>Estimasi Fee (sat)</span><strong id="utxoFeeSat"></strong></div>
-                        <div class="result-row"><span>Estimasi Fee (USD)</span><strong id="utxoFeeUsd"></strong></div>
-                    </div>
-                    <p style="font-size:12px;color:#888;margin-top:10px;">
-                        *Estimasi berdasarkan rumus umum native SegWit (P2WPKH): 10.5 + (input × 68) + (output × 31)
-                        vBytes.
-                    </p>
+                    <p style="font-size:12px;color:#888;margin-top:10px;">*Buka "DCA Calculator" dan klik "Refresh
+                        Price" dulu supaya harga live termuat untuk konversi USD/IDR.</p>
                 </div>
             </div>
 
@@ -453,7 +356,7 @@
                         <i data-lucide="chart-line"></i>
                         <div>
                             <h3>Average Buy Calculator</h3>
-                            <p>Hitung rata-rata harga beli dari beberapa transaksi.</p>
+                            <p>Hitung rata-rata harga beli berdasarkan tanggal pembelian (harga historis otomatis).</p>
                         </div>
                     </div>
                 </div>
@@ -461,14 +364,15 @@
                     <div class="dca-card">
                         <div id="avgBuyRows">
                             <div class="avg-buy-row">
+                                <input type="date" class="avgDate">
                                 <div class="input-box">
-                                    <span>$</span>
-                                    <input type="number" class="avgAmountUSD" placeholder="Amount Spent">
+                                    <select class="avgCurrency">
+                                        <option value="usd">$</option>
+                                        <option value="idr">Rp</option>
+                                    </select>
+                                    <input type="number" class="avgAmount" placeholder="Jumlah dibelanjakan">
                                 </div>
-                                <div class="input-box">
-                                    <span>@</span>
-                                    <input type="number" class="avgPriceAtBuy" placeholder="BTC Price saat beli">
-                                </div>
+                                <p class="avgFetchedPrice">Pilih tanggal untuk memuat harga</p>
                             </div>
                         </div>
                         <div class="dca-toolbar">
@@ -486,21 +390,201 @@
                         </div>
                         <div class="result-row"><span>Profit / Loss</span><strong id="avgProfitLoss"></strong></div>
                     </div>
+                    <p style="font-size:12px;color:#888;margin-top:10px;">*Harga historis diambil otomatis berdasarkan
+                        tanggal yang dipilih (sumber: CoinGecko).</p>
                 </div>
             </div>
 
-            <div id="tool-quiz" class="tool-panel">
+            <div id="tool-halving" class="tool-panel">
                 <div class="tool-header">
                     <div class="tool-title">
-                        <i data-lucide="brain"></i>
+                        <i data-lucide="hourglass"></i>
                         <div>
-                            <h3>Bitcoin Quiz</h3>
-                            <p>Uji pemahaman dasar Anda tentang Bitcoin.</p>
+                            <h3>Halving Countdown</h3>
+                            <p>Estimasi waktu menuju halving Bitcoin berikutnya.</p>
                         </div>
                     </div>
                 </div>
                 <div class="tool-content">
-                    <div class="dca-card" id="quizContainer"></div>
+                    <div class="dca-card" id="halvingContainer">
+                        <p style="color:#888;">Memuat data blok terbaru...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tool-mining" class="tool-panel">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <i data-lucide="pickaxe"></i>
+                        <div>
+                            <h3>Mining Profit Calculator</h3>
+                            <p>Estimasi profit mining harian (perkiraan, bukan angka pasti).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-content">
+                    <div class="dca-card">
+                        <div class="dca-field">
+                            <label>Hashrate Anda (TH/s)</label>
+                            <div class="input-box"><span>TH/s</span><input type="number" id="miningHashrate"
+                                    placeholder="100" value="100"></div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Konsumsi Daya (Watt)</label>
+                            <div class="input-box"><span>W</span><input type="number" id="miningPower"
+                                    placeholder="3000" value="3000"></div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Biaya Listrik per kWh ($)</label>
+                            <div class="input-box"><span>$</span><input type="number" id="miningElecCost"
+                                    placeholder="0.10" value="0.10" step="any"></div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Pool Fee (%)</label>
+                            <div class="input-box"><span>%</span><input type="number" id="miningPoolFee" placeholder="1"
+                                    value="1" step="any"></div>
+                        </div>
+                        <div class="dca-toolbar">
+                            <button id="loadNetworkBtn" class="tool-btn">Load Network Data</button>
+                        </div>
+                        <p id="networkHashrateInfo" style="font-size:12px;color:#888;margin-top:8px;">Network hashrate
+                            belum dimuat.</p>
+                        <button class="calculate-btn" id="miningCalcBtn">Calculate Profit</button>
+                    </div>
+                    <div class="result-card" id="miningResult" style="display:none;">
+                        <h3>Estimasi Harian</h3>
+                        <div class="result-row"><span>BTC Ditambang</span><strong id="miningBTC"></strong></div>
+                        <div class="result-row"><span>Pendapatan</span><strong id="miningRevenue"></strong></div>
+                        <div class="result-row"><span>Biaya Listrik</span><strong id="miningCost"></strong></div>
+                        <div class="result-row"><span>Profit Bersih</span><strong id="miningProfit"></strong></div>
+                    </div>
+                    <p style="font-size:12px;color:#888;margin-top:10px;">*Estimasi disederhanakan. Tidak
+                        memperhitungkan perubahan difficulty, harga BTC yang fluktuatif, atau downtime.</p>
+                </div>
+            </div>
+
+            <div id="tool-utxo" class="tool-panel">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <i data-lucide="package"></i>
+                        <div>
+                            <h3>UTXO & Fee Calculator</h3>
+                            <p>Estimasi ukuran transaksi dan fee (native SegWit).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-content">
+                    <div class="dca-card">
+                        <div class="dca-field">
+                            <label>Jumlah Input (UTXO)</label>
+                            <div class="input-box"><span>#</span><input type="number" id="utxoInputs" value="1"></div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Jumlah Output</label>
+                            <div class="input-box"><span>#</span><input type="number" id="utxoOutputs" value="2"></div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Fee Rate (sat/vB)</label>
+                            <div class="dca-toolbar">
+                                <button id="loadFeeRateBtn" class="tool-btn">Load Current Fee Rate</button>
+                            </div>
+                            <div class="input-box"><span>sat/vB</span><input type="number" id="utxoFeeRate" value="10">
+                            </div>
+                        </div>
+                        <button class="calculate-btn" id="utxoCalcBtn">Calculate</button>
+                    </div>
+                    <div class="result-card" id="utxoResult" style="display:none;">
+                        <h3>Estimasi</h3>
+                        <div class="result-row"><span>Ukuran Transaksi</span><strong id="utxoSize"></strong></div>
+                        <div class="result-row"><span>Estimasi Fee (sat)</span><strong id="utxoFeeSat"></strong></div>
+                        <div class="result-row"><span>Estimasi Fee</span><strong id="utxoFeeUsd"></strong></div>
+                    </div>
+                    <p style="font-size:12px;color:#888;margin-top:10px;">*Estimasi berdasarkan rumus umum native SegWit
+                        (P2WPKH): 10.5 + (input × 68) + (output × 31) vBytes.</p>
+                </div>
+            </div>
+
+            <div id="tool-channel" class="tool-panel">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <i data-lucide="zap"></i>
+                        <div>
+                            <h3>Lightning Channel Capacity</h3>
+                            <p>Pahami outbound vs inbound liquidity dalam channel Lightning.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-content">
+                    <div class="dca-card">
+                        <div class="dca-field">
+                            <label>Total Kapasitas Channel (sat)</label>
+                            <div class="input-box"><span>sat</span><input type="number" id="channelTotal"
+                                    value="500000"></div>
+                        </div>
+                        <div class="dca-field">
+                            <label>Local Balance / Saldo Anda (sat)</label>
+                            <div class="input-box"><span>sat</span><input type="number" id="channelLocal"
+                                    value="200000"></div>
+                        </div>
+                        <button class="calculate-btn" id="channelCalcBtn">Hitung Kapasitas</button>
+                    </div>
+                    <div class="result-card" id="channelResult" style="display:none;">
+                        <h3>Hasil</h3>
+                        <div class="channel-bar">
+                            <div class="channel-bar-local" id="channelBarLocal"></div>
+                            <div class="channel-bar-remote" id="channelBarRemote"></div>
+                        </div>
+                        <div class="result-row"><span>Outbound (bisa kirim)</span><strong id="channelOutbound"></strong>
+                        </div>
+                        <div class="result-row"><span>Inbound (bisa terima)</span><strong id="channelInbound"></strong>
+                        </div>
+                    </div>
+                    <p style="font-size:12px;color:#888;margin-top:10px;">
+                        *Outbound liquidity = saldo yang bisa Anda kirim keluar. Inbound liquidity = kapasitas orang
+                        lain mengirim ke Anda lewat channel ini.
+                    </p>
+                </div>
+            </div>
+
+            <div id="tool-wallet" class="tool-panel">
+                <div class="tool-header">
+                    <div class="tool-title">
+                        <i data-lucide="search"></i>
+                        <div>
+                            <h3>Wallet Balance Checker</h3>
+                            <p>Cek saldo alamat Bitcoin (data on-chain publik).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-content">
+                    <div class="dca-card">
+                        <div class="dca-field">
+                            <label>Alamat Bitcoin</label>
+                            <div class="input-box">
+                                <span>₿</span>
+                                <input type="text" id="walletAddressInput" placeholder="bc1q...">
+                                <button type="button" id="walletScanBtn" class="scan-qr-btn" title="Scan QR">📷</button>
+                            </div>
+                        </div>
+                        <div id="qrReaderWallet"
+                            style="display:none; margin-top:10px; border-radius:12px; overflow:hidden;"></div>
+                        <button type="button" id="walletScanCloseBtn" class="tool-btn"
+                            style="display:none; margin-top:8px;">Tutup Scanner</button>
+                        <button class="calculate-btn" id="walletCheckBtn">Cek Saldo</button>
+                    </div>
+                    <div class="result-card" id="walletResult" style="display:none;">
+                        <h3>Hasil</h3>
+                        <div class="result-row"><span>Saldo</span><strong id="walletBalance"></strong></div>
+                        <div class="result-row"><span>Total Diterima</span><strong id="walletReceived"></strong></div>
+                        <div class="result-row"><span>Jumlah Transaksi</span><strong id="walletTxCount"></strong></div>
+                        <div class="result-row"><span>Jumlah UTXO</span><strong id="walletUtxoCount"></strong></div>
+                        <div class="result-row"><span>Saldo (Live)</span><strong id="walletBalanceFiat"></strong></div>
+                    </div>
+                    <p class="wallet-disclaimer">
+                        ⚠️ <strong>Disclaimer:</strong> Semua data transaksi Bitcoin bersifat publik dan bisa dilihat
+                        siapa saja di blockchain — bukan berarti anonim (pseudonymous). Gunakan tool ini secara
+                        bertanggung jawab; jangan gunakan untuk melacak atau mengganggu privasi orang lain.
+                    </p>
                 </div>
             </div>
 
