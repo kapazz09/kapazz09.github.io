@@ -27,7 +27,7 @@ h1 {
     padding: 20px;
     margin-top: 20px;
     border-radius: 8px;
-    font-size: 12px;
+    font-size: 16px;
     font-family: 'Lora', serif;
     position: relative;
     z-index: 1;
@@ -668,6 +668,7 @@ h1 {
     font-weight: 700;
     color: #f7931a;
     font-size: 18px;
+    flex-shrink: 0;
 }
 
 .input-box input {
@@ -836,6 +837,7 @@ h1 {
 
 }
 
+/* Toolkit icon lebih kecil & rapi di layar HP */
 @media (max-width: 480px) {
     .tool-icon {
         padding: 16px 8px;
@@ -855,6 +857,16 @@ h1 {
 
     .toolkit-icons {
         gap: 10px;
+    }
+
+    .scan-qr-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .input-box span {
+        width: 40px;
+        font-size: 14px;
     }
 }
 
@@ -1050,9 +1062,20 @@ h1 {
 .scan-qr-btn {
     background: none;
     border: none;
-    font-size: 20px;
     cursor: pointer;
     padding: 0 8px;
+    display: flex;
+    align-items: center;
+    color: #f7931a;
+    flex-shrink: 0;
+}
+
+.scan-qr-btn svg {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    min-width: 22px;
+    min-height: 22px;
 }
 
 #qrReaderWallet video {

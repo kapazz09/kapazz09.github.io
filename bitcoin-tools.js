@@ -268,6 +268,15 @@ const BitcoinTools = {
             return;
         }
 
+        const totalDaysInRange = Math.round((endDate - startDate) / 86400000);
+
+        // Frekuensi Harian butuh 1 request per hari — dibatasi supaya tidak
+        // mengirim ratusan/ribuan request berurutan ke API gratis.
+        if (frequency === "daily" && totalDaysInRange > 180) {
+            alert("Untuk frekuensi Harian, rentang tanggal dibatasi maksimal ~180 hari (sekitar 6 bulan) agar tidak membebani API harga gratis. Untuk rentang lebih panjang, pilih frekuensi Mingguan atau Bulanan.");
+            return;
+        }
+
         const purchaseDates = [];
         let cursor = new Date(startDate);
         while (cursor <= endDate) {
@@ -281,7 +290,7 @@ const BitcoinTools = {
             alert("Tidak ada tanggal pembelian dalam rentang ini.");
             return;
         }
-        if (purchaseDates.length > 800) {
+        if (purchaseDates.length > 500) {
             alert("Rentang tanggal dan frekuensi ini menghasilkan terlalu banyak pembelian (" + purchaseDates.length + "x). Perpendek rentang atau pilih frekuensi lebih jarang.");
             return;
         }
@@ -289,50 +298,54 @@ const BitcoinTools = {
         const btn = document.getElementById("dcaCalcBtn");
         const originalBtnText = btn.textContent;
         btn.disabled = true;
-        btn.textContent = "Memuat data historis...";
 
-        const fromUnix = Math.floor(startDate.getTime() / 1000);
-        const toUnix = Math.floor(endDate.getTime() / 1000) + 86400;
+        const toDateInputFormat = (d) => {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, "0");
+            const day = String(d.getDate()).padStart(2, "0");
+            return y + "-" + m + "-" + day;
+        };
 
-        Promise.all([
-            fetch("https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=" + fromUnix + "&to=" + toUnix).then(r => r.json()),
-            fetch("https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=idr&from=" + fromUnix + "&to=" + toUnix).then(r => r.json())
-        ]).then(([usdData, idrData]) => {
-            const usdPrices = usdData.prices;
-            const idrPrices = idrData.prices;
+        let totalBTC = 0;
+        let totalSpentUSD = 0;
+        let totalSpentIDR = 0;
+        let failedCount = 0;
 
-            if (!usdPrices || usdPrices.length === 0) {
-                throw new Error("no data");
-            }
+        const processSequentially = async () => {
+            for (let i = 0; i < purchaseDates.length; i++) {
+                btn.textContent = "Memuat harga " + (i + 1) + "/" + purchaseDates.length + "...";
+                const dateStr = toDateInputFormat(purchaseDates[i]);
 
-            const findClosestPrice = (priceArray, targetDate) => {
-                const targetTime = targetDate.getTime();
-                let closest = priceArray[0];
-                let minDiff = Math.abs(priceArray[0][0] - targetTime);
-                for (let i = 1; i < priceArray.length; i++) {
-                    const diff = Math.abs(priceArray[i][0] - targetTime);
-                    if (diff < minDiff) {
-                        minDiff = diff;
-                        closest = priceArray[i];
+                let price = null;
+                for (let attempt = 0; attempt < 2 && price === null; attempt++) {
+                    try {
+                        price = await this.fetchHistoricalPrice(dateStr);
+                    } catch (e) {
+                        if (attempt === 0) {
+                            await new Promise(resolve => setTimeout(resolve, 800));
+                        }
                     }
                 }
-                return closest[1];
-            };
 
-            let totalBTC = 0;
-            let totalSpentUSD = 0;
-            let totalSpentIDR = 0;
+                if (price) {
+                    const btcBought = currency === "usd" ? (amount / price.usd) : (amount / price.idr);
+                    totalBTC += btcBought;
+                    totalSpentUSD += btcBought * price.usd;
+                    totalSpentIDR += btcBought * price.idr;
+                } else {
+                    failedCount++;
+                }
 
-            purchaseDates.forEach(date => {
-                const priceUsdAtDate = findClosestPrice(usdPrices, date);
-                const priceIdrAtDate = findClosestPrice(idrPrices, date);
+                // Jeda kecil antar request supaya tidak membebani/kena rate-limit API gratis
+                await new Promise(resolve => setTimeout(resolve, 150));
+            }
+        };
 
-                const btcBought = currency === "usd" ? (amount / priceUsdAtDate) : (amount / priceIdrAtDate);
-
-                totalBTC += btcBought;
-                totalSpentUSD += btcBought * priceUsdAtDate;
-                totalSpentIDR += btcBought * priceIdrAtDate;
-            });
+        processSequentially().then(() => {
+            if (totalBTC === 0) {
+                alert("Gagal memuat data historis untuk semua tanggal — kemungkinan API harga gratis sedang membatasi permintaan sementara (terlalu sering dicoba berturut-turut). Tunggu sekitar 1 menit, lalu coba lagi.");
+                return;
+            }
 
             const avgPriceUSD = totalSpentUSD / totalBTC;
             const avgPriceIDR = totalSpentIDR / totalBTC;
@@ -342,7 +355,12 @@ const BitcoinTools = {
             const profitLossIDR = currentValueIDR - totalSpentIDR;
             const profitPercent = (profitLossUSD / totalSpentUSD) * 100;
 
-            document.getElementById("dcaPurchaseCount").textContent = purchaseDates.length + "x pembelian";
+            let purchaseCountText = purchaseDates.length + "x pembelian";
+            if (failedCount > 0) {
+                purchaseCountText += " (" + failedCount + "x gagal dimuat, tidak dihitung)";
+            }
+
+            document.getElementById("dcaPurchaseCount").textContent = purchaseCountText;
             document.getElementById("totalInvested").textContent =
                 "$" + totalSpentUSD.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " / Rp" + Math.round(totalSpentIDR).toLocaleString("id-ID");
             document.getElementById("btcAccumulated").textContent = totalBTC.toFixed(8) + " BTC";
@@ -356,8 +374,6 @@ const BitcoinTools = {
             document.getElementById("profitPercent").textContent = (profitPercent >= 0 ? "+" : "") + profitPercent.toFixed(2) + "%";
 
             document.getElementById("dcaResult").style.display = "block";
-        }).catch(() => {
-            alert("Gagal memuat data historis. Coba perpendek rentang tanggal, atau coba lagi beberapa saat.");
         }).finally(() => {
             btn.disabled = false;
             btn.textContent = originalBtnText;
@@ -753,27 +769,39 @@ const BitcoinTools = {
         if (readerDiv) readerDiv.style.display = "block";
         if (closeBtn) closeBtn.style.display = "inline-block";
 
-        this.html5QrCode = new Html5Qrcode("qrReaderWallet");
-        this.html5QrCode.start(
-            { facingMode: "environment" },
-            { fps: 10, qrbox: 220 },
-            (decodedText) => {
-                let address = decodedText.trim();
-                if (address.toLowerCase().indexOf("bitcoin:") === 0) {
-                    address = address.substring(8).split("?")[0];
+        // Beri jeda sebentar supaya browser selesai menghitung layout div
+        // sebelum Html5Qrcode mulai mengukur dimensi kontainer (mencegah
+        // area scan salah ukuran walau video kamera sudah terlihat normal).
+        setTimeout(() => {
+            this.html5QrCode = new Html5Qrcode("qrReaderWallet");
+            this.html5QrCode.start(
+                { facingMode: "environment" },
+                {
+                    fps: 10,
+                    qrbox: (viewfinderWidth, viewfinderHeight) => {
+                        const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+                        const size = Math.floor(minEdge * 0.7);
+                        return { width: size, height: size };
+                    }
+                },
+                (decodedText) => {
+                    let address = decodedText.trim();
+                    if (address.toLowerCase().indexOf("bitcoin:") === 0) {
+                        address = address.substring(8).split("?")[0];
+                    }
+                    const input = document.getElementById("walletAddressInput");
+                    if (input) input.value = address;
+                    this.stopWalletScan();
+                },
+                () => {
+                    // diabaikan — normal terjadi berkali-kali selagi kamera mencari QR code
                 }
-                const input = document.getElementById("walletAddressInput");
-                if (input) input.value = address;
-                this.stopWalletScan();
-            },
-            () => {
-                // diabaikan — normal terjadi berkali-kali selagi kamera mencari QR code
-            }
-        ).catch(() => {
-            alert("Tidak bisa mengakses kamera. Pastikan izin kamera diaktifkan, atau masukkan alamat secara manual.");
-            if (readerDiv) readerDiv.style.display = "none";
-            if (closeBtn) closeBtn.style.display = "none";
-        });
+            ).catch(() => {
+                alert("Tidak bisa mengakses kamera. Pastikan izin kamera diaktifkan, atau masukkan alamat secara manual.");
+                if (readerDiv) readerDiv.style.display = "none";
+                if (closeBtn) closeBtn.style.display = "none";
+            });
+        }, 150);
     },
 
     stopWalletScan() {

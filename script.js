@@ -1,13 +1,14 @@
 // ==================================================
 // LIVE BTC PRICE (header ticker)
 // ==================================================
-fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true')
+fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,idr&include_24hr_change=true')
     .then(response => response.json())
     .then(data => {
         const price = data.bitcoin.usd.toLocaleString('en-US');
+        const priceIdr = Math.round(data.bitcoin.idr).toLocaleString('id-ID');
         const change = data.bitcoin.usd_24h_change;
 
-        document.getElementById('btc-price').textContent = '$' + price;
+        document.getElementById('btc-price').textContent = '$' + price + ' / Rp' + priceIdr;
 
         const changeEl = document.getElementById('btc-change');
         const sign = change >= 0 ? '+' : '';
@@ -17,6 +18,7 @@ fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=u
     .catch(error => {
         document.getElementById('btc-price').textContent = 'N/A';
     });
+
 
 // ==================================================
 // SCROLL ANIMATION (fade-in / slide-up)
