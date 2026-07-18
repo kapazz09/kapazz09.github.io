@@ -19,6 +19,17 @@ const BitcoinTools = {
     isConverting: false,
     historicalCache: {},
 
+    //------------------------------------------------
+    // HELPER: parse angka yang sudah diformat titik ribuan
+    // (misal "1.000.000" -> 1000000) sebelum dihitung
+    //------------------------------------------------
+
+    parseFormattedNumber(str) {
+        if (!str) return NaN;
+        const cleaned = String(str).replace(/\./g, "").replace(",", ".");
+        return parseFloat(cleaned);
+    },
+
     quizData: [
         { q: "Siapa nama yang digunakan sebagai pencipta Bitcoin?", options: ["Vitalik Buterin", "Craig Wright", "Satoshi Nakamoto", "Hal Finney"], answer: 2 },
         { q: "Whitepaper Bitcoin pertama kali dipublikasikan pada tahun?", options: ["2005", "2008", "2010", "2013"], answer: 1 },
@@ -142,6 +153,66 @@ const BitcoinTools = {
             this.loadMempoolStatus();
         }, 300000);
     },
+    //------------------------------------------------
+    // FORMAT ANGKA RIBUAN (untuk kolom USD & IDR)
+    // Format tampilan: 2.000.000  |  Desimal pakai koma: 12.345,67
+    //------------------------------------------------
+
+    formatNumberInput(el) {
+        const cursorPos = el.selectionStart;
+        const oldValue = el.value;
+
+        // Hitung posisi kursor berdasarkan jumlah karakter signifikan (angka & koma)
+        let sigBefore = 0;
+        for (let i = 0; i < cursorPos; i++) {
+            if (/[0-9,]/.test(oldValue[i])) sigBefore++;
+        }
+
+        // Semua titik dianggap pemisah ribuan lama -> buang, lalu dibuat ulang.
+        // Koma adalah satu-satunya pemisah desimal yang didukung.
+        let raw = oldValue.replace(/\./g, '');
+        const commaIdx = raw.indexOf(',');
+        let intPart = commaIdx === -1 ? raw : raw.slice(0, commaIdx);
+        let decPart = commaIdx === -1 ? null : raw.slice(commaIdx + 1).replace(/,/g, '');
+
+        intPart = intPart.replace(/[^0-9]/g, '');
+        if (decPart !== null) decPart = decPart.replace(/[^0-9]/g, '');
+
+        intPart = intPart.replace(/^0+(?=\d)/, '');
+
+        let formattedInt;
+        if (intPart === '') {
+            formattedInt = (decPart !== null) ? '0' : '';
+        } else {
+            formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        let formatted = formattedInt;
+        if (decPart !== null) formatted += ',' + decPart;
+
+        el.value = formatted;
+
+        if (formatted === '') {
+            el.setSelectionRange(0, 0);
+            return;
+        }
+
+        let count = 0;
+        let newPos = formatted.length;
+        for (let i = 0; i < formatted.length; i++) {
+            if (/[0-9,]/.test(formatted[i])) count++;
+            if (count >= sigBefore) { newPos = i + 1; break; }
+        }
+        if (sigBefore === 0) newPos = 0;
+        el.setSelectionRange(newPos, newPos);
+    },
+
+    // Ubah "2.000.000,5" jadi angka JS biasa 2000000.5
+    parseFormattedNumber(str) {
+        if (!str) return NaN;
+        const cleaned = str.replace(/\./g, '').replace(',', '.');
+        return parseFloat(cleaned);
+    },
 
     //------------------------------------------------
     // EVENTS
@@ -245,7 +316,7 @@ const BitcoinTools = {
     //------------------------------------------------
 
     calculateDCA() {
-        const amount = parseFloat(document.getElementById("dcaAmount").value);
+        const amount = this.parseFormattedNumber(document.getElementById("dcaAmount").value);
         const currency = document.getElementById("dcaCurrencySelect").value;
         const frequency = document.getElementById("dcaFrequency").value;
         const startDateStr = document.getElementById("dcaStartDate").value;
@@ -413,6 +484,20 @@ const BitcoinTools = {
         const usdInput = document.getElementById("convUsdInput");
         const idrInput = document.getElementById("convIdrInput");
 
+        // Helper: format kolom yang sedang diketik dengan titik ribuan,
+        // sambil menjaga posisi kursor tetap wajar.
+        const liveFormat = (el) => {
+            const cursorPos = el.selectionStart;
+            const prevLength = el.value.length;
+            const rawDigits = el.value.replace(/\D/g, "");
+            if (rawDigits === "") return;
+            const formatted = parseInt(rawDigits, 10).toLocaleString("id-ID");
+            el.value = formatted;
+            const diff = formatted.length - prevLength;
+            const newPos = Math.max(0, cursorPos + diff);
+            el.setSelectionRange(newPos, newPos);
+        };
+
         let btc = null;
 
         if (source === "btc") {
@@ -421,10 +506,12 @@ const BitcoinTools = {
             const sat = parseFloat(satInput.value);
             if (!isNaN(sat)) btc = sat / 100000000;
         } else if (source === "usd") {
-            const usd = parseFloat(usdInput.value);
+            liveFormat(usdInput);
+            const usd = this.parseFormattedNumber(usdInput.value);
             if (!isNaN(usd) && this.btcPrice) btc = usd / this.btcPrice;
         } else if (source === "idr") {
-            const idr = parseFloat(idrInput.value);
+            liveFormat(idrInput);
+            const idr = this.parseFormattedNumber(idrInput.value);
             if (!isNaN(idr) && this.btcPrice && this.exchangeRate) {
                 btc = idr / (this.btcPrice * this.exchangeRate);
             }
@@ -437,9 +524,11 @@ const BitcoinTools = {
 
         if (source !== "btc") btcInput.value = btc.toFixed(8);
         if (source !== "sat") satInput.value = Math.round(btc * 100000000);
-        if (source !== "usd" && this.btcPrice) usdInput.value = (btc * this.btcPrice).toFixed(2);
+        if (source !== "usd" && this.btcPrice) {
+            usdInput.value = (btc * this.btcPrice).toLocaleString("id-ID", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
         if (source !== "idr" && this.btcPrice && this.exchangeRate) {
-            idrInput.value = Math.round(btc * this.btcPrice * this.exchangeRate);
+            idrInput.value = Math.round(btc * this.btcPrice * this.exchangeRate).toLocaleString("id-ID");
         }
 
         this.isConverting = false;
@@ -450,8 +539,8 @@ const BitcoinTools = {
     //------------------------------------------------
 
     calculateChannelCapacity() {
-        const total = parseFloat(document.getElementById("channelTotal").value);
-        const local = parseFloat(document.getElementById("channelLocal").value);
+        const total = this.parseFormattedNumber(document.getElementById("channelTotal").value);
+        const local = this.parseFormattedNumber(document.getElementById("channelLocal").value);
 
         if (!total || total <= 0 || isNaN(local) || local < 0 || local > total) {
             alert("Pastikan Local Balance tidak melebihi Total Kapasitas, dan kedua angka valid.");
@@ -495,7 +584,7 @@ const BitcoinTools = {
 
     calculateMiningProfit() {
         const hashrateTH = parseFloat(document.getElementById("miningHashrate").value);
-        const powerW = parseFloat(document.getElementById("miningPower").value);
+        const powerW = this.parseFormattedNumber(document.getElementById("miningPower").value);
         const elecCost = parseFloat(document.getElementById("miningElecCost").value);
         const poolFee = parseFloat(document.getElementById("miningPoolFee").value) || 0;
 
@@ -588,7 +677,7 @@ const BitcoinTools = {
             '<input type="date" class="avgDate">' +
             '<div class="input-box">' +
             '<select class="avgCurrency"><option value="usd">$</option><option value="idr">Rp</option></select>' +
-            '<input type="number" class="avgAmount" placeholder="Jumlah dibelanjakan">' +
+            '<input type="text" inputmode="numeric" class="avgAmount" placeholder="Jumlah dibelanjakan">' +
             '</div>' +
             '<p class="avgFetchedPrice">Pilih tanggal untuk memuat harga</p>';
         container.appendChild(row);
@@ -639,7 +728,7 @@ const BitcoinTools = {
         rows.forEach(row => {
             const amountInput = row.querySelector(".avgAmount");
             const currencySelect = row.querySelector(".avgCurrency");
-            const amount = parseFloat(amountInput.value);
+            const amount = this.parseFormattedNumber(amountInput.value);
             const currency = currencySelect.value;
             const priceUsd = parseFloat(row.dataset.priceUsd);
             const priceIdr = parseFloat(row.dataset.priceIdr);

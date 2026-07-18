@@ -129,6 +129,30 @@ function showTool(tool, element) {
 }
 
 // ==================================================
+// AUTO-FORMAT TITIK RIBUAN SAAT MENGETIK
+// (untuk kolom nominal: Jumlah per Pembelian, Amount
+// Spent, Konsumsi Daya, Kapasitas Channel, dll)
+// ==================================================
+function formatThousandsInput(e) {
+    const el = e.target;
+    const cursorPos = el.selectionStart;
+    const prevLength = el.value.length;
+
+    const raw = el.value.replace(/\D/g, '');
+    if (raw === '') {
+        el.value = '';
+        return;
+    }
+
+    const formatted = parseInt(raw, 10).toLocaleString('id-ID');
+    el.value = formatted;
+
+    const diff = formatted.length - prevLength;
+    const newPos = Math.max(0, cursorPos + diff);
+    el.setSelectionRange(newPos, newPos);
+}
+
+// ==================================================
 // ABOUT ME: BACA SELENGKAPNYA TOGGLE
 // ==================================================
 function toggleAboutMore(btn) {
@@ -151,5 +175,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (typeof BitcoinTools !== 'undefined') {
         BitcoinTools.init();
+    }
+
+    // Pasang auto-format ribuan ke kolom nominal statis
+    ['dcaAmount', 'miningPower', 'channelTotal', 'channelLocal'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', formatThousandsInput);
+    });
+
+    // Pasang juga untuk baris Average Buy yang ditambah dinamis (event delegation)
+    const avgRowsContainer = document.getElementById('avgBuyRows');
+    if (avgRowsContainer) {
+        avgRowsContainer.addEventListener('input', (e) => {
+            if (e.target.classList.contains('avgAmount')) {
+                formatThousandsInput(e);
+            }
+        });
     }
 });
