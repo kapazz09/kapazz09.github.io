@@ -71,12 +71,24 @@
     </div>
 
     <div class="about fade-in">
-        <h2>About Me</h2>
-        <p>Hello, saya Pazkah.. Saya bekerja di bidang pelayanan kesehatan, dan perjalanan saya mengenal Bitcoin dimulai
-            dari cara yang tidak terduga:saya DITIPU !!! 😵😿.</p>
-        <p>Semua berawal dari obrolan di Telegram. Seseorang menghubungi saya, kami mengobrol beberapa hari, sampai
-            akhirnya dia meminta saya mengerjakan sebuah tugas memakai akunnya di salah satu platform. Saya kerjakan
-            dengan serius, dan dalam dua hari tugas itu selesai — akun itu mendapat komisi sebesar 2.000 USDT.</p>
+        <select id="aboutLangSelect" class="about-lang-select" onchange="applyAboutLanguage(this.value)">
+            <option value="id">🇮🇩 Indonesia</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="zh">🇨🇳 中文</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="ru">🇷🇺 Русский</option>
+            <option value="pt">🇧🇷 Português</option>
+        </select>
+        <h2 id="aboutTitle">About Me</h2>
+        <div id="aboutIntro">
+            <p>Hello, saya Pazkah.. Saya bekerja di bidang pelayanan kesehatan, dan perjalanan saya mengenal Bitcoin
+                dimulai
+                dari cara yang tidak terduga: ditipu.</p>
+            <p>Semua berawal dari obrolan di Telegram. Seseorang menghubungi saya, kami mengobrol beberapa hari, sampai
+                akhirnya dia meminta saya mengerjakan sebuah tugas memakai akunnya di salah satu platform. Saya kerjakan
+                dengan serius, dan dalam dua hari tugas itu selesai — akun itu mendapat komisi sebesar 2.000 USDT.</p>
+        </div>
         <div class="about-extra" id="aboutExtra">
             <p>Saat itu saya bahkan tidak tahu apa itu crypto, apalagi USDT. Saya cuma melapor ke orang itu: "Komisi
                 sudah
@@ -112,7 +124,7 @@
                 membantu
                 saya terus belajar, membuat konten edukasi, dan membangun tools yang berguna bagi komunitas Bitcoin.</p>
         </div>
-        <button class="read-more-btn" onclick="toggleAboutMore(this)">Baca Selengkapnya</button>
+        <button class="read-more-btn" id="aboutReadMoreBtn" onclick="toggleAboutMore(this)">Baca Selengkapnya</button>
     </div>
 
     <div class="materials-section slide-up">
@@ -735,11 +747,12 @@
     <footer class="site-footer">
         <p>Built with HTML • CSS • JavaScript</p>
         <p>Hosted on GitHub Pages</p>
-        <p>Made with ❤️ by Paskah</p>
-        <p> © 2026</p>
+        <p>Made with ❤️ by Paskah Bire</p>
+        <p>© 2026</p>
     </footer>
 
     <script src="script.js"></script>
+    <script src="about-translations.js"></script>
     <script src="bitcoin-tools.js"></script>
 </body>
 

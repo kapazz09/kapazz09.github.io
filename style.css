@@ -34,6 +34,42 @@ h1 {
 
 }
 
+.about h2 {
+    padding-right: 140px;
+}
+
+.about-lang-select {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #f7931a;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    max-width: 130px;
+}
+
+.about-lang-select:hover {
+    background-color: #fff7ee;
+}
+
+@media (max-width: 480px) {
+    .about-lang-select {
+        position: static;
+        display: block;
+        margin: 0 0 12px auto;
+    }
+
+    .about h2 {
+        padding-right: 0;
+    }
+}
+
 .crypto-support {
     background-color: rgba(240, 246, 228, 0.9);
     padding: 20px;

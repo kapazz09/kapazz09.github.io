@@ -1,23 +1,34 @@
 // ==================================================
 // LIVE BTC PRICE (header ticker)
 // ==================================================
-fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,idr&include_24hr_change=true')
-    .then(response => response.json())
-    .then(data => {
-        const price = data.bitcoin.usd.toLocaleString('en-US');
-        const priceIdr = Math.round(data.bitcoin.idr).toLocaleString('id-ID');
-        const change = data.bitcoin.usd_24h_change;
+function loadHeaderTicker(attemptsLeft) {
+    fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,idr&include_24hr_change=true')
+        .then(response => {
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            return response.json();
+        })
+        .then(data => {
+            const price = data.bitcoin.usd.toLocaleString('en-US');
+            const priceIdr = Math.round(data.bitcoin.idr).toLocaleString('id-ID');
+            const change = data.bitcoin.usd_24h_change;
 
-        document.getElementById('btc-price').textContent = '$' + price + ' / Rp' + priceIdr;
+            document.getElementById('btc-price').textContent = '$' + price + ' / Rp' + priceIdr;
 
-        const changeEl = document.getElementById('btc-change');
-        const sign = change >= 0 ? '+' : '';
-        changeEl.textContent = sign + change.toFixed(1) + '% (24h)';
-        changeEl.className = change >= 0 ? 'btc-change positive' : 'btc-change negative';
-    })
-    .catch(error => {
-        document.getElementById('btc-price').textContent = 'N/A';
-    });
+            const changeEl = document.getElementById('btc-change');
+            const sign = change >= 0 ? '+' : '';
+            changeEl.textContent = sign + change.toFixed(1) + '% (24h)';
+            changeEl.className = change >= 0 ? 'btc-change positive' : 'btc-change negative';
+        })
+        .catch(error => {
+            if (attemptsLeft > 0) {
+                // CoinGecko kadang sesaat sibuk/rate-limit — coba lagi sebelum menyerah
+                setTimeout(() => loadHeaderTicker(attemptsLeft - 1), 2000);
+            } else {
+                document.getElementById('btc-price').textContent = 'N/A';
+            }
+        });
+}
+loadHeaderTicker(3);
 
 
 // ==================================================
@@ -129,38 +140,10 @@ function showTool(tool, element) {
 }
 
 // ==================================================
-// AUTO-FORMAT TITIK RIBUAN SAAT MENGETIK
-// (untuk kolom nominal: Jumlah per Pembelian, Amount
-// Spent, Konsumsi Daya, Kapasitas Channel, dll)
-// ==================================================
-function formatThousandsInput(e) {
-    const el = e.target;
-    const cursorPos = el.selectionStart;
-    const prevLength = el.value.length;
-
-    const raw = el.value.replace(/\D/g, '');
-    if (raw === '') {
-        el.value = '';
-        return;
-    }
-
-    const formatted = parseInt(raw, 10).toLocaleString('id-ID');
-    el.value = formatted;
-
-    const diff = formatted.length - prevLength;
-    const newPos = Math.max(0, cursorPos + diff);
-    el.setSelectionRange(newPos, newPos);
-}
-
-// ==================================================
 // ABOUT ME: BACA SELENGKAPNYA TOGGLE
+// (fungsi toggleAboutMore sekarang ada di about-translations.js,
+// supaya label tombol ikut bahasa yang lagi aktif)
 // ==================================================
-function toggleAboutMore(btn) {
-    const extra = document.getElementById('aboutExtra');
-    const isHidden = extra.style.display === 'none' || extra.style.display === '';
-    extra.style.display = isHidden ? 'block' : 'none';
-    btn.textContent = isHidden ? 'Tutup' : 'Baca Selengkapnya';
-}
 
 // ==================================================
 // INISIALISASI SAAT HALAMAN SELESAI DIMUAT
@@ -175,21 +158,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (typeof BitcoinTools !== 'undefined') {
         BitcoinTools.init();
-    }
-
-    // Pasang auto-format ribuan ke kolom nominal statis
-    ['dcaAmount', 'miningPower', 'channelTotal', 'channelLocal'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('input', formatThousandsInput);
-    });
-
-    // Pasang juga untuk baris Average Buy yang ditambah dinamis (event delegation)
-    const avgRowsContainer = document.getElementById('avgBuyRows');
-    if (avgRowsContainer) {
-        avgRowsContainer.addEventListener('input', (e) => {
-            if (e.target.classList.contains('avgAmount')) {
-                formatThousandsInput(e);
-            }
-        });
     }
 });
