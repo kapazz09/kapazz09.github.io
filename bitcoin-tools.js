@@ -19,17 +19,6 @@ const BitcoinTools = {
     isConverting: false,
     historicalCache: {},
 
-    //------------------------------------------------
-    // HELPER: parse angka yang sudah diformat titik ribuan
-    // (misal "1.000.000" -> 1000000) sebelum dihitung
-    //------------------------------------------------
-
-    parseFormattedNumber(str) {
-        if (!str) return NaN;
-        const cleaned = String(str).replace(/\./g, "").replace(",", ".");
-        return parseFloat(cleaned);
-    },
-
     quizData: [
         { q: "Siapa nama yang digunakan sebagai pencipta Bitcoin?", options: ["Vitalik Buterin", "Craig Wright", "Satoshi Nakamoto", "Hal Finney"], answer: 2 },
         { q: "Whitepaper Bitcoin pertama kali dipublikasikan pada tahun?", options: ["2005", "2008", "2010", "2013"], answer: 1 },
@@ -153,6 +142,7 @@ const BitcoinTools = {
             this.loadMempoolStatus();
         }, 300000);
     },
+
     //------------------------------------------------
     // FORMAT ANGKA RIBUAN (untuk kolom USD & IDR)
     // Format tampilan: 2.000.000  |  Desimal pakai koma: 12.345,67
@@ -234,8 +224,8 @@ const BitcoinTools = {
         const convIdr = document.getElementById("convIdrInput");
         if (convBtc) convBtc.addEventListener("input", () => this.convertCurrency("btc"));
         if (convSat) convSat.addEventListener("input", () => this.convertCurrency("sat"));
-        if (convUsd) convUsd.addEventListener("input", () => this.convertCurrency("usd"));
-        if (convIdr) convIdr.addEventListener("input", () => this.convertCurrency("idr"));
+        if (convUsd) convUsd.addEventListener("input", () => { this.formatNumberInput(convUsd); this.convertCurrency("usd"); });
+        if (convIdr) convIdr.addEventListener("input", () => { this.formatNumberInput(convIdr); this.convertCurrency("idr"); });
 
         const channelCalcBtn = document.getElementById("channelCalcBtn");
         if (channelCalcBtn) channelCalcBtn.addEventListener("click", () => this.calculateChannelCapacity());
@@ -265,7 +255,18 @@ const BitcoinTools = {
                     this.onAvgDateChange(e.target.closest(".avg-buy-row"));
                 }
             });
+            avgRowsContainer.addEventListener("input", (e) => {
+                if (e.target.classList.contains("avgAmount")) {
+                    this.formatNumberInput(e.target);
+                }
+            });
         }
+
+        const dcaAmountInput = document.getElementById("dcaAmount");
+        if (dcaAmountInput) dcaAmountInput.addEventListener("input", () => this.formatNumberInput(dcaAmountInput));
+
+        const miningElecCostInput = document.getElementById("miningElecCost");
+        if (miningElecCostInput) miningElecCostInput.addEventListener("input", () => this.formatNumberInput(miningElecCostInput));
 
         const walletCheckBtn = document.getElementById("walletCheckBtn");
         if (walletCheckBtn) walletCheckBtn.addEventListener("click", () => this.loadWalletBalance());
@@ -315,6 +316,70 @@ const BitcoinTools = {
     // DCA CALCULATOR (Simulasi Historis)
     //------------------------------------------------
 
+    // Data harga historis BTC sekarang disimpan LOKAL di file
+    // btc-price-history.json (2013 - sekarang, harga rata-rata harian dari
+    // Open/High/Low/Close). Tidak ada panggilan API sama sekali untuk data
+    // historis -> tidak ada lagi masalah CORS/rate-limit/proxy down.
+    // File ini di-update manual sekitar 1x/bulan.
+    async loadLocalPriceHistory() {
+        if (this.priceHistoryCache) return this.priceHistoryCache;
+
+        const res = await fetch("btc-price-history.json");
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const json = await res.json();
+        if (!json.prices) throw new Error("Format btc-price-history.json tidak sesuai");
+
+        this.priceHistoryCache = json.prices;
+        this.priceHistoryLastUpdated = json.lastUpdated;
+        return this.priceHistoryCache;
+    },
+
+    async fetchDailyHistoryRange(fromDate, toDate) {
+        return await this.loadLocalPriceHistory();
+    },
+
+    // Cari harga di tanggal tsb; kalau kosong (misal gap data, atau tanggal
+    // lebih baru dari data terakhir yang di-update), mundur maksimal 60 hari
+    // untuk cari tanggal terdekat yang tersedia.
+    lookupHistoricalPrice(map, dateStr) {
+        if (map[dateStr] !== undefined) return map[dateStr];
+        const d = new Date(dateStr + "T00:00:00Z");
+        for (let i = 0; i < 60; i++) {
+            d.setUTCDate(d.getUTCDate() - 1);
+            const key = d.toISOString().slice(0, 10);
+            if (map[key] !== undefined) return map[key];
+        }
+        return null;
+    },
+
+    toDateInputFormat(d) {
+        const y = d.getUTCFullYear();
+        const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+        const day = String(d.getUTCDate()).padStart(2, "0");
+        return y + "-" + m + "-" + day;
+    },
+
+    // Rata-rata harga harian dari [startDate, endDateExclusive) — dipakai
+    // supaya pembelian Mingguan/Bulanan mencerminkan rata-rata harga
+    // sepanjang periode itu, bukan cuma harga di 1 tanggal persis.
+    averagePriceForPeriod(map, startDate, endDateExclusive) {
+        let sum = 0;
+        let count = 0;
+        const d = new Date(startDate);
+        while (d < endDateExclusive) {
+            const key = this.toDateInputFormat(d);
+            if (map[key] !== undefined) {
+                sum += map[key];
+                count++;
+            }
+            d.setUTCDate(d.getUTCDate() + 1);
+        }
+        if (count === 0) {
+            return this.lookupHistoricalPrice(map, this.toDateInputFormat(startDate));
+        }
+        return sum / count;
+    },
+
     calculateDCA() {
         const amount = this.parseFormattedNumber(document.getElementById("dcaAmount").value);
         const currency = document.getElementById("dcaCurrencySelect").value;
@@ -339,29 +404,20 @@ const BitcoinTools = {
             return;
         }
 
-        const totalDaysInRange = Math.round((endDate - startDate) / 86400000);
-
-        // Frekuensi Harian butuh 1 request per hari — dibatasi supaya tidak
-        // mengirim ratusan/ribuan request berurutan ke API gratis.
-        if (frequency === "daily" && totalDaysInRange > 180) {
-            alert("Untuk frekuensi Harian, rentang tanggal dibatasi maksimal ~180 hari (sekitar 6 bulan) agar tidak membebani API harga gratis. Untuk rentang lebih panjang, pilih frekuensi Mingguan atau Bulanan.");
-            return;
-        }
-
         const purchaseDates = [];
         let cursor = new Date(startDate);
         while (cursor <= endDate) {
             purchaseDates.push(new Date(cursor));
-            if (frequency === "daily") cursor.setDate(cursor.getDate() + 1);
-            else if (frequency === "weekly") cursor.setDate(cursor.getDate() + 7);
-            else cursor.setMonth(cursor.getMonth() + 1);
+            if (frequency === "daily") cursor.setUTCDate(cursor.getUTCDate() + 1);
+            else if (frequency === "weekly") cursor.setUTCDate(cursor.getUTCDate() + 7);
+            else cursor.setUTCMonth(cursor.getUTCMonth() + 1);
         }
 
         if (purchaseDates.length === 0) {
             alert("Tidak ada tanggal pembelian dalam rentang ini.");
             return;
         }
-        if (purchaseDates.length > 500) {
+        if (purchaseDates.length > 3650) {
             alert("Rentang tanggal dan frekuensi ini menghasilkan terlalu banyak pembelian (" + purchaseDates.length + "x). Perpendek rentang atau pilih frekuensi lebih jarang.");
             return;
         }
@@ -369,52 +425,51 @@ const BitcoinTools = {
         const btn = document.getElementById("dcaCalcBtn");
         const originalBtnText = btn.textContent;
         btn.disabled = true;
+        btn.textContent = "Memuat data historis...";
 
-        const toDateInputFormat = (d) => {
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, "0");
-            const day = String(d.getDate()).padStart(2, "0");
-            return y + "-" + m + "-" + day;
-        };
+        (async () => {
+            let totalBTC = 0;
+            let totalSpentUSD = 0;
+            let totalSpentIDR = 0;
+            let failedCount = 0;
 
-        let totalBTC = 0;
-        let totalSpentUSD = 0;
-        let totalSpentIDR = 0;
-        let failedCount = 0;
-
-        const processSequentially = async () => {
-            for (let i = 0; i < purchaseDates.length; i++) {
-                btn.textContent = "Memuat harga " + (i + 1) + "/" + purchaseDates.length + "...";
-                const dateStr = toDateInputFormat(purchaseDates[i]);
-
-                let price = null;
-                for (let attempt = 0; attempt < 2 && price === null; attempt++) {
-                    try {
-                        price = await this.fetchHistoricalPrice(dateStr);
-                    } catch (e) {
-                        if (attempt === 0) {
-                            await new Promise(resolve => setTimeout(resolve, 800));
-                        }
-                    }
-                }
-
-                if (price) {
-                    const btcBought = currency === "usd" ? (amount / price.usd) : (amount / price.idr);
-                    totalBTC += btcBought;
-                    totalSpentUSD += btcBought * price.usd;
-                    totalSpentIDR += btcBought * price.idr;
-                } else {
-                    failedCount++;
-                }
-
-                // Jeda kecil antar request supaya tidak membebani/kena rate-limit API gratis
-                await new Promise(resolve => setTimeout(resolve, 150));
+            let usdMap = {};
+            try {
+                usdMap = await this.fetchDailyHistoryRange(startDate, endDate);
+                if (Object.keys(usdMap).length === 0) throw new Error("empty");
+            } catch (e) {
+                throw new Error("Gagal memuat file btc-price-history.json. Pastikan file itu ada di folder yang sama dengan index.html, dan kamu membuka situs ini lewat server (Live Server/http), bukan langsung buka file HTML dari File Explorer.");
             }
-        };
 
-        processSequentially().then(() => {
+            purchaseDates.forEach((date, i) => {
+                let usdPrice;
+                if (frequency === "daily") {
+                    // Harian: harga hari itu saja (sudah rata-rata Open/High/Low/Close hari itu)
+                    usdPrice = this.lookupHistoricalPrice(usdMap, this.toDateInputFormat(date));
+                } else {
+                    // Mingguan/Bulanan: rata-rata harga sepanjang periode itu
+                    // (dari tanggal pembelian ini sampai sebelum tanggal pembelian berikutnya)
+                    const periodEnd = (i + 1 < purchaseDates.length)
+                        ? purchaseDates[i + 1]
+                        : new Date(endDate.getTime() + 86400000);
+                    usdPrice = this.averagePriceForPeriod(usdMap, date, periodEnd);
+                }
+
+                if (usdPrice === null || usdPrice === undefined || !this.exchangeRate) {
+                    failedCount++;
+                    return;
+                }
+
+                const idrPrice = usdPrice * this.exchangeRate;
+
+                const btcBought = currency === "usd" ? (amount / usdPrice) : (amount / idrPrice);
+                totalBTC += btcBought;
+                totalSpentUSD += btcBought * usdPrice;
+                totalSpentIDR += btcBought * idrPrice;
+            });
+
             if (totalBTC === 0) {
-                alert("Gagal memuat data historis untuk semua tanggal — kemungkinan API harga gratis sedang membatasi permintaan sementara (terlalu sering dicoba berturut-turut). Tunggu sekitar 1 menit, lalu coba lagi.");
+                alert("Gagal memuat data historis untuk semua tanggal. Coba lagi sebentar lagi.");
                 return;
             }
 
@@ -430,6 +485,7 @@ const BitcoinTools = {
             if (failedCount > 0) {
                 purchaseCountText += " (" + failedCount + "x gagal dimuat, tidak dihitung)";
             }
+            purchaseCountText += " — nilai Rp estimasi (kurs saat ini)";
 
             document.getElementById("dcaPurchaseCount").textContent = purchaseCountText;
             document.getElementById("totalInvested").textContent =
@@ -445,6 +501,8 @@ const BitcoinTools = {
             document.getElementById("profitPercent").textContent = (profitPercent >= 0 ? "+" : "") + profitPercent.toFixed(2) + "%";
 
             document.getElementById("dcaResult").style.display = "block";
+        })().catch((e) => {
+            alert(e.message || "Terjadi kesalahan saat memuat data historis. Coba lagi.");
         }).finally(() => {
             btn.disabled = false;
             btn.textContent = originalBtnText;
@@ -484,20 +542,6 @@ const BitcoinTools = {
         const usdInput = document.getElementById("convUsdInput");
         const idrInput = document.getElementById("convIdrInput");
 
-        // Helper: format kolom yang sedang diketik dengan titik ribuan,
-        // sambil menjaga posisi kursor tetap wajar.
-        const liveFormat = (el) => {
-            const cursorPos = el.selectionStart;
-            const prevLength = el.value.length;
-            const rawDigits = el.value.replace(/\D/g, "");
-            if (rawDigits === "") return;
-            const formatted = parseInt(rawDigits, 10).toLocaleString("id-ID");
-            el.value = formatted;
-            const diff = formatted.length - prevLength;
-            const newPos = Math.max(0, cursorPos + diff);
-            el.setSelectionRange(newPos, newPos);
-        };
-
         let btc = null;
 
         if (source === "btc") {
@@ -506,11 +550,9 @@ const BitcoinTools = {
             const sat = parseFloat(satInput.value);
             if (!isNaN(sat)) btc = sat / 100000000;
         } else if (source === "usd") {
-            liveFormat(usdInput);
             const usd = this.parseFormattedNumber(usdInput.value);
             if (!isNaN(usd) && this.btcPrice) btc = usd / this.btcPrice;
         } else if (source === "idr") {
-            liveFormat(idrInput);
             const idr = this.parseFormattedNumber(idrInput.value);
             if (!isNaN(idr) && this.btcPrice && this.exchangeRate) {
                 btc = idr / (this.btcPrice * this.exchangeRate);
@@ -539,8 +581,8 @@ const BitcoinTools = {
     //------------------------------------------------
 
     calculateChannelCapacity() {
-        const total = this.parseFormattedNumber(document.getElementById("channelTotal").value);
-        const local = this.parseFormattedNumber(document.getElementById("channelLocal").value);
+        const total = parseFloat(document.getElementById("channelTotal").value);
+        const local = parseFloat(document.getElementById("channelLocal").value);
 
         if (!total || total <= 0 || isNaN(local) || local < 0 || local > total) {
             alert("Pastikan Local Balance tidak melebihi Total Kapasitas, dan kedua angka valid.");
@@ -584,8 +626,8 @@ const BitcoinTools = {
 
     calculateMiningProfit() {
         const hashrateTH = parseFloat(document.getElementById("miningHashrate").value);
-        const powerW = this.parseFormattedNumber(document.getElementById("miningPower").value);
-        const elecCost = parseFloat(document.getElementById("miningElecCost").value);
+        const powerW = parseFloat(document.getElementById("miningPower").value);
+        const elecCost = this.parseFormattedNumber(document.getElementById("miningElecCost").value);
         const poolFee = parseFloat(document.getElementById("miningPoolFee").value) || 0;
 
         if (!hashrateTH || !powerW || isNaN(elecCost)) {
@@ -677,27 +719,27 @@ const BitcoinTools = {
             '<input type="date" class="avgDate">' +
             '<div class="input-box">' +
             '<select class="avgCurrency"><option value="usd">$</option><option value="idr">Rp</option></select>' +
-            '<input type="text" inputmode="numeric" class="avgAmount" placeholder="Jumlah dibelanjakan">' +
+            '<input type="text" inputmode="decimal" class="avgAmount" placeholder="Jumlah dibelanjakan">' +
             '</div>' +
             '<p class="avgFetchedPrice">Pilih tanggal untuk memuat harga</p>';
         container.appendChild(row);
     },
 
     async fetchHistoricalPrice(dateInputValue) {
-        const parts = dateInputValue.split("-");
-        const year = parts[0];
-        const month = parts[1];
-        const day = parts[2];
-        const formattedDate = day + "-" + month + "-" + year;
-
-        if (this.historicalCache[formattedDate]) {
-            return this.historicalCache[formattedDate];
+        if (this.historicalCache[dateInputValue]) {
+            return this.historicalCache[dateInputValue];
         }
 
-        const res = await fetch("https://api.coingecko.com/api/v3/coins/bitcoin/history?date=" + formattedDate);
-        const data = await res.json();
-        const result = { usd: data.market_data.current_price.usd, idr: data.market_data.current_price.idr };
-        this.historicalCache[formattedDate] = result;
+        const priceMap = await this.loadLocalPriceHistory();
+        const usd = this.lookupHistoricalPrice(priceMap, dateInputValue);
+        if (usd === null) {
+            throw new Error("Tidak ada data harga untuk tanggal ini di btc-price-history.json (di luar rentang data yang tersimpan).");
+        }
+
+        const idr = this.exchangeRate ? usd * this.exchangeRate : null;
+
+        const result = { usd, idr };
+        this.historicalCache[dateInputValue] = result;
         return result;
     },
 

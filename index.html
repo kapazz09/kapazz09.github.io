@@ -72,8 +72,8 @@
 
     <div class="about fade-in">
         <h2>About Me</h2>
-        <p>Hello, saya Paskah.. Saya bekerja di bidang pelayanan kesehatan, dan perjalanan saya mengenal Bitcoin dimulai
-            dari cara yang tidak terduga: saya DITIPU !!! 😵😿</p>
+        <p>Hello, saya Pazkah.. Saya bekerja di bidang pelayanan kesehatan, dan perjalanan saya mengenal Bitcoin dimulai
+            dari cara yang tidak terduga:saya DITIPU !!! 😵😿.</p>
         <p>Semua berawal dari obrolan di Telegram. Seseorang menghubungi saya, kami mengobrol beberapa hari, sampai
             akhirnya dia meminta saya mengerjakan sebuah tugas memakai akunnya di salah satu platform. Saya kerjakan
             dengan serius, dan dalam dua hari tugas itu selesai — akun itu mendapat komisi sebesar 2.000 USDT.</p>
@@ -264,7 +264,7 @@
                                     <option value="usd">$</option>
                                     <option value="idr">Rp</option>
                                 </select>
-                                <input type="text" inputmode="numeric" id="dcaAmount" placeholder="10" value="10">
+                                <input type="text" inputmode="decimal" id="dcaAmount" placeholder="10" value="10">
                             </div>
                         </div>
                         <div class="dca-field">
@@ -282,7 +282,7 @@
                             <label>Tanggal Mulai</label>
                             <div class="input-box">
                                 <span>📅</span>
-                                <input type="date" id="dcaStartDate">
+                                <input type="date" id="dcaStartDate" min="2013-01-01">
                             </div>
                         </div>
                         <div class="dca-field">
@@ -307,9 +307,11 @@
                         <div class="result-row"><span>Profit (%)</span><strong id="profitPercent"></strong></div>
                         <button id="copyResultBtn" class="copy-btn">Copy Result</button>
                     </div>
-                    <p style="font-size:12px;color:#888;margin-top:10px;">*Harga historis diambil per tanggal pembelian
-                        dari CoinGecko. Frekuensi Mingguan/Bulanan bebas rentang panjang (bertahun-tahun). Frekuensi
-                        Harian dibatasi maks ~180 hari (6 bulan) agar tidak membebani API gratis.</p>
+                    <p style="font-size:12px;color:#888;margin-top:10px;">*Frekuensi Harian pakai harga hari itu saja;
+                        Mingguan/Bulanan pakai <strong>rata-rata harga sepanjang periode itu</strong> (bukan cuma 1
+                        tanggal), diambil dari file lokal <code>btc-price-history.json</code> (data sejak 1 Januari
+                        2013, di-update manual sekitar 1x/bulan). Nilai Rp adalah estimasi: harga USD historis
+                        dikalikan kurs USD/IDR saat ini.</p>
                 </div>
             </div>
 
@@ -337,13 +339,13 @@
                         </div>
                         <div class="dca-field">
                             <label>US Dollar (USD)</label>
-                            <div class="input-box"><span>$</span><input type="text" inputmode="numeric"
+                            <div class="input-box"><span>$</span><input type="text" inputmode="decimal"
                                     id="convUsdInput" placeholder="60"></div>
                         </div>
                         <div class="dca-field">
                             <label>Rupiah (IDR)</label>
-                            <div class="input-box"><span>Rp</span><input type="text" inputmode="numeric"
-                                    id="convIdrInput" placeholder="900000"></div>
+                            <div class="input-box"><span>Rp</span><input type="text" inputmode="decimal"
+                                    id="convIdrInput" placeholder="900.000"></div>
                         </div>
                     </div>
                     <p style="font-size:12px;color:#888;margin-top:10px;">*Buka "DCA Calculator" dan klik "Refresh
@@ -371,7 +373,7 @@
                                         <option value="usd">$</option>
                                         <option value="idr">Rp</option>
                                     </select>
-                                    <input type="text" inputmode="numeric" class="avgAmount"
+                                    <input type="text" inputmode="decimal" class="avgAmount"
                                         placeholder="Jumlah dibelanjakan">
                                 </div>
                                 <p class="avgFetchedPrice">Pilih tanggal untuk memuat harga</p>
@@ -392,8 +394,10 @@
                         </div>
                         <div class="result-row"><span>Profit / Loss</span><strong id="avgProfitLoss"></strong></div>
                     </div>
-                    <p style="font-size:12px;color:#888;margin-top:10px;">*Harga historis diambil otomatis berdasarkan
-                        tanggal yang dipilih (sumber: CoinGecko).</p>
+                    <p style="font-size:12px;color:#888;margin-top:10px;">*Harga USD historis diambil dari file lokal
+                        <code>btc-price-history.json</code> (data sejak 1 Januari 2013). Nilai Rp adalah
+                        estimasi menggunakan kurs USD/IDR saat ini.
+                    </p>
                 </div>
             </div>
 
@@ -433,13 +437,13 @@
                         </div>
                         <div class="dca-field">
                             <label>Konsumsi Daya (Watt)</label>
-                            <div class="input-box"><span>W</span><input type="text" inputmode="numeric" id="miningPower"
+                            <div class="input-box"><span>W</span><input type="number" id="miningPower"
                                     placeholder="3000" value="3000"></div>
                         </div>
                         <div class="dca-field">
                             <label>Biaya Listrik per kWh ($)</label>
-                            <div class="input-box"><span>$</span><input type="number" id="miningElecCost"
-                                    placeholder="0.10" value="0.10" step="any"></div>
+                            <div class="input-box"><span>$</span><input type="text" inputmode="decimal"
+                                    id="miningElecCost" placeholder="0,10" value="0,10"></div>
                         </div>
                         <div class="dca-field">
                             <label>Pool Fee (%)</label>
@@ -520,13 +524,13 @@
                     <div class="dca-card">
                         <div class="dca-field">
                             <label>Total Kapasitas Channel (sat)</label>
-                            <div class="input-box"><span>sat</span><input type="text" inputmode="numeric"
-                                    id="channelTotal" value="500000"></div>
+                            <div class="input-box"><span>sat</span><input type="number" id="channelTotal"
+                                    value="500000"></div>
                         </div>
                         <div class="dca-field">
                             <label>Local Balance / Saldo Anda (sat)</label>
-                            <div class="input-box"><span>sat</span><input type="text" inputmode="numeric"
-                                    id="channelLocal" value="200000"></div>
+                            <div class="input-box"><span>sat</span><input type="number" id="channelLocal"
+                                    value="200000"></div>
                         </div>
                         <button class="calculate-btn" id="channelCalcBtn">Hitung Kapasitas</button>
                     </div>
@@ -732,6 +736,7 @@
         <p>Built with HTML • CSS • JavaScript</p>
         <p>Hosted on GitHub Pages</p>
         <p>Made with ❤️ by Paskah</p>
+        <p> © 2026</p>
     </footer>
 
     <script src="script.js"></script>
