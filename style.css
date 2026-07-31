@@ -381,6 +381,28 @@ h1 {
     margin-bottom: 25px;
 }
 
+.toolkit-toggle-btn {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto 20px auto;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #f7931a, #ffb347);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(247, 147, 26, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.toolkit-toggle-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(247, 147, 26, 0.45);
+}
+
 .toolkit-icons {
 
     display: grid;

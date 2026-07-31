@@ -103,6 +103,23 @@ function copyAddress(el) {
 }
 
 // ==================================================
+// BITCOIN TOOLKIT: TAMPILKAN/SEMBUNYIKAN SELURUH BAGIAN
+// (biar halaman tidak terlalu panjang pas pertama dibuka di HP)
+// ==================================================
+function toggleToolkitSection() {
+    const body = document.getElementById('toolkitBody');
+    const btn = document.getElementById('toolkitToggleBtn');
+    const isHidden = body.style.display === 'none' || body.style.display === '';
+
+    body.style.display = isHidden ? 'block' : 'none';
+    btn.textContent = isHidden ? 'Sembunyikan Bitcoin Toolkit' : 'Tampilkan Bitcoin Toolkit';
+
+    if (isHidden) {
+        body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+// ==================================================
 // BACKGROUND MUSIC TOGGLE
 // ==================================================
 function toggleMusic() {
