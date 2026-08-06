@@ -324,7 +324,7 @@ const BitcoinTools = {
     async loadLocalPriceHistory() {
         if (this.priceHistoryCache) return this.priceHistoryCache;
 
-        const res = await fetch("btc-price-history.json");
+        const res = await fetch("data/btc-price-history.json");
         if (!res.ok) throw new Error("HTTP " + res.status);
         const json = await res.json();
         if (!json.prices) throw new Error("Format btc-price-history.json tidak sesuai");

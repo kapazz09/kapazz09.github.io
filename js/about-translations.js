@@ -10,10 +10,10 @@ const ABOUT_TRANSLATIONS = {
         label: "Indonesia",
         title: "About Me",
         intro: [
-            `Hello, saya Pazkah.. Saya bekerja di bidang pelayanan kesehatan, dan perjalanan saya mengenal Bitcoin dimulai dari cara yang tidak terduga: ditipu.`,
-            `Semua berawal dari obrolan di Telegram. Seseorang menghubungi saya, kami mengobrol beberapa hari, sampai akhirnya dia meminta saya mengerjakan sebuah tugas memakai akunnya di salah satu platform. Saya kerjakan dengan serius, dan dalam dua hari tugas itu selesai — akun itu mendapat komisi sebesar 2.000 USDT.`
+            `Hello, saya Pazkah.. Saya bekerja di bidang pelayanan kesehatan, dan perjalanan saya mengenal Bitcoin dimulai dari cara yang tidak terduga: ditipu.`
         ],
         extra: [
+            `Semua berawal dari obrolan di Telegram. Seseorang menghubungi saya, kami mengobrol beberapa hari, sampai akhirnya dia meminta saya mengerjakan sebuah tugas memakai akunnya di salah satu platform. Saya kerjakan dengan serius, dan dalam dua hari tugas itu selesai — akun itu mendapat komisi sebesar 2.000 USDT.`,
             `Saat itu saya bahkan tidak tahu apa itu crypto, apalagi USDT. Saya cuma melapor ke orang itu: "Komisi sudah cair." Dia terdengar sangat senang di telepon. Beberapa jam kemudian, akun itu sudah tidak bisa saya akses — password-nya sudah diganti.`,
             `Rasa penasaran itulah titik baliknya. Saya mulai mencari tahu apa sebenarnya USDT itu, dan menemukan bahwa itu adalah stablecoin yang nilainya dipatok 1:1 ke dolar Amerika. Begitu saya paham, penyesalan datang — andai saya tahu lebih cepat, mungkin 2.000 USDT itu bisa jadi milik saya.`,
             `Saya coba hubungi orang itu lagi, minta bagian saya. Dia menyuruh saya download wallet, lalu mengirim 100 USDT — jauh dari yang saya harapkan, tapi cukup untuk membuat saya terus menggali lebih dalam.`,
@@ -32,10 +32,10 @@ const ABOUT_TRANSLATIONS = {
         label: "English",
         title: "About Me",
         intro: [
-            `Hello, I'm Pazkah. I work in healthcare, and my journey into Bitcoin began in a way I never expected: I got scammed.`,
-            `It all started with a conversation on Telegram. Someone reached out to me, we talked for a few days, and eventually he asked me to complete a task using his account on a certain platform. I took it seriously, and within two days the task was done — the account earned a commission of 2,000 USDT.`
+            `Hello, I'm Pazkah. I work in healthcare, and my journey into Bitcoin began in a way I never expected: I got scammed.`
         ],
         extra: [
+            `It all started with a conversation on Telegram. Someone reached out to me, we talked for a few days, and eventually he asked me to complete a task using his account on a certain platform. I took it seriously, and within two days the task was done — the account earned a commission of 2,000 USDT.`,
             `At the time I didn't even know what crypto was, let alone USDT. I just reported back to him: "The commission has been paid out." He sounded thrilled on the phone. A few hours later, I could no longer access the account — the password had been changed.`,
             `That curiosity became the turning point. I started looking into what USDT actually was, and discovered it's a stablecoin pegged 1:1 to the US dollar. Once I understood that, regret set in — if only I'd known sooner, maybe that 2,000 USDT could have been mine.`,
             `I tried contacting him again to ask for my share. He told me to download a wallet, then sent 100 USDT — far less than I'd hoped for, but enough to make me keep digging deeper.`,
@@ -54,10 +54,10 @@ const ABOUT_TRANSLATIONS = {
         label: "中文",
         title: "关于我",
         intro: [
-            `你好，我是 Pazkah。我从事医疗保健工作，而我认识比特币的经历却始于一件意想不到的事：被骗了。`,
-            `一切都始于 Telegram 上的一次聊天。有人联系了我，我们聊了好几天，最后他让我用他在某个平台上的账号完成一项任务。我认真地完成了它，两天内任务就完成了——那个账号获得了 2000 USDT 的佣金。`
+            `你好，我是 Pazkah。我从事医疗保健工作，而我认识比特币的经历却始于一件意想不到的事：被骗了。`
         ],
         extra: [
+            `一切都始于 Telegram 上的一次聊天。有人联系了我，我们聊了好几天，最后他让我用他在某个平台上的账号完成一项任务。我认真地完成了它，两天内任务就完成了——那个账号获得了 2000 USDT 的佣金。`,
             `那时候我甚至不知道什么是加密货币，更别说 USDT 了。我只是向那个人汇报："佣金已经到账了。"他在电话里听起来非常高兴。几个小时后，我就再也登不进那个账号了——密码已经被改掉了。`,
             `正是那份好奇心成了转折点。我开始去了解 USDT 到底是什么，发现它是一种价值与美元 1:1 挂钩的稳定币。等我弄明白之后，懊悔随之而来——要是我早点知道，那 2000 USDT 说不定就是我的了。`,
             `我试着再联系那个人，想要回属于我的那份。他让我下载一个钱包，然后给我转了 100 USDT——远远低于我的期望，但足以让我继续深入探索下去。`,
@@ -76,10 +76,10 @@ const ABOUT_TRANSLATIONS = {
         label: "Español",
         title: "Sobre Mí",
         intro: [
-            `Hola, soy Pazkah. Trabajo en el sector de la salud, y mi historia con Bitcoin comenzó de una forma que nunca esperé: fui estafado.`,
-            `Todo empezó con una conversación en Telegram. Alguien me contactó, hablamos durante varios días, hasta que finalmente me pidió que completara una tarea usando su cuenta en cierta plataforma. Lo hice con seriedad, y en dos días la tarea estaba lista — la cuenta ganó una comisión de 2.000 USDT.`
+            `Hola, soy Pazkah. Trabajo en el sector de la salud, y mi historia con Bitcoin comenzó de una forma que nunca esperé: fui estafado.`
         ],
         extra: [
+            `Todo empezó con una conversación en Telegram. Alguien me contactó, hablamos durante varios días, hasta que finalmente me pidió que completara una tarea usando su cuenta en cierta plataforma. Lo hice con seriedad, y en dos días la tarea estaba lista — la cuenta ganó una comisión de 2.000 USDT.`,
             `En ese momento ni siquiera sabía qué era el crypto, mucho menos el USDT. Solo le avisé: "La comisión ya se liberó." Sonaba encantado por teléfono. Unas horas después, ya no pude acceder a la cuenta — habían cambiado la contraseña.`,
             `Esa curiosidad fue el punto de inflexión. Empecé a investigar qué era realmente el USDT, y descubrí que es una stablecoin cuyo valor está fijado 1:1 al dólar estadounidense. Al entenderlo, llegó el arrepentimiento — si lo hubiera sabido antes, quizás esos 2.000 USDT habrían sido míos.`,
             `Intenté contactarlo de nuevo para pedir mi parte. Me dijo que descargara una billetera, y luego me envió 100 USDT — muy lejos de lo que esperaba, pero suficiente para hacerme seguir indagando.`,
@@ -98,10 +98,10 @@ const ABOUT_TRANSLATIONS = {
         label: "Français",
         title: "À Propos de Moi",
         intro: [
-            `Bonjour, je suis Pazkah. Je travaille dans le secteur de la santé, et mon parcours avec le Bitcoin a commencé d'une façon totalement inattendue : je me suis fait arnaquer.`,
-            `Tout a commencé par une conversation sur Telegram. Quelqu'un m'a contacté, nous avons discuté pendant plusieurs jours, jusqu'à ce qu'il me demande finalement d'effectuer une tâche en utilisant son compte sur une certaine plateforme. Je l'ai fait sérieusement, et en deux jours la tâche était terminée — le compte a reçu une commission de 2 000 USDT.`
+            `Bonjour, je suis Pazkah. Je travaille dans le secteur de la santé, et mon parcours avec le Bitcoin a commencé d'une façon totalement inattendue : je me suis fait arnaquer.`
         ],
         extra: [
+            `Tout a commencé par une conversation sur Telegram. Quelqu'un m'a contacté, nous avons discuté pendant plusieurs jours, jusqu'à ce qu'il me demande finalement d'effectuer une tâche en utilisant son compte sur une certaine plateforme. Je l'ai fait sérieusement, et en deux jours la tâche était terminée — le compte a reçu une commission de 2 000 USDT.`,
             `À l'époque, je ne savais même pas ce qu'était la crypto, encore moins l'USDT. J'ai simplement dit à cette personne : « La commission est arrivée. » Il semblait ravi au téléphone. Quelques heures plus tard, je ne pouvais plus accéder au compte — le mot de passe avait été changé.`,
             `Cette curiosité a été le tournant. J'ai commencé à me renseigner sur ce qu'était réellement l'USDT, et j'ai découvert que c'était un stablecoin dont la valeur est indexée 1:1 sur le dollar américain. Une fois que j'ai compris, les regrets sont arrivés — si seulement je l'avais su plus tôt, ces 2 000 USDT auraient peut-être été à moi.`,
             `J'ai essayé de recontacter cette personne pour demander ma part. Il m'a dit de télécharger un portefeuille, puis m'a envoyé 100 USDT — bien loin de ce que j'espérais, mais suffisant pour me pousser à creuser davantage.`,
@@ -120,10 +120,10 @@ const ABOUT_TRANSLATIONS = {
         label: "Русский",
         title: "Обо мне",
         intro: [
-            `Привет, я Пазках. Я работаю в сфере здравоохранения, и мой путь к Биткоину начался совершенно неожиданно: меня обманули.`,
-            `Всё началось с переписки в Telegram. Кто-то написал мне, мы общались несколько дней, пока он наконец не попросил меня выполнить задание, используя его аккаунт на одной из платформ. Я отнёсся к этому серьёзно, и через два дня задание было готово — аккаунт получил комиссию в размере 2000 USDT.`
+            `Привет, я Пазках. Я работаю в сфере здравоохранения, и мой путь к Биткоину начался совершенно неожиданно: меня обманули.`
         ],
         extra: [
+            `Всё началось с переписки в Telegram. Кто-то написал мне, мы общались несколько дней, пока он наконец не попросил меня выполнить задание, используя его аккаунт на одной из платформ. Я отнёсся к этому серьёзно, и через два дня задание было готово — аккаунт получил комиссию в размере 2000 USDT.`,
             `В то время я даже не знал, что такое криптовалюта, не говоря уже об USDT. Я просто сообщил ему: «Комиссия поступила». По телефону он звучал очень довольным. Через несколько часов я уже не мог зайти в аккаунт — пароль был изменён.`,
             `Именно это любопытство стало поворотным моментом. Я начал разбираться, что такое USDT на самом деле, и узнал, что это стейблкоин, курс которого привязан 1:1 к доллару США. Когда я это понял, пришло сожаление — если бы я узнал раньше, возможно, эти 2000 USDT могли бы стать моими.`,
             `Я попытался снова связаться с ним, чтобы попросить свою долю. Он сказал мне скачать кошелёк, а затем прислал 100 USDT — намного меньше, чем я надеялся, но достаточно, чтобы я продолжил копать глубже.`,
@@ -142,10 +142,10 @@ const ABOUT_TRANSLATIONS = {
         label: "Português",
         title: "Sobre Mim",
         intro: [
-            `Olá, eu sou Pazkah. Trabalho na área da saúde, e minha jornada com o Bitcoin começou de um jeito que eu nunca esperei: fui enganado.`,
-            `Tudo começou com uma conversa no Telegram. Alguém entrou em contato comigo, conversamos por alguns dias, até que ele finalmente me pediu para realizar uma tarefa usando a conta dele em uma certa plataforma. Fiz isso com seriedade, e em dois dias a tarefa estava concluída — a conta recebeu uma comissão de 2.000 USDT.`
+            `Olá, eu sou Pazkah. Trabalho na área da saúde, e minha jornada com o Bitcoin começou de um jeito que eu nunca esperei: fui enganado.`
         ],
         extra: [
+            `Tudo começou com uma conversa no Telegram. Alguém entrou em contato comigo, conversamos por alguns dias, até que ele finalmente me pediu para realizar uma tarefa usando a conta dele em uma certa plataforma. Fiz isso com seriedade, e em dois dias a tarefa estava concluída — a conta recebeu uma comissão de 2.000 USDT.`,
             `Na época, eu nem sabia o que era cripto, muito menos USDT. Só avisei a ele: "A comissão já caiu." Ele parecia muito feliz ao telefone. Algumas horas depois, eu já não conseguia mais acessar a conta — a senha tinha sido trocada.`,
             `Essa curiosidade foi o ponto de virada. Comecei a pesquisar o que realmente era USDT, e descobri que é uma stablecoin cujo valor é atrelado 1:1 ao dólar americano. Assim que entendi isso, veio o arrependimento — se eu soubesse antes, talvez aqueles 2.000 USDT pudessem ter sido meus.`,
             `Tentei entrar em contato com ele de novo para pedir minha parte. Ele me mandou baixar uma carteira, e então enviou 100 USDT — bem longe do que eu esperava, mas o suficiente para me fazer continuar investigando mais a fundo.`,
