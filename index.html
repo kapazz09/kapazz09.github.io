@@ -40,6 +40,10 @@
         <source src="assets/video/bg-video.mp4" type="video/mp4">
     </video>
 
+    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" aria-label="Kembali ke atas">
+        <i data-lucide="arrow-up"></i>
+    </button>
+
     <div class="header">
         <button onclick="toggleMusic()" class="music-btn">🔊</button>
         <audio id="bgMusic" src="assets/audio/musik.mp3" loop></audio>
@@ -65,8 +69,8 @@
 
             <div class="btc-ticker">
                 <img src="https://cdn.simpleicons.org/bitcoin/f7931a" width="32" height="32">
-                <p id="btc-price" class="btc-price">Loading...</p>
-                <p id="btc-change" class="btc-change">--</p>
+                <p id="btc-price" class="btc-price skeleton-loading">&nbsp;</p>
+                <p id="btc-change" class="btc-change skeleton-loading">&nbsp;</p>
                 <p class="live-tag">• live price update •</p>
             </div>
         </div>
@@ -155,10 +159,6 @@
             Interactive Bitcoin tools to help you learn and calculate.
         </p>
 
-        <button id="toolkitToggleBtn" class="toolkit-toggle-btn" onclick="toggleToolkitSection()">Tampilkan Bitcoin Toolkit</button>
-
-        <div id="toolkitBody" style="display:none;">
-
         <div class="toolkit-icons">
 
             <div class="tool-icon" onclick="showTool('quiz',this)">
@@ -213,15 +213,13 @@
 
         </div>
 
-        <div class="tool-display">
 
-            <div id="tool-placeholder" class="tool-panel active">
-                <div class="coming-card">
-                    <i data-lucide="mouse-pointer-click"></i>
-                    <h3>Pilih Tool</h3>
-                    <span>Klik salah satu icon di atas untuk mulai</span>
-                </div>
-            </div>
+    </div>
+
+        <div class="tool-modal-backdrop" id="toolModalBackdrop" onclick="closeToolModalOnBackdrop(event)">
+        <div class="tool-display" id="toolModalBox">
+
+            <button class="modal-close-btn" onclick="closeToolModal()" aria-label="Tutup">✕</button>
 
             <div id="tool-quiz" class="tool-panel">
                 <div class="tool-header">
@@ -617,8 +615,6 @@
 
         </div>
 
-    </div>
-
     <div class="live-widgets fade-in">
 
         <div class="widget-card">
@@ -655,107 +651,65 @@
 
     <div class="crypto-support fade-in">
         <h2 class="fuel-heading">❤️ Support My Bitcoin Journey</h2>
-        <p class="fuel-subtitle">If my learning materials help you, feel free to support my journey</p>
+        <p class="fuel-subtitle">If my learning materials or tools have helped you, feel free to support my journey</p>
 
         <div class="crypto-icons">
             <img src="https://cdn.simpleicons.org/bitcoin/f7931a" width="50" height="50" class="icon-crypto"
-                alt="Bitcoin BTC" onclick="toggleQR('btc')" style="cursor:pointer;">
+                alt="Bitcoin BTC" onclick="openCryptoModal('btc')" style="cursor:pointer;">
             <img src="https://cdn.simpleicons.org/ethereum/3c3c3d" width="50" height="50" class="icon-crypto"
-                alt="Ethereum ETH" onclick="toggleQR('eth')" style="cursor:pointer;">
+                alt="Ethereum ETH" onclick="openCryptoModal('eth')" style="cursor:pointer;">
             <img src="https://cdn.simpleicons.org/tether/26a17b" width="50" height="50" class="icon-crypto"
-                alt="USDT BEP20" onclick="toggleQR('usdt')" style="cursor:pointer;">
+                alt="USDT BEP20" onclick="openCryptoModal('usdt')" style="cursor:pointer;">
             <img src="https://cdn.simpleicons.org/binance/F0B90B" width="50" height="50" class="icon-crypto" alt="BNB"
-                onclick="toggleQR('bnb')" style="cursor:pointer;">
+                onclick="openCryptoModal('bnb')" style="cursor:pointer;">
             <img src="https://cdn.simpleicons.org/xrp/25A768" width="50" height="50" class="icon-crypto" alt="XRP"
-                onclick="toggleQR('xrp')" style="cursor:pointer;">
+                onclick="openCryptoModal('xrp')" style="cursor:pointer;">
             <img src="https://cdn.simpleicons.org/solana/9945FF" width="50" height="50" class="icon-crypto"
-                alt="Solana SOL" onclick="toggleQR('sol')" style="cursor:pointer;">
+                alt="Solana SOL" onclick="openCryptoModal('sol')" style="cursor:pointer;">
             <img src="https://cdn.simpleicons.org/lightning/2196f3" width="50" height="50" class="icon-crypto"
-                alt="Lightning Address" onclick="toggleQR('lightning')" style="cursor:pointer;">
+                alt="Lightning Address" onclick="openCryptoModal('lightning')" style="cursor:pointer;">
         </div>
+    </div>
 
-        <div class="qr-wrapper">
-            <div id="qr-btc" class="qr-box"></div>
-            <img src="https://cdn.simpleicons.org/bitcoin/f7931a" class="qr-logo" alt="">
+    <div class="crypto-modal-backdrop" id="cryptoModalBackdrop" onclick="closeCryptoModalOnBackdrop(event)">
+        <div class="crypto-modal-box" id="cryptoModalBox">
+            <button class="modal-close-btn" onclick="closeCryptoModal()" aria-label="Tutup">✕</button>
+            <div class="qr-wrapper">
+                <div id="cryptoModalQR" class="qr-box"></div>
+                <img id="cryptoModalLogo" class="qr-logo" alt="">
+            </div>
+            <p id="cryptoModalDetail" class="crypto-detail"></p>
         </div>
-        <p id="detail-btc" class="crypto-detail">
-            <strong style="color:#f7931a;">Bitcoin (Native SegWit)</strong><br>
-            <span class="copy-address" onclick="copyAddress(this)"
-                data-address="bc1qrm2295j3zhqaxx48evmgwmxnnypc66uzs4ej5x">bc1qrm2295j3zhqaxx48evmgwmxnnypc66uzs4ej5x
-                <span class="copy-icon">📋</span></span>
-        </p>
-
-        <div class="qr-wrapper">
-            <div id="qr-eth" class="qr-box"></div>
-            <img src="https://cdn.simpleicons.org/ethereum/3c3c3d" class="qr-logo" alt="">
-        </div>
-        <p id="detail-eth" class="crypto-detail">
-            <strong style="color:#627eea;">Ethereum (ERC20)</strong><br>
-            <span class="copy-address" onclick="copyAddress(this)"
-                data-address="0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137">0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137
-                <span class="copy-icon">📋</span></span>
-        </p>
-
-        <div class="qr-wrapper">
-            <div id="qr-usdt" class="qr-box"></div>
-            <img src="https://cdn.simpleicons.org/tether/26a17b" class="qr-logo" alt="">
-        </div>
-        <p id="detail-usdt" class="crypto-detail">
-            <strong style="color:#26a17b;">USDT</strong> <strong style="color:#f0b90b;">(BEP20 - BNB Smart
-                Chain)</strong><br>
-            <span class="copy-address" onclick="copyAddress(this)"
-                data-address="0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137">0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137
-                <span class="copy-icon">📋</span></span>
-        </p>
-
-        <div class="qr-wrapper">
-            <div id="qr-bnb" class="qr-box"></div>
-            <img src="https://cdn.simpleicons.org/binance/F0B90B" class="qr-logo" alt="">
-        </div>
-        <p id="detail-bnb" class="crypto-detail">
-            <strong style="color:#f0b90b;">BNB (BEP20 - BNB Smart Chain)</strong><br>
-            <span class="copy-address" onclick="copyAddress(this)"
-                data-address="0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137">0xa3b67598Bba5cbD8C519dC8f98EeB5A454EFa137
-                <span class="copy-icon">📋</span></span>
-        </p>
-
-        <div class="qr-wrapper">
-            <div id="qr-xrp" class="qr-box"></div>
-            <img src="https://cdn.simpleicons.org/xrp/25A768" class="qr-logo" alt="">
-        </div>
-        <p id="detail-xrp" class="crypto-detail">
-            <strong style="color:#00aae4;">XRP (XRP Ledger)</strong><br>
-            <span class="copy-address" onclick="copyAddress(this)"
-                data-address="rhKT1k4EbfqcCKLDqtFjTJojgDm7m1HiGj">rhKT1k4EbfqcCKLDqtFjTJojgDm7m1HiGj <span
-                    class="copy-icon">📋</span></span>
-        </p>
-
-        <div class="qr-wrapper">
-            <div id="qr-sol" class="qr-box"></div>
-            <img src="https://cdn.simpleicons.org/solana/9945FF" class="qr-logo" alt="">
-        </div>
-        <p id="detail-sol" class="crypto-detail">
-            <strong style="color:#9945FF;">Solana (SOL)</strong><br>
-            <span class="copy-address" onclick="copyAddress(this)"
-                data-address="F5fWxfQqv9FWGHhbVEfnZE94GwL5gJdEv71hdkaeaa8U">F5fWxfQqv9FWGHhbVEfnZE94GwL5gJdEv71hdkaeaa8U
-                <span class="copy-icon">📋</span></span>
-        </p>
-
-        <div class="qr-wrapper">
-            <div id="qr-lightning" class="qr-box"></div>
-            <img src="https://cdn.simpleicons.org/lightning/2196f3" class="qr-logo" alt="">
-        </div>
-        <p id="detail-lightning" class="crypto-detail">
-            <strong style="color:#f7b500;">Lightning Network</strong><br>
-            <span class="copy-address" onclick="copyAddress(this)" data-address="kapazz09@blink.sv">kapazz09@blink.sv
-                <span class="copy-icon">📋</span></span>
-        </p>
     </div>
 
     <footer class="site-footer">
-        <p>Built with HTML • CSS • JavaScript</p>
-        <p>Hosted on GitHub Pages</p>
-        <p>Made with ❤️ by Paskah</p>
+        <div class="footer-social">
+            <a href="https://wa.me/6285237722911" target="_blank">
+                <img src="https://cdn.simpleicons.org/whatsapp/ffffff" width="22" height="22" alt="WhatsApp">
+            </a>
+            <a href="https://instagram.com/pazkahbire09" target="_blank">
+                <img src="https://cdn.simpleicons.org/instagram/ffffff" width="22" height="22" alt="Instagram">
+            </a>
+            <a href="https://www.facebook.com/pazkah" target="_blank">
+                <img src="https://cdn.simpleicons.org/facebook/ffffff" width="22" height="22" alt="Facebook">
+            </a>
+            <a href="https://tiktok.com/@pazkahbire" target="_blank">
+                <img src="https://cdn.simpleicons.org/tiktok/ffffff" width="22" height="22" alt="TikTok">
+            </a>
+        </div>
+
+        <nav class="footer-links">
+            <a href="#" onclick="document.querySelector('.about').scrollIntoView({behavior:'smooth'});return false;">About</a>
+            <span>•</span>
+            <a href="#" onclick="document.querySelector('.materials-section').scrollIntoView({behavior:'smooth'});return false;">Materials</a>
+            <span>•</span>
+            <a href="#" onclick="document.querySelector('.toolkit-section').scrollIntoView({behavior:'smooth'});return false;">Toolkit</a>
+            <span>•</span>
+            <a href="#" onclick="document.querySelector('.crypto-support').scrollIntoView({behavior:'smooth'});return false;">Support</a>
+        </nav>
+
+        <p>Built with HTML • CSS • JavaScript — Hosted on GitHub Pages</p>
+        <p id="footerCopyright">© <span id="footerYear"></span> Kapazz Bitcoin — Made with ❤️ by Paskah</p>
     </footer>
 
     <script src="js/script.js"></script>
