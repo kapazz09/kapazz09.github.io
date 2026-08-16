@@ -215,14 +215,22 @@ window.addEventListener('scroll', () => {
 
 // ==================================================
 // BACKGROUND MUSIC TOGGLE
+// (ikon tombol selalu ikut kondisi asli, bukan hardcode)
 // ==================================================
 function toggleMusic() {
     const audio = document.getElementById('bgMusic');
     if (audio.paused) {
-        audio.play();
+        audio.play().catch(() => {});
     } else {
         audio.pause();
     }
+}
+
+function updateMusicButtonIcon() {
+    const audio = document.getElementById('bgMusic');
+    const btn = document.querySelector('.music-btn');
+    if (!audio || !btn) return;
+    btn.textContent = audio.paused ? '🔇' : '🔊';
 }
 
 // ==================================================
@@ -240,6 +248,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const footerYear = document.getElementById('footerYear');
     if (footerYear) footerYear.textContent = new Date().getFullYear();
+
+    const bgAudio = document.getElementById('bgMusic');
+    if (bgAudio) {
+        bgAudio.addEventListener('play', updateMusicButtonIcon);
+        bgAudio.addEventListener('pause', updateMusicButtonIcon);
+    }
+    updateMusicButtonIcon();
 
     if (window.lucide) {
         lucide.createIcons();
