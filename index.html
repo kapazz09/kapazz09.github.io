@@ -3,6 +3,15 @@
 
 <head>
     <meta name="google-site-verification" content="cEuDypefRtq1a3D_1zfv_0Sp1wleyohsOwEN_2COXTI" />
+
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H7C1RLHFG2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-H7C1RLHFG2');
+    </script>
     <title>Kapazz Bitcoin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Yellowtail&display=swap"
         rel="stylesheet">
@@ -704,6 +713,19 @@
         </div>
     </div>
 
+    <div class="rating-section fade-in">
+        <h2>⭐ Nilai Situs Ini</h2>
+        <p class="rating-subtitle">Suka dengan materi atau tools di sini? Kasih rating ya!</p>
+        <div class="star-rating" id="starRating">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+        </div>
+        <p class="rating-summary" id="ratingSummary">Memuat rating...</p>
+    </div>
+
     <footer class="site-footer">
         <div class="footer-social">
             <a href="https://wa.me/6285237722911" target="_blank">
@@ -737,6 +759,7 @@
     <script src="js/script.js"></script>
     <script src="js/about-translations.js"></script>
     <script src="js/bitcoin-tools.js"></script>
+    <script src="js/ratings.js"></script>
 </body>
 
 </html>

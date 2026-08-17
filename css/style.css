@@ -29,7 +29,8 @@ body {
 .materials-section,
 .toolkit-section,
 .live-widgets,
-.crypto-support {
+.crypto-support,
+.rating-section {
     max-width: 1100px;
     margin-left: auto;
     margin-right: auto;
@@ -547,6 +548,66 @@ h1 {
 
 .footer-links span {
     color: #666;
+}
+
+.rating-section {
+    background: rgba(20, 20, 25, 0.55);
+    padding: 18px 20px;
+    margin-top: 20px;
+    border-radius: 12px;
+    border-top: 3px solid #f7931a;
+    text-align: center;
+    color: #eee;
+}
+
+.rating-section h2 {
+    font-size: 16px;
+    margin: 0 0 4px 0;
+    color: #fff;
+}
+
+.rating-subtitle {
+    font-size: 12px;
+    color: #bbb;
+    margin: 0 0 10px 0;
+}
+
+.star-rating {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    font-size: 22px;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.star-rating .star {
+    color: rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.star-rating .star:hover {
+    transform: scale(1.15);
+}
+
+.star-rating .star.filled {
+    color: #f7931a;
+}
+
+.star-rating.rated .star {
+    cursor: default;
+}
+
+.star-rating.rated .star:hover {
+    transform: none;
+}
+
+.rating-summary {
+    font-size: 12px;
+    color: #bbb;
+    margin: 0;
+    font-weight: 600;
 }
 
 .site-footer p {
