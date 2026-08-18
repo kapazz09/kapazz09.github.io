@@ -205,6 +205,109 @@ const BitcoinTools = {
     },
 
     //------------------------------------------------
+    // CHART.JS (lazy-loaded — baru diambil pas modal DCA /
+    // Average Buy dibuka & hasil siap ditampilkan, bukan di
+    // awal halaman, biar loading utama tetap ringan).
+    //------------------------------------------------
+    _chartJsPromise: null,
+
+    loadChartJs() {
+        if (window.Chart) return Promise.resolve();
+        if (this._chartJsPromise) return this._chartJsPromise;
+        this._chartJsPromise = new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            script.src = "https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js";
+            script.onload = () => resolve();
+            script.onerror = () => reject(new Error("Gagal memuat Chart.js"));
+            document.head.appendChild(script);
+        });
+        return this._chartJsPromise;
+    },
+
+    // Hancurkan chart lama sebelum bikin baru, biar tidak numpuk
+    // ("canvas already in use") kalau simulasi diulang.
+    _chartInstances: {},
+
+    renderTrendChart(canvasId, points) {
+        this.loadChartJs().then(() => {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas || !points || points.length === 0) return;
+
+            if (this._chartInstances[canvasId]) {
+                this._chartInstances[canvasId].destroy();
+            }
+
+            const isMobile = window.innerWidth < 600;
+            const labels = points.map(p => p.label);
+            const values = points.map(p => p.value);
+
+            this._chartInstances[canvasId] = new Chart(canvas.getContext("2d"), {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        borderColor: "#f7931a",
+                        backgroundColor: "rgba(247, 147, 26, 0.12)",
+                        borderWidth: isMobile ? 1.5 : 2,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 0,
+                        pointHitRadius: 12,
+                        pointHoverRadius: 4,
+                        pointHoverBackgroundColor: "#f7931a"
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: "nearest", intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: (ctx) => "$" + ctx.parsed.y.toLocaleString("en-US", { maximumFractionDigits: 0 })
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: !isMobile,
+                            grid: { display: false }
+                        },
+                        y: {
+                            display: !isMobile,
+                            grid: { display: !isMobile, color: "rgba(0,0,0,0.05)" },
+                            ticks: {
+                                callback: (val) => "$" + Number(val).toLocaleString("en-US", { maximumFractionDigits: 0 })
+                            }
+                        }
+                    }
+                }
+            });
+        }).catch(err => console.warn("Chart gagal dimuat:", err));
+    },
+
+    //------------------------------------------------
+    // CONFETTI (skor kuis tinggi)
+    //------------------------------------------------
+    fireConfetti() {
+        const colors = ["#f7931a", "#ffb347", "#16a34a", "#2980ef", "#ffd166"];
+        const count = 40;
+        for (let i = 0; i < count; i++) {
+            const piece = document.createElement("div");
+            piece.className = "confetti-piece";
+            piece.style.left = Math.random() * 100 + "vw";
+            piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+            piece.style.animationDelay = (Math.random() * 0.4) + "s";
+            piece.style.animationDuration = (1.8 + Math.random() * 1) + "s";
+            document.body.appendChild(piece);
+            setTimeout(() => piece.remove(), 3200);
+        }
+    },
+
+    //------------------------------------------------
     // EVENTS
     //------------------------------------------------
 
@@ -279,6 +382,17 @@ const BitcoinTools = {
 
         const walletScanCloseBtn = document.getElementById("walletScanCloseBtn");
         if (walletScanCloseBtn) walletScanCloseBtn.addEventListener("click", () => this.stopWalletScan());
+
+        const walletScanUploadBtn = document.getElementById("walletScanUploadBtn");
+        const walletScanFileInput = document.getElementById("walletScanFileInput");
+        if (walletScanUploadBtn && walletScanFileInput) {
+            walletScanUploadBtn.addEventListener("click", () => walletScanFileInput.click());
+            walletScanFileInput.addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                if (file) this.scanWalletQrFromFile(file);
+                walletScanFileInput.value = "";
+            });
+        }
     },
 
     //------------------------------------------------
@@ -286,6 +400,9 @@ const BitcoinTools = {
     //------------------------------------------------
 
     async loadPrice() {
+        const display = document.getElementById("dcaLivePriceDisplay");
+        if (display) display.classList.add("skeleton-block", "short");
+
         try {
             const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,idr");
             const data = await response.json();
@@ -305,11 +422,15 @@ const BitcoinTools = {
             ? " / Rp" + Math.round(this.btcPrice * this.exchangeRate).toLocaleString("id-ID")
             : "";
         display.textContent = "$" + this.btcPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + idrText;
+        display.classList.remove("skeleton-block", "short");
     },
 
     showOfflinePrice() {
         const display = document.getElementById("dcaLivePriceDisplay");
-        if (display) display.textContent = "Gagal memuat harga";
+        if (display) {
+            display.textContent = "Gagal memuat harga";
+            display.classList.remove("skeleton-block", "short");
+        }
     },
 
     //------------------------------------------------
@@ -400,7 +521,7 @@ const BitcoinTools = {
             return;
         }
         if (!this.btcPrice) {
-            alert("Harga BTC live belum termuat. Klik 'Refresh Live Price' dulu.");
+            alert("Harga BTC live belum termuat. Coba tunggu sebentar atau klik 'Refresh Live Price'.");
             return;
         }
 
@@ -495,12 +616,35 @@ const BitcoinTools = {
                 "$" + avgPriceUSD.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " / Rp" + Math.round(avgPriceIDR).toLocaleString("id-ID");
             document.getElementById("currentValue").textContent =
                 "$" + currentValueUSD.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " / Rp" + Math.round(currentValueIDR).toLocaleString("id-ID");
-            document.getElementById("profitLoss").textContent =
-                (profitLossUSD >= 0 ? "+$" : "-$") + Math.abs(profitLossUSD).toLocaleString("en-US", { maximumFractionDigits: 2 }) +
-                " / " + (profitLossIDR >= 0 ? "+Rp" : "-Rp") + Math.abs(Math.round(profitLossIDR)).toLocaleString("id-ID");
-            document.getElementById("profitPercent").textContent = (profitPercent >= 0 ? "+" : "") + profitPercent.toFixed(2) + "%";
+            document.getElementById("profitLoss").innerHTML =
+                (profitLossUSD >= 0
+                    ? '<span class="value-positive">▲ +$' + Math.abs(profitLossUSD).toLocaleString("en-US", { maximumFractionDigits: 2 }) + ' / +Rp' + Math.abs(Math.round(profitLossIDR)).toLocaleString("id-ID") + '</span>'
+                    : '<span class="value-negative">▼ -$' + Math.abs(profitLossUSD).toLocaleString("en-US", { maximumFractionDigits: 2 }) + ' / -Rp' + Math.abs(Math.round(profitLossIDR)).toLocaleString("id-ID") + '</span>');
+            document.getElementById("profitPercent").innerHTML =
+                (profitPercent >= 0
+                    ? '<span class="value-positive">▲ +' + profitPercent.toFixed(2) + '%</span>'
+                    : '<span class="value-negative">▼ ' + profitPercent.toFixed(2) + '%</span>');
 
             document.getElementById("dcaResult").style.display = "block";
+
+            // Chart tren harga sepanjang periode (maks ~80 titik biar ringan)
+            const rangeDays = Math.max(1, Math.round((endDate - startDate) / 86400000));
+            const maxPoints = 80;
+            const stepDays = Math.max(1, Math.ceil(rangeDays / maxPoints));
+            const chartPoints = [];
+            let chartCursor = new Date(startDate);
+            while (chartCursor <= endDate) {
+                const dateStr = this.toDateInputFormat(chartCursor);
+                const price = this.lookupHistoricalPrice(usdMap, dateStr);
+                if (price !== null) chartPoints.push({ label: dateStr, value: price });
+                chartCursor.setUTCDate(chartCursor.getUTCDate() + stepDays);
+            }
+            const lastDateStr = this.toDateInputFormat(endDate);
+            const lastPrice = this.lookupHistoricalPrice(usdMap, lastDateStr);
+            if (lastPrice !== null && (chartPoints.length === 0 || chartPoints[chartPoints.length - 1].label !== lastDateStr)) {
+                chartPoints.push({ label: lastDateStr, value: lastPrice });
+            }
+            this.renderTrendChart("dcaChart", chartPoints);
         })().catch((e) => {
             alert(e.message || "Terjadi kesalahan saat memuat data historis. Coba lagi.");
         }).finally(() => {
@@ -608,6 +752,10 @@ const BitcoinTools = {
     //------------------------------------------------
 
     loadNetworkHashrate() {
+        const info = document.getElementById("networkHashrateInfo");
+        if (info) {
+            info.innerHTML = '<span class="skeleton-block short" style="height:10px;"></span>';
+        }
         fetch("https://mempool.space/api/v1/mining/hashrate/3d")
             .then(res => res.json())
             .then(data => {
@@ -639,7 +787,7 @@ const BitcoinTools = {
             return;
         }
         if (!this.btcPrice) {
-            alert("Harga BTC belum termuat. Buka DCA Calculator dan klik 'Refresh Price' dulu.");
+            alert("Harga BTC belum termuat. Buka DCA Calculator / Currency Converter untuk memuat harga live dulu.");
             return;
         }
 
@@ -672,13 +820,18 @@ const BitcoinTools = {
     //------------------------------------------------
 
     loadFeeRate() {
+        const info = document.getElementById("feeRateInfo");
+        if (info) info.innerHTML = '<span class="skeleton-block short" style="height:10px;"></span>';
+
         fetch("https://mempool.space/api/v1/fees/recommended")
             .then(res => res.json())
             .then(data => {
                 const feeInput = document.getElementById("utxoFeeRate");
                 if (feeInput) feeInput.value = data.halfHourFee;
+                if (info) info.textContent = "Fee rate saat ini: " + data.halfHourFee + " sat/vB (dimuat otomatis)";
             })
             .catch(() => {
+                if (info) info.textContent = "Gagal memuat fee rate. Silakan isi manual.";
                 alert("Gagal memuat fee rate. Silakan isi manual.");
             });
     },
@@ -766,10 +919,12 @@ const BitcoinTools = {
         let totalSpentUSD = 0;
         let totalSpentIDR = 0;
         let validCount = 0;
+        const chartRaw = [];
 
         rows.forEach(row => {
             const amountInput = row.querySelector(".avgAmount");
             const currencySelect = row.querySelector(".avgCurrency");
+            const dateInput = row.querySelector(".avgDate");
             const amount = this.parseFormattedNumber(amountInput.value);
             const currency = currencySelect.value;
             const priceUsd = parseFloat(row.dataset.priceUsd);
@@ -788,6 +943,10 @@ const BitcoinTools = {
             totalSpentUSD += btcBought * priceUsd;
             totalSpentIDR += btcBought * priceIdr;
             validCount++;
+
+            if (dateInput && dateInput.value) {
+                chartRaw.push({ label: dateInput.value, value: priceUsd });
+            }
         });
 
         if (validCount === 0 || totalBTC === 0) {
@@ -795,7 +954,7 @@ const BitcoinTools = {
             return;
         }
         if (!this.btcPrice) {
-            alert("Harga BTC live belum termuat. Buka DCA Calculator dan klik 'Refresh Price' dulu.");
+            alert("Harga BTC live belum termuat. Coba pindah tab ke DCA Calculator / Currency Converter dulu.");
             return;
         }
 
@@ -814,12 +973,17 @@ const BitcoinTools = {
             "$" + avgPriceUSD.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " / Rp" + Math.round(avgPriceIDR).toLocaleString("id-ID");
         document.getElementById("avgCurrentPrice").textContent =
             "$" + this.btcPrice.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " / Rp" + Math.round(this.btcPrice * this.exchangeRate).toLocaleString("id-ID");
-        document.getElementById("avgProfitLoss").textContent =
-            (profitLossUSD >= 0 ? "+$" : "-$") + Math.abs(profitLossUSD).toLocaleString("en-US", { maximumFractionDigits: 2 }) +
-            " / " + (profitLossIDR >= 0 ? "+Rp" : "-Rp") + Math.abs(Math.round(profitLossIDR)).toLocaleString("id-ID") +
-            " (" + (profitPercent >= 0 ? "+" : "") + profitPercent.toFixed(2) + "%)";
+        document.getElementById("avgProfitLoss").innerHTML =
+            (profitLossUSD >= 0
+                ? '<span class="value-positive">▲ +$' + Math.abs(profitLossUSD).toLocaleString("en-US", { maximumFractionDigits: 2 }) + ' / +Rp' + Math.abs(Math.round(profitLossIDR)).toLocaleString("id-ID") + ' (+' + profitPercent.toFixed(2) + '%)</span>'
+                : '<span class="value-negative">▼ -$' + Math.abs(profitLossUSD).toLocaleString("en-US", { maximumFractionDigits: 2 }) + ' / -Rp' + Math.abs(Math.round(profitLossIDR)).toLocaleString("id-ID") + ' (' + profitPercent.toFixed(2) + '%)</span>');
 
         document.getElementById("avgResult").style.display = "block";
+
+        // Chart tren harga tiap transaksi, diurutkan berdasarkan tanggal
+        const chartPoints = chartRaw
+            .sort((a, b) => a.label.localeCompare(b.label));
+        this.renderTrendChart("avgChart", chartPoints);
     },
 
     //------------------------------------------------
@@ -832,6 +996,16 @@ const BitcoinTools = {
             alert("Masukkan alamat Bitcoin terlebih dahulu.");
             return;
         }
+
+        const skeletonIds = ["walletBalance", "walletReceived", "walletTxCount", "walletUtxoCount", "walletBalanceFiat"];
+        skeletonIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.innerHTML = '<span class="skeleton-block short" style="height:12px;display:inline-block;"></span>';
+            }
+        });
+        const resultCardEarly = document.getElementById("walletResult");
+        if (resultCardEarly) resultCardEarly.style.display = "block";
 
         fetch("https://mempool.space/api/address/" + address)
             .then(res => {
@@ -861,7 +1035,7 @@ const BitcoinTools = {
                         "$" + usdValue.toLocaleString("en-US", { maximumFractionDigits: 2 }) +
                         (idrValue !== null ? " / Rp" + Math.round(idrValue).toLocaleString("id-ID") : ""));
                 } else {
-                    setText("walletBalanceFiat", "Refresh price dulu di DCA Calculator");
+                    setText("walletBalanceFiat", "Buka DCA Calculator agar harga live termuat");
                 }
 
                 const resultCard = document.getElementById("walletResult");
@@ -881,6 +1055,8 @@ const BitcoinTools = {
                     });
             })
             .catch(() => {
+                const resultCard = document.getElementById("walletResult");
+                if (resultCard) resultCard.style.display = "none";
                 alert("Alamat tidak ditemukan atau gagal memuat data. Pastikan alamat valid.");
             });
     },
@@ -896,9 +1072,9 @@ const BitcoinTools = {
         }
 
         const readerDiv = document.getElementById("qrReaderWallet");
-        const closeBtn = document.getElementById("walletScanCloseBtn");
+        const controls = document.getElementById("walletScanControls");
         if (readerDiv) readerDiv.style.display = "block";
-        if (closeBtn) closeBtn.style.display = "inline-block";
+        if (controls) controls.style.display = "flex";
 
         // Beri jeda sebentar supaya browser selesai menghitung layout div
         // sebelum Html5Qrcode mulai mengukur dimensi kontainer (mencegah
@@ -928,22 +1104,64 @@ const BitcoinTools = {
                     // diabaikan — normal terjadi berkali-kali selagi kamera mencari QR code
                 }
             ).catch(() => {
-                alert("Tidak bisa mengakses kamera. Pastikan izin kamera diaktifkan, atau masukkan alamat secara manual.");
+                // Kamera gagal dibuka (izin ditolak, tidak ada kamera, dsb) — sembunyikan
+                // area kamera yang kosong, tapi biarkan opsi "Upload dari Galeri" tetap terbuka.
                 if (readerDiv) readerDiv.style.display = "none";
-                if (closeBtn) closeBtn.style.display = "none";
+                console.warn("Kamera tidak tersedia, gunakan upload dari galeri.");
             });
         }, 150);
     },
 
     stopWalletScan() {
-        if (this.html5QrCode) {
+        const readerDiv = document.getElementById("qrReaderWallet");
+        const controls = document.getElementById("walletScanControls");
+        if (this.html5QrCode && this.html5QrCode.isScanning) {
             this.html5QrCode.stop().then(() => {
                 this.html5QrCode.clear();
-                const readerDiv = document.getElementById("qrReaderWallet");
-                const closeBtn = document.getElementById("walletScanCloseBtn");
                 if (readerDiv) readerDiv.style.display = "none";
-                if (closeBtn) closeBtn.style.display = "none";
+                if (controls) controls.style.display = "none";
             }).catch(() => { });
+        } else {
+            if (readerDiv) readerDiv.style.display = "none";
+            if (controls) controls.style.display = "none";
+        }
+    },
+
+    // Baca QR code dari gambar yang diupload user (galeri/file explorer),
+    // sebagai alternatif kalau kamera tidak tersedia/tidak diizinkan.
+    scanWalletQrFromFile(file) {
+        if (typeof Html5Qrcode === "undefined") {
+            alert("Fitur scan QR belum siap dimuat. Coba refresh halaman.");
+            return;
+        }
+
+        const proceedWithScan = () => {
+            if (!this.html5QrCode) {
+                this.html5QrCode = new Html5Qrcode("qrReaderWallet");
+            }
+            this.html5QrCode.scanFile(file, false)
+                .then(decodedText => {
+                    let address = decodedText.trim();
+                    if (address.toLowerCase().indexOf("bitcoin:") === 0) {
+                        address = address.substring(8).split("?")[0];
+                    }
+                    const input = document.getElementById("walletAddressInput");
+                    if (input) input.value = address;
+                })
+                .catch(() => {
+                    alert("Tidak bisa membaca QR code dari gambar itu. Coba gambar lain atau masukkan alamat manual.");
+                });
+        };
+
+        // Kalau kamera sedang aktif, hentikan dulu supaya tidak bentrok
+        // sebelum memproses file yang diupload.
+        if (this.html5QrCode && this.html5QrCode.isScanning) {
+            this.html5QrCode.stop().then(() => {
+                this.html5QrCode.clear();
+                proceedWithScan();
+            }).catch(() => proceedWithScan());
+        } else {
+            proceedWithScan();
         }
     },
 
@@ -953,6 +1171,15 @@ const BitcoinTools = {
 
     loadHalvingData() {
         const container = document.getElementById("halvingContainer");
+        if (container) {
+            container.innerHTML =
+                '<div class="skeleton-row">' +
+                '<span class="skeleton-block"></span>' +
+                '<span class="skeleton-block"></span>' +
+                '<span class="skeleton-block"></span>' +
+                '<span class="skeleton-block short"></span>' +
+                '</div>';
+        }
         fetch("https://mempool.space/api/blocks/tip/height")
             .then(res => res.json())
             .then(currentHeight => {
@@ -1022,15 +1249,18 @@ const BitcoinTools = {
         if (this.quizIndex >= this.quizPlaying.length) {
             const total = this.quizPlaying.length;
             const percent = (this.quizScore / total) * 100;
+            const isHighScore = percent >= 80;
             const resultMsg = percent >= 70
                 ? "Solid! Anda paham dasar-dasar Bitcoin dengan baik \u{1F525}"
                 : "Kembali Mempelajari Materi yang ada agar menjadi Bitcoiner";
 
             container.innerHTML =
                 '<h3>Selesai!</h3>' +
-                '<p>Skor Anda: ' + this.quizScore + ' / ' + total + ' (' + percent.toFixed(0) + '%)</p>' +
+                '<p class="' + (isHighScore ? 'quiz-score-pop' : '') + '">Skor Anda: ' + this.quizScore + ' / ' + total + ' (' + percent.toFixed(0) + '%)' + (isHighScore ? ' \u{1F389}' : '') + '</p>' +
                 '<p style="font-weight:700;margin-top:10px;">' + resultMsg + '</p>' +
                 '<button class="calculate-btn" onclick="BitcoinTools.startQuiz()">Main Lagi</button>';
+
+            if (isHighScore) this.fireConfetti();
             return;
         }
 

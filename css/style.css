@@ -610,6 +610,122 @@ h1 {
     font-weight: 600;
 }
 
+/* ==================================================
+   SKELETON LOADING (variasi block, dipakai tools)
+   Reuse animasi shimmer yang sama dengan ticker header.
+   ================================================== */
+.skeleton-block {
+    display: block;
+    width: 100%;
+    height: 14px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #eee 25%, #f7d9b0 50%, #eee 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton-block.short {
+    width: 60%;
+}
+
+.skeleton-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+/* ==================================================
+   TAB MODAL (grup DCA/Average/Converter & Quiz/Glossary)
+   ================================================== */
+.tool-tabs {
+    display: flex;
+    gap: 4px;
+    margin: -6px 0 16px 0;
+    border-bottom: 1px solid #eee;
+    overflow-x: auto;
+}
+
+.tool-tab-btn {
+    flex: 1 1 0;
+    background: none;
+    border: none;
+    padding: 10px 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #888;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.tool-tab-btn:hover {
+    color: #f7931a;
+}
+
+.tool-tab-btn.active {
+    color: #f7931a;
+    border-bottom-color: #f7931a;
+}
+
+/* ==================================================
+   PROFIT / LOSS: warna + ikon panah otomatis
+   ================================================== */
+.value-positive {
+    color: #16a34a;
+    font-weight: 700;
+}
+
+.value-negative {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+/* ==================================================
+   CHART (DCA & Average Buy)
+   ================================================== */
+.result-chart-wrap {
+    margin-top: 16px;
+    height: 200px;
+    position: relative;
+}
+
+/* ==================================================
+   CONFETTI (skor kuis tinggi)
+   ================================================== */
+.confetti-piece {
+    position: fixed;
+    top: -10px;
+    width: 8px;
+    height: 14px;
+    opacity: 0.9;
+    z-index: 10000;
+    pointer-events: none;
+    animation: confettiFall 2.2s linear forwards;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(540deg);
+        opacity: 0;
+    }
+}
+
+.quiz-score-pop {
+    animation: quizScoreBounce 0.6s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+@keyframes quizScoreBounce {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
 .site-footer p {
     margin: 4px 0;
     color: #bbb;
@@ -643,7 +759,7 @@ h1 {
     background: rgba(255, 255, 255, .75);
     backdrop-filter: blur(10px);
     border-radius: 14px;
-    padding: 16px 10px;
+    padding: 14px 8px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -652,7 +768,7 @@ h1 {
     transition: .28s;
     border: 2px solid transparent;
     box-shadow: 0 4px 12px rgba(0, 0, 0, .07);
-    min-height: 92px;
+    min-height: 112px;
 }
 
 .tool-icon:hover {
@@ -670,9 +786,9 @@ h1 {
 }
 
 .tool-icon svg {
-    width: 26px;
-    height: 26px;
-    margin-bottom: 8px;
+    width: 24px;
+    height: 24px;
+    margin-bottom: 6px;
     stroke-width: 2;
 }
 
@@ -681,6 +797,18 @@ h1 {
     font-weight: 700;
     text-align: center;
     line-height: 1.3;
+}
+
+.tool-icon .tool-desc {
+    font-size: 10px;
+    font-weight: 400;
+    color: #777;
+    margin-top: 3px;
+    line-height: 1.25;
+}
+
+.tool-icon.active .tool-desc {
+    color: rgba(255, 255, 255, 0.85);
 }
 
 /* ==================================================
@@ -1063,6 +1191,7 @@ body.modal-open {
 
 .input-box input {
     flex: 1;
+    min-width: 0;
     border: none;
     background: transparent;
     outline: none;
@@ -1230,23 +1359,41 @@ body.modal-open {
 /* Toolkit icon lebih kecil & rapi di layar HP */
 @media (max-width: 480px) {
     .tool-icon {
-        padding: 16px 8px;
-        min-height: 90px;
+        padding: 12px 6px;
+        min-height: 108px;
         border-radius: 12px;
     }
 
+    .input-box input {
+        padding: 12px 8px;
+        font-size: 15px;
+    }
+
+    .input-box span {
+        width: 42px;
+    }
+
+    .tool-tab-btn {
+        font-size: 11px;
+        padding: 8px 4px;
+    }
+
     .tool-icon svg {
-        width: 26px;
-        height: 26px;
-        margin-bottom: 8px;
+        width: 22px;
+        height: 22px;
+        margin-bottom: 6px;
     }
 
     .tool-icon span {
-        font-size: 11px;
+        font-size: 10px;
+    }
+
+    .tool-icon .tool-desc {
+        font-size: 9px;
     }
 
     .toolkit-icons {
-        gap: 10px;
+        gap: 8px;
     }
 
     .scan-qr-btn svg {

@@ -163,6 +163,26 @@ const TOOL_ANIMATIONS = {
     wallet: 'anim-fade-scale'   // simpel, pencarian
 };
 
+// Tool yang digabung dalam 1 modal ber-tab. Tool yang tidak
+// disebut di sini tetap berdiri sendiri seperti biasa.
+const TOOL_GROUPS = {
+    dca: 'calc', converter: 'calc', average: 'calc',
+    quiz: 'edu', glossary: 'edu'
+};
+const GROUP_TABS_EL = { calc: 'calcTabs', edu: 'eduTabs' };
+
+function activateGroupTabs(tool) {
+    const group = TOOL_GROUPS[tool];
+    document.querySelectorAll('.tool-tabs').forEach(el => el.style.display = 'none');
+    if (!group) return;
+    const tabBar = document.getElementById(GROUP_TABS_EL[group]);
+    if (!tabBar) return;
+    tabBar.style.display = 'flex';
+    tabBar.querySelectorAll('.tool-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tool);
+    });
+}
+
 function showTool(tool, element) {
     document.querySelectorAll('.tool-icon').forEach(icon => {
         icon.classList.remove('active');
@@ -172,6 +192,8 @@ function showTool(tool, element) {
     document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
     const next = document.getElementById('tool-' + tool);
     if (next) next.classList.add('active');
+
+    activateGroupTabs(tool);
 
     const backdrop = document.getElementById('toolModalBackdrop');
     const box = document.getElementById('toolModalBox');
@@ -184,6 +206,29 @@ function showTool(tool, element) {
 
     backdrop.classList.add('open');
     document.body.classList.add('modal-open');
+
+    // DCA / Converter / Average berbagi 1 live price — begitu modal
+    // grup ini dibuka (di tab manapun), langsung ambil sekali otomatis.
+    if (TOOL_GROUPS[tool] === 'calc' && typeof BitcoinTools !== 'undefined' && !BitcoinTools.btcPrice) {
+        BitcoinTools.loadPrice();
+    }
+}
+
+// Pindah tab TANPA menutup modal — dipakai tombol tab di dalam modal gabungan.
+function switchToolTab(tool) {
+    document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+    const next = document.getElementById('tool-' + tool);
+    if (next) next.classList.add('active');
+
+    activateGroupTabs(tool);
+
+    document.querySelectorAll('.tool-icon').forEach(icon => {
+        icon.classList.toggle('active', icon.dataset.tool === tool);
+    });
+
+    if (TOOL_GROUPS[tool] === 'calc' && typeof BitcoinTools !== 'undefined' && !BitcoinTools.btcPrice) {
+        BitcoinTools.loadPrice();
+    }
 }
 
 function closeToolModal() {
@@ -194,6 +239,66 @@ function closeToolModal() {
 
 function closeToolModalOnBackdrop(event) {
     if (event.target.id === 'toolModalBackdrop') closeToolModal();
+}
+
+// ==================================================
+// SWIPE ANTAR TAB (DCA/Converter/Average & Quiz/Glossary)
+// Geser jari ke kiri/kanan di dalam modal buat pindah tab,
+// tanpa perlu tutup modal dulu.
+// ==================================================
+const TAB_ORDER = {
+    calc: ['dca', 'converter', 'average'],
+    edu: ['quiz', 'glossary']
+};
+
+function getCurrentActiveTool() {
+    const activePanel = document.querySelector('.tool-panel.active');
+    return activePanel ? activePanel.id.replace('tool-', '') : null;
+}
+
+function setupToolSwipe() {
+    const box = document.getElementById('toolModalBox');
+    if (!box) return;
+
+    let startX = 0;
+    let startY = 0;
+    let tracking = false;
+
+    box.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        tracking = true;
+    }, { passive: true });
+
+    box.addEventListener('touchend', (e) => {
+        if (!tracking) return;
+        tracking = false;
+
+        const endX = e.changedTouches[0].clientX;
+        const endY = e.changedTouches[0].clientY;
+        const deltaX = endX - startX;
+        const deltaY = endY - startY;
+
+        // Cuma dianggap swipe kalau gerakannya jelas mendatar
+        // (bukan scroll vertikal biasa) dan cukup jauh.
+        if (Math.abs(deltaX) < 55 || Math.abs(deltaX) < Math.abs(deltaY) * 1.4) return;
+
+        const currentTool = getCurrentActiveTool();
+        if (!currentTool) return;
+        const group = TOOL_GROUPS[currentTool];
+        if (!group) return;
+
+        const order = TAB_ORDER[group];
+        const idx = order.indexOf(currentTool);
+        if (idx === -1) return;
+
+        if (deltaX < 0 && idx < order.length - 1) {
+            switchToolTab(order[idx + 1]); // swipe kiri -> tab berikutnya
+        } else if (deltaX > 0 && idx > 0) {
+            switchToolTab(order[idx - 1]); // swipe kanan -> tab sebelumnya
+        }
+    }, { passive: true });
 }
 
 // ==================================================
@@ -255,6 +360,8 @@ document.addEventListener('DOMContentLoaded', () => {
         bgAudio.addEventListener('pause', updateMusicButtonIcon);
     }
     updateMusicButtonIcon();
+
+    setupToolSwipe();
 
     if (window.lucide) {
         lucide.createIcons();

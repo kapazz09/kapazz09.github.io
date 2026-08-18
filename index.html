@@ -123,7 +123,8 @@
         </select>
         <h2 id="aboutTitle">About Me</h2>
         <div id="aboutIntro">
-            <p>Hello, saya Pazkah.. Saya bekerja di bidang pelayanan kesehatan, dan perjalanan saya mengenal Bitcoin dimulai
+            <p>Hello, saya Pazkah.. Saya bekerja di bidang pelayanan kesehatan, dan perjalanan saya mengenal Bitcoin
+                dimulai
                 dari cara yang tidak terduga: ditipu.</p>
         </div>
         <button class="read-more-btn" id="aboutReadMoreBtn" onclick="toggleAboutMore(this)">Baca Selengkapnya</button>
@@ -176,7 +177,8 @@
             <li><a href="assets/docs/3-UTXO-Fee-Alamat-Wallet.pdf" target="_blank">UTXO, Fee, Alamat Wallet</a></li>
             <li><a href="assets/docs/4-Privasi-dan-Keamanan.pdf" target="_blank">Privasi dan Keamanan</a></li>
             <li><a href="assets/docs/5-Lightning-Network.pdf" target="_blank">Lightning Network</a></li>
-            <li><a href="assets/docs/6-Bitcoin-Improvement-Proposal-BIP.pdf" target="_blank">Bitcoin Improvement Proposal-BIP</a>
+            <li><a href="assets/docs/6-Bitcoin-Improvement-Proposal-BIP.pdf" target="_blank">Bitcoin Improvement
+                    Proposal-BIP</a>
             </li>
             <li><a href="assets/docs/7-Mining-dan-Mining-Pool.pdf" target="_blank">Mining dan Mining Pool</a></li>
             <li><a href="assets/docs/8-On-Chain-Analysis.pdf" target="_blank">On Chain Analysis</a></li>
@@ -192,54 +194,64 @@
 
         <div class="toolkit-icons">
 
-            <div class="tool-icon" onclick="showTool('quiz',this)">
+            <div class="tool-icon" data-tool="quiz" onclick="showTool('quiz',this)">
                 <i data-lucide="brain"></i>
                 <span>Bitcoin Quiz</span>
+                <span class="tool-desc">Uji pemahaman dasar Bitcoin</span>
             </div>
 
-            <div class="tool-icon" onclick="showTool('glossary',this)">
+            <div class="tool-icon" data-tool="glossary" onclick="showTool('glossary',this)">
                 <i data-lucide="book-open"></i>
                 <span>Glossary</span>
+                <span class="tool-desc">Kamus istilah seputar Bitcoin</span>
             </div>
 
-            <div class="tool-icon" onclick="showTool('dca',this)">
+            <div class="tool-icon" data-tool="dca" onclick="showTool('dca',this)">
                 <i data-lucide="chart-column-increasing"></i>
                 <span>DCA Calculator</span>
+                <span class="tool-desc">Simulasi nabung BTC rutin</span>
             </div>
 
-            <div class="tool-icon" onclick="showTool('converter',this)">
+            <div class="tool-icon" data-tool="converter" onclick="showTool('converter',this)">
                 <i data-lucide="repeat"></i>
                 <span>Currency Converter</span>
+                <span class="tool-desc">Konversi BTC/Sat/USD/IDR</span>
             </div>
 
-            <div class="tool-icon" onclick="showTool('average',this)">
+            <div class="tool-icon" data-tool="average" onclick="showTool('average',this)">
                 <i data-lucide="chart-line"></i>
                 <span>Average Buy</span>
+                <span class="tool-desc">Hitung rata-rata harga beli</span>
             </div>
 
-            <div class="tool-icon" onclick="showTool('halving',this)">
+            <div class="tool-icon" data-tool="halving" onclick="showTool('halving',this)">
                 <i data-lucide="hourglass"></i>
                 <span>Halving Countdown</span>
+                <span class="tool-desc">Estimasi waktu halving berikutnya</span>
             </div>
 
-            <div class="tool-icon" onclick="showTool('mining',this)">
+            <div class="tool-icon" data-tool="mining" onclick="showTool('mining',this)">
                 <i data-lucide="pickaxe"></i>
                 <span>Mining Profit</span>
+                <span class="tool-desc">Estimasi profit mining harian</span>
             </div>
 
-            <div class="tool-icon" onclick="showTool('utxo',this)">
+            <div class="tool-icon" data-tool="utxo" onclick="showTool('utxo',this)">
                 <i data-lucide="package"></i>
                 <span>UTXO Calculator</span>
+                <span class="tool-desc">Estimasi ukuran & fee transaksi</span>
             </div>
 
-            <div class="tool-icon" onclick="showTool('channel',this)">
+            <div class="tool-icon" data-tool="channel" onclick="showTool('channel',this)">
                 <i data-lucide="zap"></i>
                 <span>Channel Capacity</span>
+                <span class="tool-desc">Cek kapasitas channel Lightning</span>
             </div>
 
-            <div class="tool-icon" onclick="showTool('wallet',this)">
+            <div class="tool-icon" data-tool="wallet" onclick="showTool('wallet',this)">
                 <i data-lucide="search"></i>
                 <span>Wallet Checker</span>
+                <span class="tool-desc">Cek saldo alamat BTC</span>
             </div>
 
         </div>
@@ -247,10 +259,23 @@
 
     </div>
 
-        <div class="tool-modal-backdrop" id="toolModalBackdrop" onclick="closeToolModalOnBackdrop(event)">
+    <div class="tool-modal-backdrop" id="toolModalBackdrop" onclick="closeToolModalOnBackdrop(event)">
         <div class="tool-display" id="toolModalBox">
 
             <button class="modal-close-btn" onclick="closeToolModal()" aria-label="Tutup">✕</button>
+
+            <div class="tool-tabs" id="eduTabs" style="display:none;">
+                <button class="tool-tab-btn" data-tab="quiz" onclick="switchToolTab('quiz')">🧠 Bitcoin Quiz</button>
+                <button class="tool-tab-btn" data-tab="glossary" onclick="switchToolTab('glossary')">📖
+                    Glossary</button>
+            </div>
+
+            <div class="tool-tabs" id="calcTabs" style="display:none;">
+                <button class="tool-tab-btn" data-tab="dca" onclick="switchToolTab('dca')">DCA</button>
+                <button class="tool-tab-btn" data-tab="converter"
+                    onclick="switchToolTab('converter')">Converter</button>
+                <button class="tool-tab-btn" data-tab="average" onclick="switchToolTab('average')">Avg Buy</button>
+            </div>
 
             <div id="tool-quiz" class="tool-panel">
                 <div class="tool-header">
@@ -305,7 +330,7 @@
                             <div class="dca-toolbar">
                                 <button id="refreshPriceBtn" class="tool-btn">🔄 Refresh Live Price</button>
                             </div>
-                            <p id="dcaLivePriceDisplay" style="font-size:14px;color:#888;margin-top:6px;">Memuat...</p>
+                            <p id="dcaLivePriceDisplay" class="skeleton-block short" style="margin-top:6px;">&nbsp;</p>
                         </div>
                         <div class="dca-field">
                             <label>Jumlah per Pembelian</label>
@@ -355,6 +380,7 @@
                         <div class="result-row"><span>Nilai Sekarang</span><strong id="currentValue"></strong></div>
                         <div class="result-row"><span>Profit / Loss</span><strong id="profitLoss"></strong></div>
                         <div class="result-row"><span>Profit (%)</span><strong id="profitPercent"></strong></div>
+                        <div class="result-chart-wrap"><canvas id="dcaChart"></canvas></div>
                         <button id="copyResultBtn" class="copy-btn">Copy Result</button>
                     </div>
                     <p style="font-size:12px;color:#888;margin-top:10px;">*Frekuensi Harian pakai harga hari itu saja;
@@ -389,16 +415,17 @@
                         </div>
                         <div class="dca-field">
                             <label>US Dollar (USD)</label>
-                            <div class="input-box"><span>$</span><input type="text" inputmode="decimal" id="convUsdInput" placeholder="60"></div>
+                            <div class="input-box"><span>$</span><input type="text" inputmode="decimal"
+                                    id="convUsdInput" placeholder="60"></div>
                         </div>
                         <div class="dca-field">
                             <label>Rupiah (IDR)</label>
-                            <div class="input-box"><span>Rp</span><input type="text" inputmode="decimal" id="convIdrInput"
-                                    placeholder="900.000"></div>
+                            <div class="input-box"><span>Rp</span><input type="text" inputmode="decimal"
+                                    id="convIdrInput" placeholder="900.000"></div>
                         </div>
                     </div>
-                    <p style="font-size:12px;color:#888;margin-top:10px;">*Buka "DCA Calculator" dan klik "Refresh
-                        Price" dulu supaya harga live termuat untuk konversi USD/IDR.</p>
+                    <p style="font-size:12px;color:#888;margin-top:10px;">*Harga live untuk konversi USD/IDR otomatis
+                        termuat begitu modal ini dibuka.</p>
                 </div>
             </div>
 
@@ -422,7 +449,8 @@
                                         <option value="usd">$</option>
                                         <option value="idr">Rp</option>
                                     </select>
-                                    <input type="text" inputmode="decimal" class="avgAmount" placeholder="Jumlah dibelanjakan">
+                                    <input type="text" inputmode="decimal" class="avgAmount"
+                                        placeholder="Jumlah dibelanjakan">
                                 </div>
                                 <p class="avgFetchedPrice">Pilih tanggal untuk memuat harga</p>
                             </div>
@@ -441,10 +469,12 @@
                         <div class="result-row"><span>Harga BTC Sekarang</span><strong id="avgCurrentPrice"></strong>
                         </div>
                         <div class="result-row"><span>Profit / Loss</span><strong id="avgProfitLoss"></strong></div>
+                        <div class="result-chart-wrap"><canvas id="avgChart"></canvas></div>
                     </div>
                     <p style="font-size:12px;color:#888;margin-top:10px;">*Harga USD historis diambil dari file lokal
                         <code>btc-price-history.json</code> (data sejak 1 Januari 2013). Nilai Rp adalah
-                        estimasi menggunakan kurs USD/IDR saat ini.</p>
+                        estimasi menggunakan kurs USD/IDR saat ini.
+                    </p>
                 </div>
             </div>
 
@@ -460,7 +490,12 @@
                 </div>
                 <div class="tool-content">
                     <div class="dca-card" id="halvingContainer">
-                        <p style="color:#888;">Memuat data blok terbaru...</p>
+                        <div class="skeleton-row">
+                            <span class="skeleton-block"></span>
+                            <span class="skeleton-block"></span>
+                            <span class="skeleton-block"></span>
+                            <span class="skeleton-block short"></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -489,8 +524,8 @@
                         </div>
                         <div class="dca-field">
                             <label>Biaya Listrik per kWh ($)</label>
-                            <div class="input-box"><span>$</span><input type="text" inputmode="decimal" id="miningElecCost"
-                                    placeholder="0,10" value="0,10"></div>
+                            <div class="input-box"><span>$</span><input type="text" inputmode="decimal"
+                                    id="miningElecCost" placeholder="0,10" value="0,10"></div>
                         </div>
                         <div class="dca-field">
                             <label>Pool Fee (%)</label>
@@ -541,6 +576,7 @@
                             <div class="dca-toolbar">
                                 <button id="loadFeeRateBtn" class="tool-btn">Load Current Fee Rate</button>
                             </div>
+                            <p id="feeRateInfo" style="font-size:12px;color:#888;margin:6px 0 0 0;"></p>
                             <div class="input-box"><span>sat/vB</span><input type="number" id="utxoFeeRate" value="10">
                             </div>
                         </div>
@@ -622,8 +658,13 @@
                         </div>
                         <div id="qrReaderWallet"
                             style="display:none; margin-top:10px; border-radius:12px; overflow:hidden;"></div>
-                        <button type="button" id="walletScanCloseBtn" class="tool-btn"
-                            style="display:none; margin-top:8px;">Tutup Scanner</button>
+                        <div id="walletScanControls" style="display:none; margin-top:8px; gap:8px;">
+                            <button type="button" id="walletScanCloseBtn" class="tool-btn" style="flex:1;">Tutup
+                                Scanner</button>
+                            <button type="button" id="walletScanUploadBtn" class="tool-btn" style="flex:1;">📁 Upload
+                                dari Galeri</button>
+                        </div>
+                        <input type="file" id="walletScanFileInput" accept="image/*" style="display:none;">
                         <button class="calculate-btn" id="walletCheckBtn">Cek Saldo</button>
                     </div>
                     <div class="result-card" id="walletResult" style="display:none;">
@@ -644,7 +685,7 @@
 
         </div>
 
-        </div>
+    </div>
 
     <div class="live-widgets fade-in">
 
@@ -685,20 +726,20 @@
         <p class="fuel-subtitle">If my learning materials or tools have helped you, feel free to support my journey</p>
 
         <div class="crypto-icons">
-            <img src="https://cdn.simpleicons.org/bitcoin/f7931a" width="50" height="50" class="icon-crypto" loading="lazy"
-                alt="Bitcoin BTC" onclick="openCryptoModal('btc')" style="cursor:pointer;">
-            <img src="https://cdn.simpleicons.org/ethereum/3c3c3d" width="50" height="50" class="icon-crypto" loading="lazy"
-                alt="Ethereum ETH" onclick="openCryptoModal('eth')" style="cursor:pointer;">
-            <img src="https://cdn.simpleicons.org/tether/26a17b" width="50" height="50" class="icon-crypto" loading="lazy"
-                alt="USDT BEP20" onclick="openCryptoModal('usdt')" style="cursor:pointer;">
-            <img src="https://cdn.simpleicons.org/binance/F0B90B" width="50" height="50" class="icon-crypto" loading="lazy" alt="BNB"
-                onclick="openCryptoModal('bnb')" style="cursor:pointer;">
-            <img src="https://cdn.simpleicons.org/xrp/25A768" width="50" height="50" class="icon-crypto" loading="lazy" alt="XRP"
-                onclick="openCryptoModal('xrp')" style="cursor:pointer;">
-            <img src="https://cdn.simpleicons.org/solana/9945FF" width="50" height="50" class="icon-crypto" loading="lazy"
-                alt="Solana SOL" onclick="openCryptoModal('sol')" style="cursor:pointer;">
-            <img src="https://cdn.simpleicons.org/lightning/2196f3" width="50" height="50" class="icon-crypto" loading="lazy"
-                alt="Lightning Address" onclick="openCryptoModal('lightning')" style="cursor:pointer;">
+            <img src="https://cdn.simpleicons.org/bitcoin/f7931a" width="50" height="50" class="icon-crypto"
+                loading="lazy" alt="Bitcoin BTC" onclick="openCryptoModal('btc')" style="cursor:pointer;">
+            <img src="https://cdn.simpleicons.org/ethereum/3c3c3d" width="50" height="50" class="icon-crypto"
+                loading="lazy" alt="Ethereum ETH" onclick="openCryptoModal('eth')" style="cursor:pointer;">
+            <img src="https://cdn.simpleicons.org/tether/26a17b" width="50" height="50" class="icon-crypto"
+                loading="lazy" alt="USDT BEP20" onclick="openCryptoModal('usdt')" style="cursor:pointer;">
+            <img src="https://cdn.simpleicons.org/binance/F0B90B" width="50" height="50" class="icon-crypto"
+                loading="lazy" alt="BNB" onclick="openCryptoModal('bnb')" style="cursor:pointer;">
+            <img src="https://cdn.simpleicons.org/xrp/25A768" width="50" height="50" class="icon-crypto" loading="lazy"
+                alt="XRP" onclick="openCryptoModal('xrp')" style="cursor:pointer;">
+            <img src="https://cdn.simpleicons.org/solana/9945FF" width="50" height="50" class="icon-crypto"
+                loading="lazy" alt="Solana SOL" onclick="openCryptoModal('sol')" style="cursor:pointer;">
+            <img src="https://cdn.simpleicons.org/lightning/2196f3" width="50" height="50" class="icon-crypto"
+                loading="lazy" alt="Lightning Address" onclick="openCryptoModal('lightning')" style="cursor:pointer;">
         </div>
     </div>
 
@@ -729,13 +770,16 @@
     <footer class="site-footer">
         <div class="footer-social">
             <a href="https://wa.me/6285237722911" target="_blank">
-                <img src="https://cdn.simpleicons.org/whatsapp/ffffff" width="22" height="22" alt="WhatsApp" loading="lazy">
+                <img src="https://cdn.simpleicons.org/whatsapp/ffffff" width="22" height="22" alt="WhatsApp"
+                    loading="lazy">
             </a>
             <a href="https://instagram.com/pazkahbire09" target="_blank">
-                <img src="https://cdn.simpleicons.org/instagram/ffffff" width="22" height="22" alt="Instagram" loading="lazy">
+                <img src="https://cdn.simpleicons.org/instagram/ffffff" width="22" height="22" alt="Instagram"
+                    loading="lazy">
             </a>
             <a href="https://www.facebook.com/pazkah" target="_blank">
-                <img src="https://cdn.simpleicons.org/facebook/ffffff" width="22" height="22" alt="Facebook" loading="lazy">
+                <img src="https://cdn.simpleicons.org/facebook/ffffff" width="22" height="22" alt="Facebook"
+                    loading="lazy">
             </a>
             <a href="https://tiktok.com/@pazkahbire" target="_blank">
                 <img src="https://cdn.simpleicons.org/tiktok/ffffff" width="22" height="22" alt="TikTok" loading="lazy">
@@ -743,17 +787,23 @@
         </div>
 
         <nav class="footer-links">
-            <a href="#" onclick="document.querySelector('.about').scrollIntoView({behavior:'smooth'});return false;">About</a>
+            <a href="#"
+                onclick="document.querySelector('.about').scrollIntoView({behavior:'smooth'});return false;">About</a>
             <span>•</span>
-            <a href="#" onclick="document.querySelector('.materials-section').scrollIntoView({behavior:'smooth'});return false;">Materials</a>
+            <a href="#"
+                onclick="document.querySelector('.materials-section').scrollIntoView({behavior:'smooth'});return false;">Materials</a>
             <span>•</span>
-            <a href="#" onclick="document.querySelector('.toolkit-section').scrollIntoView({behavior:'smooth'});return false;">Toolkit</a>
+            <a href="#"
+                onclick="document.querySelector('.toolkit-section').scrollIntoView({behavior:'smooth'});return false;">Toolkit</a>
             <span>•</span>
-            <a href="#" onclick="document.querySelector('.crypto-support').scrollIntoView({behavior:'smooth'});return false;">Support</a>
+            <a href="#"
+                onclick="document.querySelector('.crypto-support').scrollIntoView({behavior:'smooth'});return false;">Support</a>
         </nav>
 
-        <p>Built with HTML • CSS • JavaScript — Hosted on GitHub Pages</p>
-        <p id="footerCopyright">© <span id="footerYear"></span> Kapazz Bitcoin — Made with ❤️ by Paskah</p>
+        <p>Built with HTML • CSS • JavaScript</p>
+        <p>Hosted on GitHub Pages</p>
+        <p>Made with ❤️</p>
+        <p id="footerCopyright">© <span id="footerYear"></span> Kapazz Bitcoin</p>
     </footer>
 
     <script src="js/script.js"></script>
