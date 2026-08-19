@@ -673,12 +673,12 @@ h1 {
    PROFIT / LOSS: warna + ikon panah otomatis
    ================================================== */
 .value-positive {
-    color: #16a34a;
+    color: #16a34a !important;
     font-weight: 700;
 }
 
 .value-negative {
-    color: #dc2626;
+    color: #dc2626 !important;
     font-weight: 700;
 }
 
