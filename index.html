@@ -168,6 +168,13 @@
         </div>
     </div>
 
+    <div class="satoshi-quote fade-in">
+        <span class="satoshi-quote-mark">&#8220;</span>
+        <p class="satoshi-quote-text">Kalau kamu tidak percaya atau tidak mengerti aku tidak punya waktu untuk mencoba
+            meyakinkanmu, maaf.</p>
+        <p class="satoshi-quote-attr">— Satoshi Nakamoto, 2010</p>
+    </div>
+
     <div class="materials-section slide-up">
         <h2>📚 Free Learning Materials</h2>
         <ul class="learning-list">
@@ -423,9 +430,48 @@
                             <div class="input-box"><span>Rp</span><input type="text" inputmode="decimal"
                                     id="convIdrInput" placeholder="900.000"></div>
                         </div>
+                        <div class="dca-field">
+                            <label>Mata Uang Lain</label>
+                            <select id="convOtherCurrency" class="tool-select" style="margin-bottom:8px;">
+                                <option value="MYR">🇲🇾 Malaysia — MYR</option>
+                                <option value="CNY">🇨🇳 China — CNY</option>
+                                <option value="SGD">🇸🇬 Singapore — SGD</option>
+                                <option value="JPY">🇯🇵 Japan — JPY</option>
+                                <option value="EUR">🇪🇺 Euro Area — EUR</option>
+                                <option value="GBP">🇬🇧 United Kingdom — GBP</option>
+                                <option value="AUD">🇦🇺 Australia — AUD</option>
+                                <option value="KRW">🇰🇷 South Korea — KRW</option>
+                                <option value="THB">🇹🇭 Thailand — THB</option>
+                                <option value="PHP">🇵🇭 Philippines — PHP</option>
+                                <option value="VND">🇻🇳 Vietnam — VND</option>
+                                <option value="INR">🇮🇳 India — INR</option>
+                                <option value="CAD">🇨🇦 Canada — CAD</option>
+                                <option value="CHF">🇨🇭 Switzerland — CHF</option>
+                                <option value="HKD">🇭🇰 Hong Kong — HKD</option>
+                                <option value="NZD">🇳🇿 New Zealand — NZD</option>
+                                <option value="SAR">🇸🇦 Saudi Arabia — SAR</option>
+                                <option value="AED">🇦🇪 UAE — AED</option>
+                                <option value="BRL">🇧🇷 Brazil — BRL</option>
+                                <option value="MXN">🇲🇽 Mexico — MXN</option>
+                                <option value="ZAR">🇿🇦 South Africa — ZAR</option>
+                                <option value="RUB">🇷🇺 Russia — RUB</option>
+                                <option value="TRY">🇹🇷 Turkey — TRY</option>
+                                <option value="PKR">🇵🇰 Pakistan — PKR</option>
+                                <option value="BDT">🇧🇩 Bangladesh — BDT</option>
+                                <option value="NGN">🇳🇬 Nigeria — NGN</option>
+                                <option value="SEK">🇸🇪 Sweden — SEK</option>
+                                <option value="NOK">🇳🇴 Norway — NOK</option>
+                                <option value="DKK">🇩🇰 Denmark — DKK</option>
+                                <option value="PLN">🇵🇱 Poland — PLN</option>
+                            </select>
+                            <div class="input-box"><span id="convOtherCurrencyLabel">MYR</span><input type="text"
+                                    inputmode="decimal" id="convOtherInput" placeholder="0"></div>
+                        </div>
                     </div>
-                    <p style="font-size:12px;color:#888;margin-top:10px;">*Harga live untuk konversi USD/IDR otomatis
-                        termuat begitu modal ini dibuka.</p>
+                    <p id="convOtherRateInfo" style="font-size:12px;color:#888;margin-top:10px;">*Harga live untuk
+                        konversi USD/IDR otomatis
+                        termuat begitu modal ini dibuka. Kurs mata uang lain di-update berkala (bukan real-time per
+                        detik).</p>
                 </div>
             </div>
 
@@ -765,6 +811,37 @@
             <span class="star" data-value="5">★</span>
         </div>
         <p class="rating-summary" id="ratingSummary">Memuat rating...</p>
+
+        <div class="comment-ticker" id="commentTicker" onclick="openCommentsModal()">
+            <span class="comment-ticker-icon">💬</span>
+            <div class="comment-ticker-viewport">
+                <p class="comment-ticker-item" id="commentTickerText">Memuat komentar...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="tool-modal-backdrop" id="commentsModalBackdrop" onclick="closeCommentsModalOnBackdrop(event)">
+        <div class="tool-display anim-fade-scale" id="commentsModalBox" style="max-width:520px;">
+            <button class="modal-close-btn" onclick="closeCommentsModal()" aria-label="Tutup">✕</button>
+            <h3 style="margin-top:0;">💬 Komentar Pengunjung</h3>
+
+            <div class="comment-form">
+                <input type="text" id="commentNameInput" placeholder="Nama (opsional)" maxlength="50">
+                <textarea id="commentTextInput" placeholder="Tulis komentar kamu di sini..." maxlength="200"
+                    rows="3"></textarea>
+                <div class="comment-form-footer">
+                    <span id="commentCharCount" style="font-size:11px;color:#888;">0 / 200</span>
+                    <button type="button" id="commentSubmitBtn" class="calculate-btn"
+                        style="width:auto;padding:10px 20px;">Kirim</button>
+                </div>
+            </div>
+
+            <hr style="border:none;border-top:1px solid #eee;margin:16px 0;">
+
+            <div id="commentsList" class="comments-list">
+                <p style="text-align:center;color:#888;">Memuat komentar...</p>
+            </div>
+        </div>
     </div>
 
     <footer class="site-footer">
@@ -820,6 +897,7 @@
     <script src="js/tools/quiz.js"></script>
     <script src="js/tools/glossary.js"></script>
     <script src="js/ratings.js"></script>
+    <script src="js/comments.js"></script>
 </body>
 
 </html>

@@ -212,6 +212,9 @@ function showTool(tool, element) {
     if (TOOL_GROUPS[tool] === 'calc' && typeof BitcoinTools !== 'undefined' && !BitcoinTools.btcPrice) {
         BitcoinTools.loadPrice();
     }
+    if (tool === 'converter' && typeof BitcoinTools !== 'undefined' && BitcoinTools.loadCustomCurrencyRates) {
+        BitcoinTools.loadCustomCurrencyRates();
+    }
 }
 
 // Pindah tab TANPA menutup modal — dipakai tombol tab di dalam modal gabungan.
@@ -228,6 +231,9 @@ function switchToolTab(tool) {
 
     if (TOOL_GROUPS[tool] === 'calc' && typeof BitcoinTools !== 'undefined' && !BitcoinTools.btcPrice) {
         BitcoinTools.loadPrice();
+    }
+    if (tool === 'converter' && typeof BitcoinTools !== 'undefined' && BitcoinTools.loadCustomCurrencyRates) {
+        BitcoinTools.loadCustomCurrencyRates();
     }
 }
 
