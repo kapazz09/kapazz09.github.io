@@ -91,6 +91,12 @@ const CRYPTO_DATA = {
         address: 'kapazz09@blink.sv',
         logo: 'https://cdn.simpleicons.org/lightning/2196f3',
         label: '<strong style="color:#f7b500;">Lightning Network</strong>'
+    },
+    qris: {
+        isImage: true,
+        image: 'assets/img/qris-payment.jpg',
+        logo: 'assets/img/qris-icon.png',
+        label: '<strong style="color:#333;">QRIS — Kedai Kapazz Freshqua</strong>'
     }
 };
 
@@ -98,15 +104,33 @@ function openCryptoModal(coin) {
     const data = CRYPTO_DATA[coin];
     if (!data) return;
 
-    document.getElementById('cryptoModalLogo').src = data.logo;
-
+    const logoEl = document.getElementById('cryptoModalLogo');
     const qrBox = document.getElementById('cryptoModalQR');
     qrBox.innerHTML = '';
-    new QRCode(qrBox, data.address);
 
-    document.getElementById('cryptoModalDetail').innerHTML =
-        data.label + '<br><span class="copy-address" onclick="copyAddress(this)" data-address="' +
-        data.address + '">' + data.address + ' <span class="copy-icon">📋</span></span>';
+    if (data.isImage) {
+        // QRIS: tampilkan kode QR asli dari bank/penyelenggara (bukan hasil
+        // generate dari teks alamat), jadi tanpa overlay logo & tanpa
+        // alamat yang bisa disalin — cukup di-scan langsung.
+        logoEl.style.display = 'none';
+        const img = document.createElement('img');
+        img.src = data.image;
+        img.alt = 'QRIS';
+        img.className = 'qris-payment-img';
+        qrBox.appendChild(img);
+
+        document.getElementById('cryptoModalDetail').innerHTML =
+            data.label + '<p style="font-size:11px;color:#888;margin-top:8px;">Scan pakai aplikasi e-wallet atau ' +
+            'm-banking apa saja yang mendukung QRIS.</p>';
+    } else {
+        logoEl.style.display = '';
+        logoEl.src = data.logo;
+        new QRCode(qrBox, data.address);
+
+        document.getElementById('cryptoModalDetail').innerHTML =
+            data.label + '<br><span class="copy-address" onclick="copyAddress(this)" data-address="' +
+            data.address + '">' + data.address + ' <span class="copy-icon">📋</span></span>';
+    }
 
     const backdrop = document.getElementById('cryptoModalBackdrop');
     const box = document.getElementById('cryptoModalBox');
@@ -214,6 +238,9 @@ function showTool(tool, element) {
     }
     if (tool === 'converter' && typeof BitcoinTools !== 'undefined' && BitcoinTools.loadCustomCurrencyRates) {
         BitcoinTools.loadCustomCurrencyRates();
+    }
+    if (tool === 'halving' && typeof BitcoinTools !== 'undefined' && BitcoinTools.renderHalvingCycleChart) {
+        BitcoinTools.renderHalvingCycleChart();
     }
 }
 
@@ -345,6 +372,96 @@ function updateMusicButtonIcon() {
 }
 
 // ==================================================
+// FAQ ACCORDION
+// ==================================================
+function toggleFaqSection() {
+    const list = document.getElementById('faqList');
+    const subtitle = document.querySelector('.faq-subtitle');
+    if (!list) return;
+    const isHidden = list.style.display === 'none' || list.style.display === '';
+    list.style.display = isHidden ? 'flex' : 'none';
+    if (subtitle) {
+        subtitle.textContent = isHidden
+            ? 'Pertanyaan yang sering ditanyakan pemula (klik untuk sembunyikan)'
+            : 'Pertanyaan yang sering ditanyakan pemula (klik untuk lihat)';
+    }
+}
+
+function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    if (item) item.classList.toggle('open');
+}
+
+// ==================================================
+// LEARNING PATH: status "Tandai Selesai" per materi
+// Disimpan di localStorage browser (per-perangkat saja,
+// tidak perlu backend/spreadsheet).
+// ==================================================
+const LEARNING_PROGRESS_KEY = 'kapazzLearningProgress';
+
+function getLearningProgress() {
+    try {
+        const raw = localStorage.getItem(LEARNING_PROGRESS_KEY);
+        return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveLearningProgress(progress) {
+    try {
+        localStorage.setItem(LEARNING_PROGRESS_KEY, JSON.stringify(progress));
+    } catch (e) {
+        // localStorage penuh/diblokir — abaikan, tidak fatal
+    }
+}
+
+function markMaterialOpened(anchor) {
+    const item = anchor.closest('.learning-item');
+    if (!item) return;
+    const id = item.dataset.materialId;
+    if (!id) return;
+
+    const progress = getLearningProgress();
+    if (progress[id]) return; // sudah tercatat selesai, tidak perlu apa-apa lagi
+
+    progress[id] = true;
+    saveLearningProgress(progress);
+
+    applyLearningItemState(item, true);
+    updateLearningProgressUI();
+}
+
+function applyLearningItemState(item, isDone) {
+    item.classList.toggle('done', isDone);
+}
+
+function restoreLearningProgress() {
+    const items = document.querySelectorAll('.learning-item');
+    if (items.length === 0) return;
+
+    const progress = getLearningProgress();
+    items.forEach(item => {
+        const id = item.dataset.materialId;
+        applyLearningItemState(item, !!progress[id]);
+    });
+    updateLearningProgressUI();
+}
+
+function updateLearningProgressUI() {
+    const items = document.querySelectorAll('.learning-item');
+    const total = items.length;
+    if (total === 0) return;
+
+    const doneCount = document.querySelectorAll('.learning-item.done').length;
+    const text = document.getElementById('learningProgressText');
+    const fill = document.getElementById('learningProgressFill');
+
+    if (text) text.textContent = doneCount + ' dari ' + total + ' materi selesai';
+    if (fill) fill.style.width = Math.round((doneCount / total) * 100) + '%';
+}
+
+// ==================================================
 // ABOUT ME: BACA SELENGKAPNYA TOGGLE
 // (fungsi toggleAboutMore sekarang ada di about-translations.js,
 // supaya label tombol ikut bahasa yang lagi aktif)
@@ -368,6 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateMusicButtonIcon();
 
     setupToolSwipe();
+    restoreLearningProgress();
 
     if (window.lucide) {
         lucide.createIcons();

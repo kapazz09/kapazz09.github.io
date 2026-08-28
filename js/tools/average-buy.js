@@ -10,6 +10,12 @@ Object.assign(BitcoinTools, {
         const avgCalcBtn = document.getElementById("avgCalcBtn");
         if (avgCalcBtn) avgCalcBtn.addEventListener("click", () => this.calculateAverageBuy());
 
+        const avgCopyBtn = document.getElementById("avgCopyResultBtn");
+        if (avgCopyBtn) avgCopyBtn.addEventListener("click", () => this.copyAvgResult());
+
+        const avgShareBtn = document.getElementById("avgShareResultBtn");
+        if (avgShareBtn) avgShareBtn.addEventListener("click", () => this.shareAvgResult());
+
         const avgRowsContainer = document.getElementById("avgBuyRows");
         if (avgRowsContainer) {
             avgRowsContainer.addEventListener("change", (e) => {
@@ -23,6 +29,42 @@ Object.assign(BitcoinTools, {
                 }
             });
         }
+    },
+
+    copyAvgResult() {
+        const totalSpent = document.getElementById("avgTotalSpent").textContent;
+        const totalBTC = document.getElementById("avgTotalBTC").textContent;
+        const avgPrice = document.getElementById("avgPrice").textContent;
+        const currentPrice = document.getElementById("avgCurrentPrice").textContent;
+        const profitLoss = document.getElementById("avgProfitLoss").textContent;
+
+        const text = "Average Buy Calculator Result\n----------------------\nTotal Dibelanjakan: " + totalSpent +
+            "\nTotal BTC: " + totalBTC + "\nRata-Rata Harga Beli: " + avgPrice +
+            "\nHarga BTC Sekarang: " + currentPrice + "\nProfit/Loss: " + profitLoss;
+
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Hasil berhasil disalin ke clipboard!");
+        }).catch(() => {
+            alert("Gagal menyalin. Silakan salin manual.");
+        });
+    },
+
+    shareAvgResult() {
+        const totalSpent = document.getElementById("avgTotalSpent").textContent;
+        const totalBTC = document.getElementById("avgTotalBTC").textContent;
+        const profitLossEl = document.getElementById("avgProfitLoss");
+        const profitLossText = profitLossEl.textContent.trim();
+        const isProfit = profitLossEl.querySelector(".value-positive") !== null;
+
+        // Ambil persentase yang ada di dalam kurung, misal "(+12.34%)"
+        const percentMatch = profitLossText.match(/\(([^)]+)\)/);
+        const percentText = percentMatch ? percentMatch[1].replace(/[▲▼]/g, "").trim() : profitLossText.replace(/[▲▼]/g, "").trim();
+
+        const text = "Aku hitung rata-rata harga beli Bitcoin-ku dan hasilnya " + (isProfit ? "profit" : "rugi") + " " +
+            percentText + "! Total dibelanjakan " + totalSpent + ", BTC terkumpul " + totalBTC +
+            ". Coba juga kalkulatornya di kapazz09.github.io 🚀₿";
+
+        this.openShareMenu(text);
     },
 
     //------------------------------------------------

@@ -177,19 +177,139 @@
 
     <div class="materials-section slide-up">
         <h2>📚 Free Learning Materials</h2>
-        <ul class="learning-list">
-            <li><a href="https://youtube.com/playlist?list=PL_5dSqXuoyfxWUJh27-Y8WDAWxnMZv7pP&si=o0ZjGl55S-p7SHPE"
-                    target="_blank">Apa itu Bitcoin</a></li>
-            <li><a href="assets/docs/2-Self-Custody-Cold-Wallet.pdf" target="_blank">Self Custody Cold Wallet</a></li>
-            <li><a href="assets/docs/3-UTXO-Fee-Alamat-Wallet.pdf" target="_blank">UTXO, Fee, Alamat Wallet</a></li>
-            <li><a href="assets/docs/4-Privasi-dan-Keamanan.pdf" target="_blank">Privasi dan Keamanan</a></li>
-            <li><a href="assets/docs/5-Lightning-Network.pdf" target="_blank">Lightning Network</a></li>
-            <li><a href="assets/docs/6-Bitcoin-Improvement-Proposal-BIP.pdf" target="_blank">Bitcoin Improvement
-                    Proposal-BIP</a>
+        <p class="learning-progress-text" id="learningProgressText">0 dari 8 materi selesai</p>
+        <div class="learning-progress-bar">
+            <div class="learning-progress-fill" id="learningProgressFill" style="width:0%;"></div>
+        </div>
+        <ol class="learning-list" id="learningList">
+            <li class="learning-item" data-material-id="bitcoin-intro">
+                <a href="https://youtube.com/playlist?list=PL_5dSqXuoyfxWUJh27-Y8WDAWxnMZv7pP&si=o0ZjGl55S-p7SHPE"
+                    target="_blank" onclick="markMaterialOpened(this)">Apa itu Bitcoin</a><span
+                    class="material-check">&#10003;</span>
             </li>
-            <li><a href="assets/docs/7-Mining-dan-Mining-Pool.pdf" target="_blank">Mining dan Mining Pool</a></li>
-            <li><a href="assets/docs/8-On-Chain-Analysis.pdf" target="_blank">On Chain Analysis</a></li>
-        </ul>
+            <li class="learning-item" data-material-id="self-custody">
+                <a href="assets/docs/2-Self-Custody-Cold-Wallet.pdf" target="_blank"
+                    onclick="markMaterialOpened(this)">Self Custody Cold Wallet</a><span
+                    class="material-check">&#10003;</span>
+            </li>
+            <li class="learning-item" data-material-id="utxo-fee">
+                <a href="assets/docs/3-UTXO-Fee-Alamat-Wallet.pdf" target="_blank"
+                    onclick="markMaterialOpened(this)">UTXO, Fee, Alamat Wallet</a><span
+                    class="material-check">&#10003;</span>
+            </li>
+            <li class="learning-item" data-material-id="privasi-keamanan">
+                <a href="assets/docs/4-Privasi-dan-Keamanan.pdf" target="_blank"
+                    onclick="markMaterialOpened(this)">Privasi dan Keamanan</a><span
+                    class="material-check">&#10003;</span>
+            </li>
+            <li class="learning-item" data-material-id="lightning-network">
+                <a href="assets/docs/5-Lightning-Network.pdf" target="_blank"
+                    onclick="markMaterialOpened(this)">Lightning Network</a><span class="material-check">&#10003;</span>
+            </li>
+            <li class="learning-item" data-material-id="bip">
+                <a href="assets/docs/6-Bitcoin-Improvement-Proposal-BIP.pdf" target="_blank"
+                    onclick="markMaterialOpened(this)">Bitcoin Improvement
+                    Proposal (BIP)</a><span class="material-check">&#10003;</span>
+            </li>
+            <li class="learning-item" data-material-id="mining-pool">
+                <a href="assets/docs/7-Mining-dan-Mining-Pool.pdf" target="_blank"
+                    onclick="markMaterialOpened(this)">Mining dan Mining Pool</a><span
+                    class="material-check">&#10003;</span>
+            </li>
+            <li class="learning-item" data-material-id="on-chain-analysis">
+                <a href="assets/docs/8-On-Chain-Analysis.pdf" target="_blank" onclick="markMaterialOpened(this)">On
+                    Chain Analysis</a><span class="material-check">&#10003;</span>
+            </li>
+        </ol>
+    </div>
+
+    <div class="faq-section fade-in">
+        <div class="faq-header-toggle" onclick="toggleFaqSection()">
+            <h2>❓ FAQ</h2>
+            <p class="faq-subtitle">Pertanyaan yang sering ditanyakan pemula (klik untuk lihat)</p>
+        </div>
+        <div class="faq-list" id="faqList" style="display:none;">
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    <span>Apakah Bitcoin legal di Indonesia?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Legal sebagai aset investasi/komoditas dan diawasi Bappebti (sekarang di bawah OJK), tapi
+                        <strong>belum</strong> sah sebagai alat pembayaran resmi menggantikan Rupiah. Jadi kamu boleh
+                        beli, simpan, dan jual Bitcoin lewat exchange berizin, tapi tidak bisa dipakai bayar belanja
+                        harian secara legal di Indonesia.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    <span>Kenapa Bitcoin punya nilai/harga, siapa yang menentukan?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Tidak ada satu pihak yang "menentukan" harga Bitcoin — harganya murni terbentuk dari
+                        supply & demand di pasar terbuka, sama seperti emas atau saham. Suplainya terbatas
+                        (maksimal 21 juta BTC, diatur kode, tidak bisa dicetak sembarangan), dan itu salah satu
+                        alasan orang menganggapnya sebagai penyimpan nilai jangka panjang.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    <span>Apa bedanya Bitcoin dengan USDT/stablecoin lain?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Bitcoin harganya mengambang bebas dan tidak dikontrol siapapun (desentralisasi penuh).
+                        USDT dan stablecoin lain sengaja dipatok nilainya 1:1 ke dolar AS oleh perusahaan penerbitnya
+                        — jadi nilainya stabil, tapi kamu tetap bergantung/percaya pada perusahaan itu untuk
+                        menjaga cadangan dananya.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    <span>Bagaimana cara menghindari penipuan crypto?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Seperti yang saya ceritakan di bagian "About Me", perjalanan saya kenal Bitcoin justru
+                        dimulai dari ditipu. Beberapa prinsip yang saya pegang sekarang: jangan pernah kasih seed
+                        phrase/private key ke siapapun (termasuk yang ngaku "admin"), curigai janji untung besar
+                        dalam waktu singkat, dan selalu verifikasi platform/orang yang mengajak sebelum kirim dana
+                        apapun.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    <span>Apakah aman menyimpan Bitcoin sendiri (self custody) dibanding di exchange?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Self custody (nyimpen sendiri pakai wallet, terutama hardware wallet) menghilangkan risiko
+                        exchange diretas/bangkrut/menahan dana kamu — prinsip "not your keys, not your coins".
+                        Tapi konsekuensinya, keamanan sepenuhnya jadi tanggung jawab kamu sendiri: kalau seed
+                        phrase hilang atau salah simpan, tidak ada "lupa password" untuk minta bantuan pulihkan.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    <span>Berapa modal minimal untuk mulai belajar/investasi Bitcoin?</span>
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Bitcoin bisa dibeli sebagian kecil (dalam satuan satoshi), jadi tidak perlu beli 1 BTC utuh
+                        — mulai dari puluhan ribu rupiah pun bisa. Yang lebih penting dari nominal awal adalah
+                        <strong>belajar dulu</strong> cara kerjanya (coba tools DCA Calculator di bawah) sebelum
+                        menambah jumlah dana, dan jangan pakai uang yang kamu butuhkan untuk kebutuhan pokok.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="toolkit-section fade-in">
@@ -388,7 +508,10 @@
                         <div class="result-row"><span>Profit / Loss</span><strong id="profitLoss"></strong></div>
                         <div class="result-row"><span>Profit (%)</span><strong id="profitPercent"></strong></div>
                         <div class="result-chart-wrap"><canvas id="dcaChart"></canvas></div>
-                        <button id="copyResultBtn" class="copy-btn">Copy Result</button>
+                        <div class="result-action-row">
+                            <button id="copyResultBtn" class="copy-btn">Copy Result</button>
+                            <button id="shareResultBtn" class="share-btn">📤 Share</button>
+                        </div>
                     </div>
                     <p style="font-size:12px;color:#888;margin-top:10px;">*Frekuensi Harian pakai harga hari itu saja;
                         Mingguan/Bulanan pakai <strong>rata-rata harga sepanjang periode itu</strong> (bukan cuma 1
@@ -516,6 +639,10 @@
                         </div>
                         <div class="result-row"><span>Profit / Loss</span><strong id="avgProfitLoss"></strong></div>
                         <div class="result-chart-wrap"><canvas id="avgChart"></canvas></div>
+                        <div class="result-action-row">
+                            <button id="avgCopyResultBtn" class="copy-btn">Copy Result</button>
+                            <button id="avgShareResultBtn" class="share-btn">📤 Share</button>
+                        </div>
                     </div>
                     <p style="font-size:12px;color:#888;margin-top:10px;">*Harga USD historis diambil dari file lokal
                         <code>btc-price-history.json</code> (data sejak 1 Januari 2013). Nilai Rp adalah
@@ -542,6 +669,16 @@
                             <span class="skeleton-block"></span>
                             <span class="skeleton-block short"></span>
                         </div>
+                    </div>
+                    <div class="dca-card" style="margin-top:16px;">
+                        <h4 style="margin:0 0 4px 0;font-size:14px;">📈 Siklus Halving Sebelumnya</h4>
+                        <p style="font-size:12px;color:#888;margin:0 0 10px 0;">Pergerakan harga BTC (% perubahan
+                            dari harga saat halving) di 4 siklus terakhir: 2012, 2016, 2020, 2024.</p>
+                        <div class="result-chart-wrap"><canvas id="halvingCycleChart"></canvas></div>
+                        <p style="font-size:11px;color:#888;margin-top:10px;">*Data historis untuk edukasi,
+                            <strong>bukan
+                                jaminan</strong> pola yang sama akan berulang di masa depan, dan bukan ajakan
+                            investasi/finansial.</p>
                     </div>
                 </div>
             </div>
@@ -786,6 +923,8 @@
                 loading="lazy" alt="Solana SOL" onclick="openCryptoModal('sol')" style="cursor:pointer;">
             <img src="https://cdn.simpleicons.org/lightning/2196f3" width="50" height="50" class="icon-crypto"
                 loading="lazy" alt="Lightning Address" onclick="openCryptoModal('lightning')" style="cursor:pointer;">
+            <img src="assets/img/qris-icon.png" width="50" height="50" class="icon-crypto icon-qris" loading="lazy"
+                alt="QRIS" onclick="openCryptoModal('qris')" style="cursor:pointer;">
         </div>
     </div>
 
