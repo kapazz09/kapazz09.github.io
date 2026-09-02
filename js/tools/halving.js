@@ -18,8 +18,12 @@ Object.assign(BitcoinTools, {
                 '<span class="skeleton-block short"></span>' +
                 '</div>';
         }
-        fetch("https://mempool.space/api/blocks/tip/height")
-            .then(res => res.json())
+        this.fetchWithFallback(
+            "https://mempool.space/api/blocks/tip/height",
+            (data) => data,
+            "https://blockchain.info/q/getblockcount?cors=true",
+            (data) => data
+        )
             .then(currentHeight => {
                 const halvingInterval = 210000;
                 const nextHalvingBlock = Math.ceil((currentHeight + 1) / halvingInterval) * halvingInterval;

@@ -200,6 +200,48 @@ const BitcoinTools = {
     },
 
     //------------------------------------------------
+    // SHARE HASIL KALKULATOR (dipakai DCA & Average Buy)
+    // Action sheet kecil dari bawah layar, 3 pilihan:
+    // WhatsApp, Twitter/X, dan Copy Teks sebagai fallback.
+    //------------------------------------------------
+    openShareMenu(text) {
+        const old = document.getElementById("shareMenuPopover");
+        if (old) old.remove();
+
+        const encoded = encodeURIComponent(text);
+        const menu = document.createElement("div");
+        menu.id = "shareMenuPopover";
+        menu.className = "share-menu-popover";
+        menu.innerHTML =
+            '<p class="share-menu-title">Bagikan Hasil</p>' +
+            '<a href="https://wa.me/?text=' + encoded + '" target="_blank" rel="noopener">📱 WhatsApp</a>' +
+            '<a href="https://twitter.com/intent/tweet?text=' + encoded + '" target="_blank" rel="noopener">🐦 Twitter / X</a>' +
+            '<button type="button" id="shareCopyTextBtn">📋 Copy Teks</button>' +
+            '<button type="button" id="shareMenuCancelBtn" class="share-menu-cancel">Batal</button>';
+        document.body.appendChild(menu);
+
+        document.getElementById("shareCopyTextBtn").addEventListener("click", () => {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Teks share berhasil disalin!");
+            }).catch(() => {
+                alert("Gagal menyalin. Silakan salin manual.");
+            });
+            menu.remove();
+        });
+
+        document.getElementById("shareMenuCancelBtn").addEventListener("click", () => menu.remove());
+
+        setTimeout(() => {
+            document.addEventListener("click", function closeOnce(e) {
+                if (!menu.contains(e.target)) {
+                    menu.remove();
+                    document.removeEventListener("click", closeOnce);
+                }
+            });
+        }, 0);
+    },
+
+    //------------------------------------------------
     // EVENTS
     //------------------------------------------------
 
@@ -212,6 +254,41 @@ const BitcoinTools = {
         if (this.bindAverageBuyEvents) this.bindAverageBuyEvents();
         if (this.bindWalletEvents) this.bindWalletEvents();
         if (this.bindGlossaryEvents) this.bindGlossaryEvents();
+    },
+
+    //------------------------------------------------
+    // FALLBACK API (mempool.space -> blockchain.com)
+    // Dipakai Wallet Checker, Halving Countdown, Mining
+    // Profit, dan sebagian data Mempool Status. TIDAK
+    // dipakai UTXO & Fee Calculator (sengaja, sesuai
+    // permintaan — blockchain.com tak punya fee estimation
+    // yang setara akurat).
+    //------------------------------------------------
+
+    fetchWithTimeout(url, timeoutMs) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), timeoutMs);
+        return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timer));
+    },
+
+    // primaryParse/fallbackParse masing-masing menormalisasi hasil JSON
+    // mentah dari sumbernya jadi BENTUK YANG SAMA, supaya kode tampilan
+    // yang memanggil fungsi ini tidak perlu tahu data berasal dari mana.
+    fetchWithFallback(primaryUrl, primaryParse, fallbackUrl, fallbackParse) {
+        return this.fetchWithTimeout(primaryUrl, 7000)
+            .then(res => {
+                if (!res.ok) throw new Error("primary not ok");
+                return res.json();
+            })
+            .then(data => primaryParse(data))
+            .catch(() => {
+                return fetch(fallbackUrl)
+                    .then(res => {
+                        if (!res.ok) throw new Error("fallback not ok");
+                        return res.json();
+                    })
+                    .then(data => fallbackParse(data));
+            });
     },
 
     //------------------------------------------------
@@ -362,13 +439,21 @@ const BitcoinTools = {
                 if (feeEl) feeEl.textContent = "Gagal memuat";
             });
 
-        fetch("https://mempool.space/api/mempool")
-            .then(res => res.json())
-            .then(data => {
+        this.fetchWithFallback(
+            "https://mempool.space/api/mempool",
+            (data) => ({ count: data.count, vsize: data.vsize }),
+            "https://blockchain.info/q/unconfirmedcount?cors=true",
+            (data) => ({ count: data, vsize: null }) // blockchain.com cuma punya jumlah tx, bukan ukuran vMB
+        )
+            .then(result => {
                 const sizeEl = document.getElementById("mempoolSize");
                 if (sizeEl) {
-                    const mb = (data.vsize / 1000000).toFixed(2);
-                    sizeEl.textContent = data.count.toLocaleString("en-US") + " tx (" + mb + " MB)";
+                    if (result.vsize !== null) {
+                        const mb = (result.vsize / 1000000).toFixed(2);
+                        sizeEl.textContent = result.count.toLocaleString("en-US") + " tx (" + mb + " MB)";
+                    } else {
+                        sizeEl.textContent = result.count.toLocaleString("en-US") + " tx";
+                    }
                 }
             })
             .catch(() => {

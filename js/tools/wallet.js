@@ -46,16 +46,25 @@ Object.assign(BitcoinTools, {
         const resultCardEarly = document.getElementById("walletResult");
         if (resultCardEarly) resultCardEarly.style.display = "block";
 
-        fetch("https://mempool.space/api/address/" + address)
-            .then(res => {
-                if (!res.ok) throw new Error("not found");
-                return res.json();
+        this.fetchWithFallback(
+            "https://mempool.space/api/address/" + address,
+            (data) => ({
+                funded: data.chain_stats.funded_txo_sum,
+                spent: data.chain_stats.spent_txo_sum,
+                txCount: data.chain_stats.tx_count
+            }),
+            "https://blockchain.info/rawaddr/" + address + "?cors=true",
+            (data) => ({
+                funded: data.total_received,
+                spent: data.total_sent,
+                txCount: data.n_tx
             })
+        )
             .then(addressData => {
-                const funded = addressData.chain_stats.funded_txo_sum;
-                const spent = addressData.chain_stats.spent_txo_sum;
+                const funded = addressData.funded;
+                const spent = addressData.spent;
                 const balance = funded - spent;
-                const txCount = addressData.chain_stats.tx_count;
+                const txCount = addressData.txCount;
                 const balanceBTC = balance / 1e8;
 
                 const setText = (id, text) => {
@@ -81,13 +90,14 @@ Object.assign(BitcoinTools, {
                 if (resultCard) resultCard.style.display = "block";
 
                 setText("walletUtxoCount", "Memuat...");
-                fetch("https://mempool.space/api/address/" + address + "/utxo")
-                    .then(res => {
-                        if (!res.ok) throw new Error("utxo fetch failed");
-                        return res.json();
-                    })
-                    .then(utxoData => {
-                        setText("walletUtxoCount", utxoData.length.toLocaleString("en-US"));
+                this.fetchWithFallback(
+                    "https://mempool.space/api/address/" + address + "/utxo",
+                    (data) => data.length,
+                    "https://blockchain.info/unspent?active=" + address + "&cors=true",
+                    (data) => (data.unspent_outputs || []).length
+                )
+                    .then(utxoCount => {
+                        setText("walletUtxoCount", utxoCount.toLocaleString("en-US"));
                     })
                     .catch(() => {
                         setText("walletUtxoCount", "Tidak dapat dimuat (alamat terlalu aktif)");

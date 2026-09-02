@@ -23,10 +23,14 @@ Object.assign(BitcoinTools, {
         if (info) {
             info.innerHTML = '<span class="skeleton-block short" style="height:10px;"></span>';
         }
-        fetch("https://mempool.space/api/v1/mining/hashrate/3d")
-            .then(res => res.json())
-            .then(data => {
-                this.networkHashrateHs = data.currentHashrate;
+        this.fetchWithFallback(
+            "https://mempool.space/api/v1/mining/hashrate/3d",
+            (data) => data.currentHashrate,
+            "https://blockchain.info/q/hashrate?cors=true",
+            (data) => data * 1e9 // blockchain.info balikin satuan GH/s, samakan ke H/s
+        )
+            .then(hashrateHs => {
+                this.networkHashrateHs = hashrateHs;
                 const info = document.getElementById("networkHashrateInfo");
                 if (info) {
                     const ehs = (this.networkHashrateHs / 1e18).toFixed(2);
