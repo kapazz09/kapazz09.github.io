@@ -1,0 +1,811 @@
+/*==================================================
+    MATERI: UTXO MANAGEMENT, COIN CONTROL & FEE TRANSAKSI
+    STYLE KHUSUS (variabel warna & komponen umum ada di tema.css)
+==================================================*/
+
+/* ---------- KOMPONEN DASAR REUSABLE (diagram-hint, animate-btn, accordion) ---------- */
+.diagram-hint {
+    text-align: center;
+    font-size: 12px !important;
+    color: var(--kb-text-faint) !important;
+    margin-top: 12px !important;
+}
+
+.animate-flow-btn {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    background: var(--kb-orange-soft);
+    border: 1px solid rgba(247, 147, 26, 0.4);
+    color: var(--kb-orange-light);
+    font-family: var(--kb-font);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.animate-flow-btn:hover:not(:disabled) {
+    background: rgba(247, 147, 26, 0.22);
+}
+
+.animate-flow-btn:disabled {
+    opacity: 0.7;
+    cursor: default;
+}
+
+.tier-accordion {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tier-item {
+    border: 1px solid var(--kb-card-border);
+    border-radius: var(--kb-radius-sm);
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.tier-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--kb-font);
+    color: var(--kb-text);
+    flex-wrap: wrap;
+}
+
+.tier-badge {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 9px;
+    border-radius: 20px;
+    color: #fff;
+}
+
+.tier-title {
+    flex: 1;
+    font-size: 13.5px;
+    font-weight: 700;
+    min-width: 140px;
+}
+
+.tier-chevron {
+    width: 18px;
+    height: 18px;
+    color: var(--kb-text-faint);
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+}
+
+.tier-item.open .tier-chevron {
+    transform: rotate(180deg);
+    color: var(--kb-orange);
+}
+
+.tier-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.tier-item.open .tier-body {
+    max-height: 260px;
+}
+
+.tier-body p {
+    padding: 0 16px 16px 16px;
+    margin: 0 !important;
+    font-size: 13px !important;
+    color: var(--kb-text-dim) !important;
+    text-align: justify;
+    text-align-last: left;
+}
+
+/* ---------- SECTION 1: DIAGRAM LINGKARAN UTXO ---------- */
+.utxo-total-display {
+    text-align: center;
+    font-size: 14px !important;
+    font-weight: 700;
+    color: var(--kb-orange-light) !important;
+    background: var(--kb-orange-soft);
+    border: 1px solid rgba(247, 147, 26, 0.35);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin: 6px 0 20px 0 !important;
+}
+
+.utxo-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 10px 4px 4px 4px;
+}
+
+.utxo-circle {
+    width: var(--circle-size, 80px);
+    height: var(--circle-size, 80px);
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--kb-text-dim);
+    font-family: var(--kb-font);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.utxo-circle:hover {
+    transform: translateY(-2px);
+}
+
+.utxo-circle-value {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.utxo-circle-value small {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--kb-text-faint);
+}
+
+.utxo-circle.selected {
+    border-color: var(--kb-orange);
+    background: var(--kb-orange-soft);
+    color: var(--kb-orange-light);
+    box-shadow: 0 0 0 3px rgba(247, 147, 26, 0.18);
+}
+
+.utxo-circle.selected .utxo-circle-value small {
+    color: var(--kb-orange-light);
+}
+
+.utxo-diagram-caption {
+    text-align: center;
+    font-size: 12.5px !important;
+    font-weight: 700;
+    color: var(--kb-text-faint) !important;
+    margin: 14px 0 0 0 !important;
+}
+
+@media (max-width: 480px) {
+    .utxo-diagram {
+        gap: 10px;
+    }
+
+    .utxo-circle {
+        width: calc(var(--circle-size, 80px) * 0.82);
+        height: calc(var(--circle-size, 80px) * 0.82);
+    }
+}
+
+/* ---------- SECTION 2: ANIMASI KONSOLIDASI UTXO ---------- */
+.consolidate-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin-top: 18px;
+}
+
+.consolidate-inputs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+}
+
+.consolidate-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 12px 10px;
+    border-radius: var(--kb-radius-sm);
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--kb-text-dim);
+    font-family: var(--kb-font);
+    transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease, color 0.25s ease;
+}
+
+.consolidate-node i {
+    width: 20px;
+    height: 20px;
+    color: var(--kb-text-faint);
+    transition: color 0.25s ease;
+}
+
+.consolidate-node span {
+    font-size: 11.5px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.consolidate-node small {
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--kb-text-faint);
+}
+
+.consolidate-node--small {
+    flex: 1 1 90px;
+    max-width: 110px;
+}
+
+.consolidate-node--tx {
+    width: 100%;
+    max-width: 260px;
+}
+
+.consolidate-node--big {
+    width: 100%;
+    max-width: 200px;
+}
+
+.consolidate-node.active {
+    border-color: var(--kb-orange);
+    background: var(--kb-orange-soft);
+    color: var(--kb-orange-light);
+    transform: scale(1.04);
+}
+
+.consolidate-node.active i {
+    color: var(--kb-orange);
+}
+
+.consolidate-node--big.active {
+    border-color: #4caf7d;
+    background: rgba(76, 175, 125, 0.16);
+    color: #7fd99a;
+}
+
+.consolidate-node--big.active i {
+    color: #4caf7d;
+}
+
+.flow-arrow--down {
+    color: var(--kb-text-faint);
+    transition: color 0.2s ease;
+}
+
+.flow-arrow--down i {
+    width: 18px;
+    height: 18px;
+}
+
+.flow-arrow--down.active {
+    color: var(--kb-orange);
+}
+
+/* ---------- SECTION 3: KARTU PERBANDINGAN UTXO ---------- */
+.utxo-compare-grid {
+    display: flex;
+    gap: 14px;
+    margin-top: 18px;
+    align-items: stretch;
+}
+
+.compare-card {
+    flex: 1;
+    min-width: 0;
+    padding: 18px 16px;
+    border-radius: var(--kb-radius-sm);
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.compare-card h3 {
+    margin: 0 0 12px 0;
+    font-size: 14.5px;
+    color: var(--kb-text);
+}
+
+.compare-card--accent {
+    border-color: rgba(247, 147, 26, 0.45);
+    background: var(--kb-orange-soft);
+}
+
+.compare-card--accent h3 {
+    color: var(--kb-orange-light);
+}
+
+.compare-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.compare-list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 7px 0;
+}
+
+.compare-list-item span:last-child {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--kb-text-dim);
+    text-align: justify;
+    text-align-last: left;
+}
+
+@media (max-width: 480px) {
+    .utxo-compare-grid {
+        gap: 8px;
+    }
+
+    .compare-card {
+        padding: 13px 10px;
+    }
+
+    .compare-card h3 {
+        font-size: 12.5px;
+        margin-bottom: 8px;
+    }
+
+    .compare-list-item {
+        gap: 6px;
+        padding: 5px 0;
+    }
+
+    .compare-list-item span:last-child {
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    .checklist-icon {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .compare-card {
+        padding: 10px 7px;
+    }
+
+    .compare-card h3 {
+        font-size: 11.5px;
+    }
+
+    .compare-list-item span:last-child {
+        font-size: 10.2px;
+    }
+}
+
+/* ---------- SECTION 4: DIAGRAM RUMUS FEE ---------- */
+.fee-formula-diagram {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin-top: 18px;
+}
+
+.fee-node {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 4px;
+    padding: 18px 10px;
+    border-radius: var(--kb-radius-sm);
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--kb-text-dim);
+    font-family: var(--kb-font);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.fee-node:hover {
+    transform: translateY(-2px);
+}
+
+.fee-node-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--kb-text);
+    line-height: 1.25;
+}
+
+.fee-node-unit {
+    font-size: 11px;
+    color: var(--kb-text-faint);
+}
+
+.fee-node--result {
+    border-color: rgba(247, 147, 26, 0.5);
+    background: var(--kb-orange-soft);
+}
+
+.fee-node--result .fee-node-label {
+    color: var(--kb-orange-light);
+}
+
+.fee-operator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--kb-text-faint);
+    flex: 0 0 auto;
+    padding: 4px 2px;
+    line-height: 1;
+}
+
+@media (max-width: 480px) {
+    .fee-formula-diagram {
+        gap: 5px;
+    }
+
+    .fee-node {
+        padding: 12px 5px;
+        border-radius: 10px;
+    }
+
+    .fee-node-label {
+        font-size: 10.5px;
+    }
+
+    .fee-node-unit {
+        font-size: 8.5px;
+    }
+
+    .fee-operator {
+        font-size: 15px;
+        padding: 0 1px;
+    }
+}
+
+@media (max-width: 360px) {
+    .fee-node {
+        padding: 9px 3px;
+    }
+
+    .fee-node-label {
+        font-size: 9.3px;
+    }
+
+    .fee-node-unit {
+        font-size: 7.8px;
+    }
+
+    .fee-operator {
+        font-size: 13px;
+    }
+}
+
+/* ---------- SECTION 5: SIMULASI JARINGAN SEPI vs RAMAI ---------- */
+.network-sim {
+    display: flex;
+    gap: 14px;
+    margin-top: 18px;
+    align-items: stretch;
+}
+
+.network-column {
+    flex: 1;
+    min-width: 0;
+    padding: 16px;
+    border-radius: var(--kb-radius-sm);
+    border: 1px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.network-column-title {
+    margin: 0 0 12px 0;
+    font-size: 13px !important;
+    font-weight: 700;
+    text-align: center;
+}
+
+.network-column-title--calm {
+    color: #7fd99a;
+}
+
+.network-column-title--busy {
+    color: #ff8a8a;
+}
+
+.network-tx-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    min-height: 76px;
+    align-content: start;
+}
+
+.network-tx {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.network-tx--calm {
+    background: rgba(76, 175, 125, 0.18);
+    color: #7fd99a;
+    border: 1px solid rgba(76, 175, 125, 0.35);
+}
+
+.network-tx--busy {
+    background: rgba(224, 93, 93, 0.18);
+    color: #ff8a8a;
+    border: 1px solid rgba(224, 93, 93, 0.35);
+}
+
+.network-tx.appear {
+    animation: kbFadeScale 0.25s ease-out both;
+}
+
+.network-column-label {
+    text-align: center;
+    font-size: 11.5px !important;
+    color: var(--kb-text-faint) !important;
+    margin: 12px 0 0 0 !important;
+}
+
+.mempool-link-hint {
+    text-align: center;
+    font-size: 12.5px !important;
+    color: var(--kb-text-faint) !important;
+    margin: 16px 0 0 0 !important;
+}
+
+.mempool-link-hint a {
+    color: var(--kb-orange-light);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.mempool-link-hint a:hover {
+    color: var(--kb-orange);
+}
+
+@media (max-width: 480px) {
+    .network-sim {
+        gap: 6px;
+    }
+
+    .network-column {
+        padding: 10px 6px;
+    }
+
+    .network-column-title {
+        font-size: 11px !important;
+        margin-bottom: 8px;
+    }
+
+    .network-tx-grid {
+        gap: 4px;
+        min-height: 60px;
+    }
+
+    .network-tx {
+        font-size: 8px;
+        border-radius: 6px;
+    }
+
+    .network-column-label {
+        font-size: 9.5px !important;
+        margin-top: 8px !important;
+    }
+}
+
+@media (max-width: 360px) {
+    .network-column {
+        padding: 8px 4px;
+    }
+
+    .network-column-title {
+        font-size: 9.5px !important;
+    }
+
+    .network-tx {
+        font-size: 7px;
+    }
+
+    .network-column-label {
+        font-size: 8.5px !important;
+    }
+}
+
+/* ---------- SECTION 6: BADGE & FLAG ACCORDION ALAMAT ---------- */
+.tier-badge--gray {
+    background: rgba(150, 150, 160, 0.4);
+    color: #ddd;
+}
+
+.tier-badge--orange {
+    background: var(--kb-orange);
+}
+
+.tier-badge--green {
+    background: #4caf7d;
+}
+
+.tier-flag {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    margin: 2px 0 2px 36px;
+}
+
+.tier-flag--common {
+    background: var(--kb-orange-soft);
+    color: var(--kb-orange-light);
+    border: 1px solid rgba(247, 147, 26, 0.4);
+}
+
+.tier-flag--new {
+    background: rgba(76, 175, 125, 0.16);
+    color: #7fd99a;
+    border: 1px solid rgba(76, 175, 125, 0.4);
+}
+
+/* ---------- SECTION 7: MINI-QUIZ SINTESIS (1 SOAL) ---------- */
+.synthesis-quiz-card {
+    margin-top: 16px;
+    padding: 18px;
+    border-radius: var(--kb-radius-sm);
+    border: 1px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.mini-quiz-statement {
+    font-size: 14.5px !important;
+    color: var(--kb-text) !important;
+    line-height: 1.6;
+    margin: 0 0 16px 0 !important;
+}
+
+.mini-quiz-feedback {
+    display: none;
+    margin-top: 14px !important;
+    font-size: 13px !important;
+    color: var(--kb-text-dim) !important;
+    line-height: 1.6;
+    padding-top: 12px;
+    border-top: 1px solid var(--kb-card-border);
+}
+
+.mini-quiz-feedback.show {
+    display: block;
+}
+
+.synthesis-quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.synthesis-quiz-option {
+    text-align: left;
+    padding: 13px 14px;
+    border-radius: 10px;
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--kb-text);
+    font-family: var(--kb-font);
+    font-size: 13.5px;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.synthesis-quiz-option:disabled {
+    cursor: default;
+}
+
+.synthesis-quiz-option--correct {
+    border-color: #4caf7d;
+    background: rgba(76, 175, 125, 0.16);
+    color: #7fd99a;
+}
+
+.synthesis-quiz-option--wrong {
+    border-color: #e05d5d;
+    background: rgba(224, 93, 93, 0.16);
+    color: #ff8a8a;
+}
+
+/* ---------- NAVIGASI BAWAH: PREV + NEXT ---------- */
+.materi-bottom-nav--split {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+    text-align: left;
+}
+
+.prev-section-btn {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--kb-text-dim);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.prev-section-btn i {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.prev-section-btn:hover {
+    border-color: var(--kb-orange);
+    color: var(--kb-orange-light);
+}
+
+.next-section-btn--inline {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+    margin-top: 0;
+}
+
+@media (max-width: 480px) {
+    .materi-bottom-nav--split {
+        gap: 8px;
+    }
+
+    .prev-section-btn,
+    .next-section-btn--inline {
+        padding: 13px 8px;
+        font-size: 12.5px;
+    }
+}
+
+@media (max-width: 360px) {
+    .prev-section-btn,
+    .next-section-btn--inline {
+        padding: 11px 6px;
+        font-size: 11px;
+    }
+}

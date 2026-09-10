@@ -1,0 +1,800 @@
+/*==================================================
+    MATERI 6: BITCOIN IMPROVEMENT PROPOSAL (BIP) — STYLE KHUSUS
+    (variabel warna & komponen umum ada di tema.css)
+
+    CATATAN PENTING SOAL MOBILE:
+    Semua diagram di halaman ini (flow BIP, kartu perbandingan
+    Taproot vs BIP360, status stepper) TIDAK di-stack vertikal
+    di mobile — tetap horizontal/side-by-side seperti desktop.
+    Lebar tiap kotak memakai flex fleksibel (flex: 1 1 0, BUKAN
+    lebar piksel tetap) sehingga totalnya SELALU otomatis pas
+    mengisi lebar layar berapa pun, dari desktop sampai HP
+    paling sempit — tidak pernah kepotong/overflow dan tidak
+    perlu discroll horizontal. Font/padding/ikon diperkecil
+    bertahap lewat media query supaya teks tetap terbaca di
+    kotak yang menyempit.
+==================================================*/
+
+/* ---------- CATATAN PENULIS (tampil sebelum Section 1) ---------- */
+.author-note {
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1.5px dashed rgba(255, 255, 255, 0.22);
+    border-radius: var(--kb-radius-sm);
+    padding: 20px 22px 20px 20px;
+    margin-bottom: 22px;
+}
+
+.author-note-icon {
+    position: absolute;
+    top: -12px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--kb-bg-alt);
+    border: 1.5px dashed rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+}
+
+.author-note p {
+    margin: 0 !important;
+    font-size: 13.5px !important;
+    font-style: italic;
+    color: var(--kb-text-faint) !important;
+    line-height: 1.65;
+    text-align: justify;
+    text-align-last: left;
+    hyphens: auto;
+}
+
+@media (max-width: 480px) {
+    .author-note {
+        padding: 18px 18px 18px 16px;
+    }
+
+    .author-note p {
+        font-size: 13px !important;
+    }
+}
+
+/* ---------- SECTION 1: DIAGRAM ALUR BIP (5 langkah, horizontal tetap, lebar fleksibel) ---------- */
+.bip-flow-scroll {
+    margin-top: 18px;
+    width: 100%;
+}
+
+.bip-flow-diagram {
+    display: flex;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    gap: 3px;
+    width: 100%;
+}
+
+.bip-flow-step {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 14px 6px;
+    border-radius: var(--kb-radius-sm);
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--kb-text-dim);
+    font-family: var(--kb-font);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.bip-flow-step:hover {
+    border-color: var(--kb-orange);
+    background: var(--kb-orange-soft);
+    transform: translateY(-2px);
+}
+
+.bip-flow-step i {
+    width: 20px;
+    height: 20px;
+    color: var(--kb-orange);
+    flex-shrink: 0;
+}
+
+.bip-flow-step span {
+    font-size: 11.5px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--kb-text);
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.bip-flow-step small {
+    font-size: 9.5px;
+    color: var(--kb-text-faint);
+    line-height: 1.35;
+}
+
+.bip-flow-arrow {
+    flex: 0 0 auto;
+    color: var(--kb-orange);
+    display: flex;
+    align-items: center;
+}
+
+.bip-flow-arrow i {
+    width: 16px;
+    height: 16px;
+}
+
+@media (max-width: 560px) {
+    .bip-flow-step {
+        padding: 10px 4px;
+        gap: 4px;
+    }
+
+    .bip-flow-step i {
+        width: 15px;
+        height: 15px;
+    }
+
+    .bip-flow-step span {
+        font-size: 9.5px;
+    }
+
+    .bip-flow-step small {
+        font-size: 8px;
+    }
+
+    .bip-flow-arrow i {
+        width: 11px;
+        height: 11px;
+    }
+}
+
+@media (max-width: 400px) {
+    .bip-flow-step {
+        padding: 8px 3px;
+        gap: 3px;
+    }
+
+    .bip-flow-step i {
+        width: 13px;
+        height: 13px;
+    }
+
+    .bip-flow-step span {
+        font-size: 8.5px;
+        line-height: 1.2;
+    }
+
+    .bip-flow-step small {
+        font-size: 7.5px;
+    }
+
+    .bip-flow-diagram {
+        gap: 2px;
+    }
+
+    .bip-flow-arrow i {
+        width: 9px;
+        height: 9px;
+    }
+}
+
+.bip-flow-hint {
+    text-align: center;
+    font-size: 12px !important;
+    color: var(--kb-text-faint) !important;
+    margin-top: 10px !important;
+}
+
+/* ---------- SECTION 2: ACCORDION BIP LANDMARK ---------- */
+.bip-accordion {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bip-item {
+    border: 1px solid var(--kb-card-border);
+    border-radius: var(--kb-radius-sm);
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.bip-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--kb-font);
+    color: var(--kb-text);
+}
+
+.bip-badge {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 9px;
+    border-radius: 20px;
+    background: var(--kb-orange-soft);
+    color: var(--kb-orange-light);
+    border: 1px solid rgba(247, 147, 26, 0.4);
+    white-space: nowrap;
+}
+
+.bip-header-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.bip-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    display: block;
+}
+
+.bip-year {
+    font-size: 11px;
+    color: var(--kb-text-faint);
+    display: block;
+    margin-top: 2px;
+}
+
+.bip-chevron {
+    width: 18px;
+    height: 18px;
+    color: var(--kb-text-faint);
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+}
+
+.bip-item.open .bip-chevron {
+    transform: rotate(180deg);
+    color: var(--kb-orange);
+}
+
+.bip-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.bip-item.open .bip-body {
+    max-height: 320px;
+}
+
+.bip-body p {
+    padding: 0 16px 16px 16px;
+    margin: 0 !important;
+    font-size: 13px !important;
+    color: var(--kb-text-dim) !important;
+    line-height: 1.6;
+    text-align: justify;
+    text-align-last: left;
+    hyphens: auto;
+}
+
+@media (max-width: 480px) {
+    .bip-header {
+        padding: 12px 13px;
+        gap: 8px;
+    }
+
+    .bip-badge {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
+
+    .bip-title {
+        font-size: 12.5px;
+    }
+
+    .bip-year {
+        font-size: 10px;
+    }
+
+    .bip-body p {
+        padding: 0 13px 14px 13px;
+        font-size: 12.5px !important;
+    }
+}
+
+/* ---------- SECTION 3: PERBANDINGAN TAPROOT VS BIP360 (side-by-side tetap) ---------- */
+.compare-cards {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    align-items: stretch;
+}
+
+.compare-card {
+    flex: 1 1 0;
+    min-width: 0;
+    border-radius: var(--kb-radius-sm);
+    padding: 18px 14px;
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.compare-card--taproot {
+    border-color: rgba(180, 180, 190, 0.4);
+}
+
+.compare-card--bip360 {
+    border-color: rgba(247, 147, 26, 0.5);
+    background: var(--kb-orange-soft);
+}
+
+.compare-card-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.compare-card-head i {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.compare-card--taproot .compare-card-head i {
+    color: #ccc;
+}
+
+.compare-card--bip360 .compare-card-head i {
+    color: var(--kb-orange);
+}
+
+.compare-card-head span {
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.compare-card-tag {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--kb-text-faint);
+    margin-bottom: 10px;
+}
+
+.compare-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.compare-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--kb-text-dim);
+    line-height: 1.5;
+}
+
+.compare-list li .ci {
+    flex-shrink: 0;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.compare-list li span:last-child {
+    text-align: justify;
+    text-align-last: left;
+    hyphens: auto;
+}
+
+.compare-list li.removed {
+    color: var(--kb-text-faint);
+    text-decoration: line-through;
+    text-decoration-color: rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 480px) {
+    .compare-cards {
+        gap: 7px;
+    }
+
+    .compare-card {
+        padding: 13px 9px;
+    }
+
+    .compare-card-head span {
+        font-size: 11.5px;
+    }
+
+    .compare-card-tag {
+        font-size: 9px;
+    }
+
+    .compare-list li {
+        font-size: 10.5px;
+        gap: 5px;
+    }
+}
+
+@media (max-width: 360px) {
+    .compare-card {
+        padding: 11px 7px;
+    }
+
+    .compare-card-head i {
+        width: 15px;
+        height: 15px;
+    }
+
+    .compare-card-head span {
+        font-size: 10.5px;
+    }
+
+    .compare-list li {
+        font-size: 10px;
+    }
+}
+
+.compare-caption {
+    text-align: center;
+    font-size: 12px !important;
+    color: var(--kb-text-faint) !important;
+    margin-top: 12px !important;
+}
+
+/* ---------- SECTION 4: STATUS STEPPER BIP360 (horizontal tetap, lebar fleksibel) ---------- */
+.status-stepper-scroll {
+    margin-top: 18px;
+    width: 100%;
+}
+
+.status-stepper {
+    display: flex;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    gap: 3px;
+    width: 100%;
+}
+
+.status-step {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 14px 6px;
+    border-radius: var(--kb-radius-sm);
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.status-step i {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.status-step span {
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.status-step small {
+    font-size: 9px;
+    line-height: 1.3;
+    display: block;
+    margin-top: 1px;
+}
+
+.status-step--done {
+    border-color: rgba(76, 175, 125, 0.55);
+    background: rgba(76, 175, 125, 0.12);
+}
+
+.status-step--done i {
+    color: #4caf7d;
+}
+
+.status-step--done span {
+    color: #7fd99a;
+}
+
+.status-step--active {
+    border-color: rgba(247, 147, 26, 0.55);
+    background: var(--kb-orange-soft);
+}
+
+.status-step--active i {
+    color: var(--kb-orange);
+}
+
+.status-step--active span {
+    color: var(--kb-orange-light);
+}
+
+.status-step--pending {
+    border-color: var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.status-step--pending i {
+    color: var(--kb-text-faint);
+}
+
+.status-step--pending span {
+    color: var(--kb-text-faint);
+}
+
+.status-step small {
+    color: var(--kb-text-faint);
+}
+
+.status-arrow {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    color: var(--kb-text-faint);
+}
+
+.status-arrow i {
+    width: 14px;
+    height: 14px;
+}
+
+@media (max-width: 560px) {
+    .status-step {
+        padding: 10px 4px;
+        gap: 4px;
+    }
+
+    .status-step i {
+        width: 14px;
+        height: 14px;
+    }
+
+    .status-step span {
+        font-size: 9px;
+    }
+
+    .status-step small {
+        font-size: 7.5px;
+    }
+
+    .status-arrow i {
+        width: 11px;
+        height: 11px;
+    }
+}
+
+@media (max-width: 400px) {
+    .status-step {
+        padding: 8px 3px;
+        gap: 3px;
+    }
+
+    .status-step i {
+        width: 12px;
+        height: 12px;
+    }
+
+    .status-step span {
+        font-size: 8px;
+        line-height: 1.2;
+    }
+
+    .status-step small {
+        font-size: 7px;
+    }
+
+    .status-stepper {
+        gap: 2px;
+    }
+
+    .status-arrow i {
+        width: 9px;
+        height: 9px;
+    }
+}
+
+.status-hint {
+    text-align: center;
+    font-size: 12px !important;
+    color: var(--kb-text-faint) !important;
+    margin-top: 10px !important;
+}
+
+/* ---------- HIGHLIGHT BOX VARIAN "PERSPEKTIF" (netral, bukan warning) ---------- */
+.highlight-box--perspective {
+    background: rgba(124, 108, 214, 0.1);
+    border-color: rgba(124, 108, 214, 0.35);
+}
+
+.highlight-box--perspective i {
+    color: #a996f0;
+}
+
+/* ---------- SECTION 5: MINI-QUIZ (1 soal pilihan ganda a/b/c) ---------- */
+.bip-quiz-card {
+    margin-top: 16px;
+    padding: 18px;
+    border-radius: var(--kb-radius-sm);
+    border: 1px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.bip-quiz-statement {
+    font-size: 14.5px !important;
+    color: var(--kb-text) !important;
+    line-height: 1.6;
+    margin: 0 0 16px 0 !important;
+    text-align: justify;
+    text-align-last: left;
+    hyphens: auto;
+}
+
+.bip-quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bip-quiz-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    text-align: left;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--kb-text-dim);
+    font-family: var(--kb-font);
+    font-size: 13px;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.bip-quiz-option:disabled {
+    cursor: default;
+}
+
+.bip-quiz-option span:last-child {
+    text-align: justify;
+    text-align-last: left;
+    hyphens: auto;
+}
+
+.bip-quiz-option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--kb-text);
+    font-weight: 800;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bip-quiz-option--correct {
+    border-color: #4caf7d;
+    background: rgba(76, 175, 125, 0.16);
+    color: #cdeedb;
+}
+
+.bip-quiz-option--correct .bip-quiz-option-letter {
+    background: #4caf7d;
+    color: #08150e;
+}
+
+.bip-quiz-option--wrong {
+    border-color: #e05d5d;
+    background: rgba(224, 93, 93, 0.16);
+    color: #ffd4d4;
+}
+
+.bip-quiz-option--wrong .bip-quiz-option-letter {
+    background: #e05d5d;
+    color: #200707;
+}
+
+.bip-quiz-feedback {
+    display: none;
+    margin-top: 14px !important;
+    font-size: 13px !important;
+    color: var(--kb-text-dim) !important;
+    line-height: 1.6;
+    padding-top: 12px;
+    border-top: 1px solid var(--kb-card-border);
+    text-align: justify;
+    text-align-last: left;
+    hyphens: auto;
+}
+
+.bip-quiz-feedback.show {
+    display: block;
+}
+
+.bip-quiz-retry-btn {
+    display: block;
+    width: 100%;
+    margin-top: 16px;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--kb-orange), var(--kb-orange-light));
+    color: #fff;
+    font-family: var(--kb-font);
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* ---------- NAVIGASI BAWAH (dua tombol: sebelumnya & berikutnya) ---------- */
+.materi-bottom-nav-dual {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+@media (max-width: 480px) {
+    .materi-bottom-nav-dual {
+        flex-direction: column;
+    }
+}
+
+.prev-section-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 16px;
+    border-radius: 14px;
+    border: 1.5px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--kb-text-dim);
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    transition: 0.25s;
+}
+
+.prev-section-btn:hover {
+    border-color: var(--kb-orange);
+    color: var(--kb-orange-light);
+}
+
+.materi-bottom-nav-dual .next-section-btn {
+    flex: 1;
+    margin-top: 0;
+}

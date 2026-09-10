@@ -1,0 +1,927 @@
+/*==================================================
+    MATERI: LIGHTNING NETWORK — STYLE KHUSUS
+    Aturan mobile: elemen yang side-by-side/horizontal di
+    desktop TETAP side-by-side/horizontal di mobile —
+    cuma diperkecil (font, padding, gap, lebar), tidak
+    di-stack jadi vertikal. Pola ini dipakai di semua
+    diagram pada file ini.
+==================================================*/
+
+/* ---------- SECTION 1: TIMELINE INTERAKTIF ---------- */
+.timeline-diagram {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 22px;
+    padding-top: 10px;
+    position: relative;
+}
+
+.timeline-diagram::before {
+    content: "";
+    position: absolute;
+    top: 22px;
+    left: 4%;
+    right: 4%;
+    height: 2px;
+    background: var(--kb-card-border);
+    z-index: 0;
+}
+
+.timeline-point {
+    position: relative;
+    z-index: 1;
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: inherit;
+    font-family: inherit;
+}
+
+.timeline-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--kb-bg-alt);
+    border: 2px solid var(--kb-orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background 0.2s ease;
+    flex-shrink: 0;
+}
+
+.timeline-point:hover .timeline-dot,
+.timeline-point:focus .timeline-dot {
+    transform: scale(1.15);
+    background: var(--kb-orange);
+}
+
+.timeline-year {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--kb-orange-light);
+    text-align: center;
+    line-height: 1.3;
+}
+
+.timeline-label {
+    font-size: 11px;
+    color: var(--kb-text-dim);
+    text-align: center;
+    line-height: 1.35;
+}
+
+@media (max-width: 480px) {
+    .timeline-diagram {
+        gap: 4px;
+    }
+
+    .timeline-diagram::before {
+        top: 18px;
+    }
+
+    .timeline-dot {
+        width: 17px;
+        height: 17px;
+        border-width: 1.5px;
+    }
+
+    .timeline-year {
+        font-size: 9.5px;
+    }
+
+    .timeline-label {
+        font-size: 8.5px;
+    }
+}
+
+@media (max-width: 360px) {
+    .timeline-year {
+        font-size: 8.5px;
+    }
+
+    .timeline-label {
+        font-size: 7.8px;
+    }
+}
+
+/* ---------- SECTION 2: DIAGRAM LAYER 2 / LAYER 1 ---------- */
+.layer-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin-top: 20px;
+}
+
+.layer-box {
+    border-radius: var(--kb-radius-sm);
+    padding: 18px 20px;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    color: inherit;
+}
+
+.layer-box--l2 {
+    background: var(--kb-orange-soft);
+    border: 1.5px solid var(--kb-orange);
+}
+
+.layer-box--l1 {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid var(--kb-card-border);
+}
+
+.layer-box-title {
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+}
+
+.layer-box--l2 .layer-box-title {
+    color: var(--kb-orange-light);
+}
+
+.layer-box--l1 .layer-box-title {
+    color: var(--kb-text);
+}
+
+.layer-box-desc {
+    display: block;
+    font-size: 13px;
+    color: var(--kb-text-dim);
+    line-height: 1.5;
+    text-align: justify;
+    hyphens: auto;
+}
+
+.layer-arrows {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    padding: 8px 0;
+}
+
+.layer-arrow-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 11px;
+    color: var(--kb-text-faint);
+    font-weight: 600;
+}
+
+.layer-arrow-item i {
+    color: var(--kb-orange);
+    width: 16px;
+    height: 16px;
+}
+
+@media (max-width: 480px) {
+    .layer-box {
+        padding: 14px 15px;
+    }
+
+    .layer-box-title {
+        font-size: 11.5px;
+    }
+
+    .layer-box-desc {
+        font-size: 12px;
+    }
+
+    .layer-arrow-item {
+        font-size: 10px;
+    }
+}
+
+.layer-steps {
+    counter-reset: layer-step;
+    list-style: none;
+    margin: 18px 0 0 0;
+    padding: 0;
+}
+
+.layer-steps li {
+    counter-increment: layer-step;
+    position: relative;
+    padding: 8px 0 8px 34px;
+    font-size: 13.5px;
+    color: var(--kb-text-dim);
+    line-height: 1.55;
+    border-bottom: 1px solid var(--kb-card-border);
+    text-align: justify;
+    hyphens: auto;
+}
+
+.layer-steps li:last-child {
+    border-bottom: none;
+}
+
+.layer-steps li::before {
+    content: counter(layer-step);
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--kb-orange-soft);
+    color: var(--kb-orange-light);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---------- SECTION 3: SIMULASI CHANNEL ---------- */
+.channel-sim {
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--kb-card-border);
+    border-radius: var(--kb-radius-sm);
+    padding: 18px 16px;
+}
+
+.channel-sim-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.channel-party {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--kb-card-border);
+    border-radius: var(--kb-radius-sm);
+    padding: 14px 8px;
+}
+
+.channel-party-label {
+    display: block;
+    font-size: 12px;
+    color: var(--kb-text-dim);
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.channel-party-balance {
+    display: block;
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--kb-orange-light);
+    font-variant-numeric: tabular-nums;
+}
+
+.channel-middle {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 0 6px;
+    min-width: 64px;
+}
+
+.channel-middle-icon {
+    color: var(--kb-orange);
+    width: 22px;
+    height: 22px;
+}
+
+.channel-middle-label {
+    font-size: 10px;
+    color: var(--kb-text-faint);
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.channel-flow-arrow {
+    position: relative;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.channel-flow-arrow i {
+    width: 18px;
+    height: 18px;
+    color: var(--kb-orange-light);
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.5s ease;
+}
+
+.channel-flow-arrow.pulse i {
+    opacity: 1;
+    animation: kbFlowPulse 0.6s ease;
+}
+
+@keyframes kbFlowPulse {
+    0% {
+        transform: translateX(-8px);
+        opacity: 0;
+    }
+
+    40% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(8px);
+        opacity: 0;
+    }
+}
+
+.channel-sim-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: nowrap;
+}
+
+.channel-sim-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 12px 6px;
+    border-radius: 12px;
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.channel-sim-btn--send {
+    background: linear-gradient(135deg, var(--kb-orange), var(--kb-orange-light));
+    color: #fff;
+}
+
+.channel-sim-btn--close {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--kb-text);
+    border: 1px solid var(--kb-card-border);
+}
+
+.channel-sim-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.channel-sim-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.channel-sim-status {
+    margin: 12px 0 0 0;
+    font-size: 12.5px;
+    color: var(--kb-text-faint);
+    text-align: center;
+    min-height: 18px;
+}
+
+.channel-sim-status.is-closed {
+    color: var(--kb-orange-light);
+    font-weight: 600;
+}
+
+@media (max-width: 480px) {
+    .channel-sim {
+        padding: 14px 10px;
+    }
+
+    .channel-party {
+        padding: 10px 5px;
+    }
+
+    .channel-party-label {
+        font-size: 10px;
+    }
+
+    .channel-party-balance {
+        font-size: 13.5px;
+    }
+
+    .channel-middle {
+        min-width: 48px;
+    }
+
+    .channel-middle-icon {
+        width: 17px;
+        height: 17px;
+    }
+
+    .channel-middle-label {
+        font-size: 8.3px;
+    }
+
+    .channel-sim-btn {
+        font-size: 11px;
+        padding: 10px 4px;
+    }
+}
+
+@media (max-width: 360px) {
+    .channel-party-balance {
+        font-size: 12px;
+    }
+
+    .channel-sim-btn {
+        font-size: 9.5px;
+        padding: 9px 3px;
+    }
+}
+
+@media (max-width: 320px) {
+    .channel-sim-btn {
+        font-size: 8.5px;
+    }
+}
+
+/* ---------- KARTU PERBANDINGAN (reusable: Section 4 & 5) ---------- */
+.compare-cards {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+    align-items: stretch;
+}
+
+.compare-card {
+    flex: 1 1 0;
+    min-width: 0;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: var(--kb-radius-sm);
+    padding: 16px 12px;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    color: inherit;
+    border: 1.5px solid var(--kb-card-border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.compare-card--accent {
+    border-color: var(--kb-orange);
+    background: var(--kb-orange-soft);
+}
+
+.compare-card-title {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--kb-text-dim);
+}
+
+.compare-card--accent .compare-card-title {
+    color: var(--kb-orange-light);
+}
+
+.compare-card-code {
+    font-family: 'Courier New', monospace;
+    font-size: 12.5px;
+    color: var(--kb-text);
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    padding: 6px 8px;
+    word-break: break-all;
+}
+
+.compare-card-desc {
+    font-size: 12.5px;
+    color: var(--kb-text-dim);
+    line-height: 1.5;
+    text-align: justify;
+    hyphens: auto;
+}
+
+@media (max-width: 480px) {
+    .compare-cards {
+        gap: 8px;
+    }
+
+    .compare-card {
+        padding: 12px 9px;
+        gap: 6px;
+    }
+
+    .compare-card-title {
+        font-size: 10px;
+    }
+
+    .compare-card-code {
+        font-size: 10.5px;
+        padding: 5px 6px;
+    }
+
+    .compare-card-desc {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 360px) {
+    .compare-card-title {
+        font-size: 9px;
+    }
+
+    .compare-card-code {
+        font-size: 9.5px;
+    }
+
+    .compare-card-desc {
+        font-size: 10px;
+    }
+}
+
+.diagram-hint {
+    font-size: 11.5px !important;
+    color: var(--kb-text-faint) !important;
+    text-align: center !important;
+    font-style: italic;
+    margin: 10px 0 0 0 !important;
+}
+
+/* ---------- SECTION 5 (tambahan): GRID CONTOH WALLET ---------- */
+.wallet-examples {
+    margin-top: 22px;
+}
+
+.wallet-examples-title {
+    font-size: 13px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+    margin: 0 0 10px 0 !important;
+    text-align: left !important;
+}
+
+.wallet-examples-title--custodial {
+    color: var(--kb-text-dim);
+}
+
+.wallet-examples-title--noncustodial {
+    color: var(--kb-orange-light);
+}
+
+.wallet-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+@media (max-width: 480px) {
+    .wallet-card-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+}
+
+@media (max-width: 360px) {
+    .wallet-card-grid {
+        gap: 6px;
+    }
+}
+
+.wallet-card {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 12px 8px;
+    text-align: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--kb-text-dim);
+    border: 1px solid var(--kb-card-border);
+    border-top-width: 3px;
+    font-family: var(--kb-font);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+
+.wallet-card:active {
+    transform: scale(0.97);
+}
+
+@media (max-width: 480px) {
+    .wallet-card {
+        font-size: 11px;
+        padding: 10px 5px;
+    }
+}
+
+@media (max-width: 360px) {
+    .wallet-card {
+        font-size: 10px;
+        padding: 9px 4px;
+    }
+}
+
+.wallet-card--custodial {
+    border-top-color: var(--kb-text-faint);
+}
+
+.wallet-card--custodial:hover {
+    border-color: var(--kb-text-dim);
+    background: rgba(255, 255, 255, 0.09);
+    transform: translateY(-2px);
+}
+
+.wallet-card--noncustodial {
+    border-top-color: var(--kb-orange);
+}
+
+.wallet-card--noncustodial:hover {
+    border-color: var(--kb-orange);
+    background: var(--kb-orange-soft);
+    transform: translateY(-2px);
+}
+
+/* ---------- SECTION 6: KARTU MANFAAT ---------- */
+.benefit-cards {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.benefit-card {
+    flex: 1 1 0;
+    min-width: 0;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--kb-card-border);
+    border-radius: var(--kb-radius-sm);
+    padding: 16px 10px;
+    text-align: center;
+}
+
+.benefit-card-icon {
+    font-size: 24px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.benefit-card-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--kb-orange-light);
+    margin: 0 0 6px 0;
+    line-height: 1.35;
+}
+
+.benefit-card-desc {
+    font-size: 11.5px;
+    color: var(--kb-text-dim);
+    line-height: 1.5;
+    margin: 0;
+    text-align: justify;
+    hyphens: auto;
+}
+
+@media (max-width: 480px) {
+    .benefit-cards {
+        gap: 7px;
+    }
+
+    .benefit-card {
+        padding: 12px 6px;
+    }
+
+    .benefit-card-icon {
+        font-size: 19px;
+    }
+
+    .benefit-card-title {
+        font-size: 10.5px;
+    }
+
+    .benefit-card-desc {
+        font-size: 9.5px;
+    }
+}
+
+@media (max-width: 360px) {
+    .benefit-card-title {
+        font-size: 9.5px;
+    }
+
+    .benefit-card-desc {
+        font-size: 8.7px;
+    }
+}
+
+/* ---------- SECTION 7: KARTU STATISTIK ---------- */
+.stat-cards {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.stat-card {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: center;
+    background: var(--kb-orange-soft);
+    border: 1px solid rgba(247, 147, 26, 0.3);
+    border-radius: var(--kb-radius-sm);
+    padding: 16px 8px;
+}
+
+.stat-card-number {
+    display: block;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--kb-orange-light);
+    line-height: 1.2;
+    margin-bottom: 6px;
+}
+
+.stat-card-label {
+    display: block;
+    font-size: 11px;
+    color: var(--kb-text-dim);
+    line-height: 1.4;
+}
+
+.stat-note {
+    font-size: 12.5px;
+    color: var(--kb-text-faint);
+    font-style: italic;
+    margin-top: 14px;
+}
+
+@media (max-width: 480px) {
+    .stat-cards {
+        gap: 7px;
+    }
+
+    .stat-card {
+        padding: 11px 5px;
+    }
+
+    .stat-card-number {
+        font-size: 12.5px;
+    }
+
+    .stat-card-label {
+        font-size: 9px;
+    }
+}
+
+@media (max-width: 360px) {
+    .stat-card-number {
+        font-size: 11px;
+    }
+
+    .stat-card-label {
+        font-size: 8.2px;
+    }
+}
+
+/* ---------- SECTION 8: MINI-QUIZ (pilihan ganda) ---------- */
+.mini-quiz-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--kb-card-border);
+    border-radius: var(--kb-radius-sm);
+    padding: 18px 16px;
+    margin-top: 6px;
+}
+
+.mini-quiz-statement {
+    font-size: 14.5px;
+    color: var(--kb-text);
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+    text-align: justify;
+    hyphens: auto;
+}
+
+.mini-quiz-mcq-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mini-quiz-mcq-option {
+    text-align: justify;
+    hyphens: auto;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid var(--kb-card-border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    color: var(--kb-text-dim);
+    cursor: pointer;
+    font-family: inherit;
+    line-height: 1.5;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.mini-quiz-mcq-option:hover:not(:disabled) {
+    border-color: var(--kb-orange);
+}
+
+.mini-quiz-mcq-option--correct {
+    border-color: #2ecc71;
+    background: rgba(46, 204, 113, 0.12);
+    color: var(--kb-text);
+}
+
+.mini-quiz-mcq-option--wrong {
+    border-color: #e74c3c;
+    background: rgba(231, 76, 60, 0.12);
+    color: var(--kb-text);
+}
+
+.mini-quiz-mcq-option:disabled {
+    cursor: default;
+}
+
+.mini-quiz-feedback {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--kb-card-border);
+    font-size: 13px;
+    color: var(--kb-text-dim);
+    line-height: 1.6;
+    display: none;
+    text-align: justify;
+    hyphens: auto;
+}
+
+.mini-quiz-feedback.show {
+    display: block;
+}
+
+@media (max-width: 480px) {
+    .mini-quiz-card {
+        padding: 14px 12px;
+    }
+
+    .mini-quiz-statement {
+        font-size: 13px;
+    }
+
+    .mini-quiz-mcq-option {
+        font-size: 12px;
+        padding: 10px 11px;
+    }
+
+    .mini-quiz-feedback {
+        font-size: 12px;
+    }
+}
+
+/* ---------- NAVIGASI PREV/NEXT (materi ini punya 2 tombol) ---------- */
+.materi-bottom-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.prev-section-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--kb-card-border);
+    color: var(--kb-text-dim);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: 0.25s;
+}
+
+.prev-section-btn:hover {
+    border-color: var(--kb-orange);
+    color: var(--kb-text);
+}

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On-Chain Analysis | Kapazz Bitcoin</title>
+    <meta name="description"
+        content="Membaca aktivitas nyata di balik data blockchain Bitcoin: kepadatan transaksi, pergerakan whale, SOPR, MVRV, hash rate, dan dormancy.">
+    <link rel="shortcut icon" href="../../assets/icons/favicon.ico">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- FALLBACK: variabel tema didefinisikan ulang inline di sini supaya
+         halaman tetap bertema (dark + oranye #f7931a) walaupun karena suatu
+         sebab tema.css gagal termuat di live site. tema.css tetap jadi
+         sumber utama dan akan menimpa nilai yang sama ini kalau berhasil load. -->
+    <style>
+        :root {
+            --kb-orange: #f7931a;
+            --kb-orange-light: #ffb347;
+            --kb-orange-soft: rgba(247, 147, 26, 0.14);
+            --kb-purple: #6c4bb6;
+            --kb-purple-dark: #2e2050;
+            --kb-bg: #101014;
+            --kb-bg-alt: #17171d;
+            --kb-card: rgba(255, 255, 255, 0.05);
+            --kb-card-border: rgba(255, 255, 255, 0.1);
+            --kb-text: #ececec;
+            --kb-text-dim: #b6b6b6;
+            --kb-text-faint: #8a8a8a;
+            --kb-font: 'Inter', Arial, sans-serif;
+            --kb-radius: 18px;
+            --kb-radius-sm: 12px;
+            --kb-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(180deg, var(--kb-bg) 0%, var(--kb-bg-alt) 100%);
+            color: var(--kb-text);
+            font-family: var(--kb-font);
+        }
+    </style>
+
+    <link rel="stylesheet" href="tema.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="reading-progress-bar">
+        <div class="reading-progress-fill" id="readingProgressFill"></div>
+    </div>
+
+    <div class="materi-page">
+
+        <header class="materi-header">
+            <a href="../../index.html" class="back-btn">
+                <i data-lucide="arrow-left"></i> Kembali ke Beranda
+            </a>
+            <p class="materi-eyebrow">Materi 8 dari 8</p>
+            <h1>On-Chain Analysis</h1>
+            <p class="materi-subtitle">Membaca Aktivitas Nyata di Balik Data Blockchain Bitcoin</p>
+        </header>
+
+        <!-- ========== CATATAN PENULIS ========== -->
+        <div class="author-note">
+            <span class="author-note-icon">✍️</span>
+            <p>
+                Catatan penulis: ini topik Tier 2 dalam proses belajar saya, dan on-chain analysis sendiri
+                adalah bidang yang caranya bisa berbeda-beda antar analis. Materi ini adalah versi pemahaman
+                saya sejauh ini — bukan standar tunggal yang berlaku universal. Tujuannya membantu pembaca
+                memahami konsepnya, bukan menjadi acuan analisis yang otomatis benar untuk semua orang.
+            </p>
+        </div>
+
+        <!-- ========== SECTION 1 ========== -->
+        <section class="materi-section" id="section-1">
+            <span class="section-tag">Bagian 1</span>
+            <h2>Apa Itu On-Chain Analysis</h2>
+
+            <p>
+                Karena tiap transaksi Bitcoin tercatat permanen dan bisa dilihat siapa saja di blockchain,
+                siapa pun bisa mengumpulkan dan mempelajari data mentah itu untuk memahami aktivitas nyata di
+                jaringan — bukan cuma lihat harga di layar exchange. Proses inilah yang disebut
+                <span class="glossary-term" data-term="on-chain analysis">on-chain analysis</span>.
+            </p>
+            <p>
+                Ini yang membedakan Bitcoin dari instrumen keuangan tradisional: datanya terbuka penuh,
+                analisisnya bisa dilakukan siapa saja tanpa bergantung pada laporan resmi satu pihak.
+            </p>
+
+            <div class="mini-flow-diagram">
+                <button type="button" class="mini-flow-box mini-flow-box--grey"
+                    data-popup-title="Blockchain"
+                    data-popup-text="Semua transaksi Bitcoin tercatat permanen dan bersifat publik — siapa saja bisa melihat dan mengunduh data mentahnya, kapan saja.">
+                    <i data-lucide="link"></i>
+                    <span>Blockchain — Semua Transaksi Tercatat & Publik</span>
+                </button>
+                <div class="mini-flow-arrow"><i data-lucide="arrow-right"></i></div>
+                <button type="button" class="mini-flow-box mini-flow-box--orange"
+                    data-popup-title="Analis Mengumpulkan & Mengolah Data"
+                    data-popup-text="Data mentah dari blockchain dikumpulkan, disaring, dan diolah supaya bisa dibaca sebagai pola — misalnya kepadatan transaksi, pergerakan wallet besar, atau usia koin yang berpindah.">
+                    <i data-lucide="database"></i>
+                    <span>Analis Mengumpulkan & Mengolah Data</span>
+                </button>
+                <div class="mini-flow-arrow"><i data-lucide="arrow-right"></i></div>
+                <button type="button" class="mini-flow-box mini-flow-box--green"
+                    data-popup-title="Pola/Insight tentang Perilaku Pelaku Jaringan"
+                    data-popup-text="Hasil olahan data tadi memberi gambaran tentang perilaku nyata pelaku jaringan — bukan kepastian, tapi konteks tambahan di luar sekadar angka harga.">
+                    <i data-lucide="network"></i>
+                    <span>Pola/Insight Perilaku Pelaku Jaringan</span>
+                </button>
+            </div>
+            <p class="diagram-hint">Tap salah satu kotak di atas untuk lihat penjelasan lebih detail.</p>
+        </section>
+
+        <!-- ========== SECTION 2 ========== -->
+        <section class="materi-section" id="section-2">
+            <span class="section-tag">Bagian 2</span>
+            <h2>Menganalisis Kepadatan Transaksi Blockchain</h2>
+
+            <p>
+                Salah satu hal paling dasar yang bisa diamati lewat on-chain analysis adalah seberapa penuh
+                mempool dan seberapa terpakai kapasitas blok dari waktu ke waktu.
+            </p>
+
+            <div class="chart-wrap">
+                <svg viewBox="0 0 600 190" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                        <linearGradient id="densityFill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="var(--kb-orange)" stop-opacity="0.45" />
+                            <stop offset="100%" stop-color="var(--kb-orange)" stop-opacity="0.02" />
+                        </linearGradient>
+                    </defs>
+
+                    <!-- garis "padat" -->
+                    <line x1="20" y1="34" x2="580" y2="34" stroke="var(--kb-text-faint)" stroke-width="1"
+                        stroke-dasharray="4 4" />
+                    <text x="580" y="28" text-anchor="end" font-size="10" fill="var(--kb-text-faint)">padat</text>
+
+                    <!-- garis "sepi" -->
+                    <line x1="20" y1="132" x2="580" y2="132" stroke="var(--kb-text-faint)" stroke-width="1"
+                        stroke-dasharray="4 4" />
+                    <text x="580" y="146" text-anchor="end" font-size="10" fill="var(--kb-text-faint)">sepi</text>
+
+                    <!-- area chart -->
+                    <path
+                        d="M20,142 L80,116 L140,86 L200,52 L260,32 L300,26 L340,48 L380,92 L420,118 L460,104 L500,128 L540,100 L580,120 L580,164 L20,164 Z"
+                        fill="url(#densityFill)" />
+                    <polyline
+                        points="20,142 80,116 140,86 200,52 260,32 300,26 340,48 380,92 420,118 460,104 500,128 540,100 580,120"
+                        fill="none" stroke="var(--kb-orange)" stroke-width="2.5" stroke-linejoin="round"
+                        stroke-linecap="round" />
+                </svg>
+                <div class="chart-legend">
+                    <span>Waktu →</span>
+                    <span>Kepadatan mempool / kapasitas blok (ilustrasi)</span>
+                </div>
+            </div>
+
+            <ul class="plain-list">
+                <li>Kepadatan yang terus meningkat bisa mengindikasikan naiknya aktivitas ekonomi riil — bukan
+                    cuma spekulasi harga.</li>
+                <li>Lonjakan mendadak sering berhubungan dengan momen tertentu, misalnya saat volatilitas harga
+                    sedang tinggi.</li>
+                <li>Data ini mendasari estimasi fee rate — kepadatan dan fee saling berkaitan langsung.</li>
+            </ul>
+
+            <a href="../utxo-fee-alamat/index.html" class="related-link">
+                🔗 Pelajari lebih lanjut soal fee & kepadatan jaringan di Materi #3: UTXO & Fee →
+            </a>
+        </section>
+
+        <!-- ========== SECTION 3 ========== -->
+        <section class="materi-section" id="section-3">
+            <span class="section-tag">Bagian 3</span>
+            <h2>Mendeteksi Transaksi Besar & Aliran ke/dari Exchange</h2>
+
+            <p>
+                Wallet dengan saldo sangat besar — sering disebut
+                <span class="glossary-term" data-term="whale">whale</span> — bisa dipantau pergerakannya,
+                termasuk kapan dananya berpindah ke atau dari alamat exchange.
+            </p>
+
+            <div class="exchange-flow-diagram">
+                <button type="button" class="exchange-flow-box exchange-flow-box--outflow"
+                    data-popup-title="Exchange (Outflow)"
+                    data-popup-text="Aliran keluar dari exchange sering diasosiasikan dengan kemungkinan niat menyimpan (HODL) — dana dipindahkan ke wallet pribadi di luar exchange.">
+                    <i data-lucide="arrow-up-right"></i>
+                    <span>Exchange (Outflow)</span>
+                </button>
+                <div class="exchange-flow-arrow exchange-flow-arrow--green">
+                    <i data-lucide="arrow-left"></i>
+                    <span>keluar</span>
+                </div>
+                <button type="button" class="exchange-flow-box"
+                    data-popup-title="Wallet Besar (&quot;Whale&quot;)"
+                    data-popup-text="Wallet dengan saldo Bitcoin sangat besar. Pergerakan dananya sering dipantau analis karena berpotensi memengaruhi pasar, meski tidak selalu berarti niat jual/beli.">
+                    <i data-lucide="waves"></i>
+                    <span>Wallet Besar ("Whale")</span>
+                </button>
+                <div class="exchange-flow-arrow exchange-flow-arrow--red">
+                    <span>masuk</span>
+                    <i data-lucide="arrow-right"></i>
+                </div>
+                <button type="button" class="exchange-flow-box exchange-flow-box--inflow"
+                    data-popup-title="Exchange (Inflow)"
+                    data-popup-text="Aliran ke exchange sering diasosiasikan dengan kemungkinan niat jual — dana dipindahkan mendekati tempat yang bisa langsung dipakai untuk trading.">
+                    <i data-lucide="arrow-down-left"></i>
+                    <span>Exchange (Inflow)</span>
+                </button>
+            </div>
+            <p class="diagram-hint">Tap salah satu kotak di atas untuk lihat penjelasan lebih detail.</p>
+
+            <div class="highlight-box highlight-box--warning">
+                <i data-lucide="alert-triangle"></i>
+                <p>Perlu kehati-hatian membaca ini: aliran dana besar ke exchange <strong>sering</strong>
+                    diasosiasikan dengan potensi tekanan jual, dan aliran keluar dengan potensi niat menyimpan
+                    jangka panjang — tapi ini pola umum, <strong>bukan kepastian</strong>. Wallet besar bisa
+                    juga milik custodian, <span class="glossary-term" data-term="OTC desk">OTC desk</span>, atau
+                    institusi yang memindahkan dana karena alasan operasional, bukan keputusan jual/beli.</p>
+            </div>
+        </section>
+
+        <!-- ========== SECTION 4 ========== -->
+        <section class="materi-section" id="section-4">
+            <span class="section-tag">Bagian 4</span>
+            <h2>Membaca Sentimen Pasar Lewat Data On-Chain</h2>
+
+            <p>
+                Beberapa metrik populer dipakai untuk memahami kondisi rata-rata untung/rugi pemegang Bitcoin
+                — sebagai gambaran konteks pasar, bukan sinyal keputusan beli/jual otomatis.
+            </p>
+
+            <div class="compare-cards">
+                <button type="button" class="compare-card compare-card--orange"
+                    data-popup-title="SOPR (Spent Output Profit Ratio)"
+                    data-popup-text="Rasio harga jual dibanding harga beli koin yang sedang dipindahkan. Nilai di atas 1 berarti rata-rata koin yang bergerak sedang untung, di bawah 1 berarti rata-rata rugi.">
+                    <span class="compare-card-sub">Spent Output Profit Ratio</span>
+                    <span class="compare-card-title">SOPR</span>
+                    <span class="compare-card-desc">&gt; 1 = rata-rata untung, &lt; 1 = rata-rata rugi.</span>
+                </button>
+                <button type="button" class="compare-card compare-card--grey"
+                    data-popup-title="MVRV (Market Value to Realized Value)"
+                    data-popup-text="Perbandingan nilai pasar Bitcoin saat ini dengan nilai realized (harga rata-rata saat koin terakhir berpindah). Nilai yang tinggi secara historis kadang diasosiasikan dengan pasar yang overheated.">
+                    <span class="compare-card-sub">Market Value to Realized Value</span>
+                    <span class="compare-card-title">MVRV</span>
+                    <span class="compare-card-desc">Tinggi = pasar mungkin overheated secara historis.</span>
+                </button>
+            </div>
+            <p class="diagram-hint">Tap salah satu kartu di atas untuk lihat penjelasan lebih detail.</p>
+
+            <p>
+                Tandai juga istilah <span class="glossary-term" data-term="SOPR">SOPR</span> dan
+                <span class="glossary-term" data-term="MVRV">MVRV</span> di atas untuk definisi singkatnya.
+            </p>
+
+            <div class="highlight-box highlight-box--warning">
+                <i data-lucide="alert-triangle"></i>
+                <p>Sejauh yang saya pahami, metrik ini paling berguna untuk melihat konteks historis (apakah
+                    kondisi sekarang mirip fase tertentu di masa lalu), bukan sebagai formula pasti untuk
+                    memprediksi harga ke depan.</p>
+            </div>
+        </section>
+
+        <!-- ========== SECTION 5 ========== -->
+        <section class="materi-section" id="section-5">
+            <span class="section-tag">Bagian 5</span>
+            <h2>Hash Rate & Tingkat Kesulitan sebagai Indikator Kesehatan Jaringan</h2>
+
+            <p>
+                Mekanisme detail hash rate dan tingkat kesulitan sudah dibahas di materi Mining & Mining Pool.
+                Di sini, keduanya dipakai sebagai indikator kesehatan dan keamanan jaringan dari waktu ke
+                waktu.
+            </p>
+            <p>
+                Penurunan hash rate yang tajam dan berkelanjutan — bukan fluktuasi harian normal — kadang
+                dipakai analis sebagai sinyal tekanan ekonomi pada miner, misalnya karena harga BTC turun
+                tajam atau biaya listrik naik.
+            </p>
+
+            <div class="compare-cards">
+                <button type="button" class="compare-card compare-card--grey"
+                    data-popup-title="Hash Rate"
+                    data-popup-text="Total daya komputasi yang mengamankan jaringan Bitcoin. Penurunan tajam dan berkelanjutan kadang dipakai sebagai sinyal tekanan ekonomi pada miner.">
+                    <span class="compare-card-sub">Indikator Daya Komputasi</span>
+                    <span class="compare-card-title">Hash Rate</span>
+                    <span class="compare-card-desc">Total daya komputasi yang mengamankan jaringan.</span>
+                </button>
+                <button type="button" class="compare-card compare-card--orange"
+                    data-popup-title="Tingkat Kesulitan (Difficulty)"
+                    data-popup-text="Menyesuaikan otomatis kira-kira tiap 2 minggu mengikuti perubahan hash rate, supaya waktu rata-rata penemuan blok tetap konsisten sekitar 10 menit.">
+                    <span class="compare-card-sub">Penyesuaian Otomatis</span>
+                    <span class="compare-card-title">Tingkat Kesulitan</span>
+                    <span class="compare-card-desc">Menyesuaikan otomatis tiap ~2 minggu mengikuti hash rate.</span>
+                </button>
+            </div>
+            <p class="diagram-hint">Tap salah satu kartu di atas untuk lihat penjelasan lebih detail.</p>
+
+            <a href="../mining-pool/index.html" class="related-link">
+                🔗 Pelajari detail hash rate & mining di Materi #7: Mining & Mining Pool →
+            </a>
+        </section>
+
+        <!-- ========== SECTION 6 ========== -->
+        <section class="materi-section" id="section-6">
+            <span class="section-tag">Bagian 6</span>
+            <h2>Dormancy & Coin Days Destroyed</h2>
+
+            <p>
+                Metrik ini menyoroti perilaku pemegang jangka panjang — koin yang sudah lama tidak bergerak
+                di blockchain.
+            </p>
+
+            <button type="button" class="animate-flow-btn" id="dormancyAnimateBtn">▶ Lihat Animasi</button>
+
+            <div class="dormancy-diagram">
+                <div class="dormancy-circle" id="dormancyLeft">
+                    <i data-lucide="moon"></i>
+                    <span>Koin Diam Bertahun-tahun</span>
+                </div>
+                <div class="dormancy-arrow" id="dormancyArrow">
+                    <i data-lucide="arrow-right"></i>
+                    <span>tiba-tiba bergerak</span>
+                </div>
+                <div class="dormancy-circle" id="dormancyRight">
+                    <i data-lucide="flame"></i>
+                    <span>Coin Days Destroyed Tinggi</span>
+                </div>
+            </div>
+
+            <ul class="plain-list">
+                <li><span class="glossary-term" data-term="dormancy">Dormancy</span> mengukur rata-rata usia
+                    koin yang dibelanjakan dalam periode tertentu.</li>
+                <li><span class="glossary-term" data-term="Coin Days Destroyed">Coin Days Destroyed (CDD)</span>
+                    memberi bobot lebih besar pada koin yang sudah lama diam lalu tiba-tiba dipindahkan —
+                    lonjakan CDD sering menandakan holder lama mulai aktif kembali (menjual, memindahkan
+                    penyimpanan, atau alasan lain yang tidak selalu diketahui publik).</li>
+            </ul>
+        </section>
+
+        <!-- ========== SECTION 7 (MINI-QUIZ) ========== -->
+        <section class="materi-section" id="section-7">
+            <span class="section-tag">Bagian 7</span>
+            <h2>Uji Pemahaman</h2>
+            <p>Sebelum lanjut ke ringkasan, coba jawab pertanyaan singkat berikut ini.</p>
+
+            <div class="mini-quiz-card" id="miniQuizCard"></div>
+        </section>
+
+        <!-- ========== PENUTUP ========== -->
+        <section class="materi-section" id="section-penutup">
+            <span class="section-tag">Penutup</span>
+            <h2>Ringkasan Praktis</h2>
+
+            <ul class="checklist">
+                <li class="checklist-item"><span class="checklist-icon">✅</span><span>On-chain analysis
+                        memanfaatkan transparansi blockchain untuk memahami aktivitas nyata, bukan hanya
+                        harga.</span></li>
+                <li class="checklist-item"><span class="checklist-icon">✅</span><span>Kepadatan transaksi dan
+                        mempool menunjukkan pola pemakaian jaringan dari waktu ke waktu.</span></li>
+                <li class="checklist-item"><span class="checklist-icon">✅</span><span>Pergerakan whale dan
+                        aliran exchange sering dipelajari, tapi harus dibaca hati-hati — bukan kepastian niat
+                        jual/beli.</span></li>
+                <li class="checklist-item"><span class="checklist-icon">✅</span><span>SOPR dan MVRV membantu
+                        memahami konteks untung/rugi rata-rata pemegang koin, bukan formula prediksi
+                        harga.</span></li>
+                <li class="checklist-item"><span class="checklist-icon">✅</span><span>Hash rate dan tingkat
+                        kesulitan berperan sebagai indikator kesehatan jaringan dalam konteks on-chain
+                        analysis.</span></li>
+                <li class="checklist-item"><span class="checklist-icon">✅</span><span>Dormancy dan Coin Days
+                        Destroyed menyoroti kapan holder jangka panjang mulai bergerak kembali.</span></li>
+                <li class="checklist-item"><span class="checklist-icon">✅</span><span>Semua metrik ini memberi
+                        konteks, bukan kepastian — cara membacanya bisa berbeda antar analis.</span></li>
+            </ul>
+
+            <a href="assets/pdf/on-chain-analysis.pdf" target="_blank" class="pdf-link">
+                <i data-lucide="file-text"></i> Lihat versi PDF
+            </a>
+        </section>
+
+        <div class="prev-materi-nav">
+            <a href="../mining-pool/index.html" class="prev-materi-btn">
+                <i data-lucide="arrow-left"></i> Materi Sebelumnya
+            </a>
+
+            <div class="celebration-box" id="celebrationBox">
+                <span class="celebration-emoji">🎉</span>
+                <h3>Selamat! Kamu sudah menyelesaikan semua 8 materi Kapazz Bitcoin Journey!</h3>
+                <p>Terima kasih sudah belajar bareng sampai akhir — semoga makin percaya diri memahami
+                    Bitcoin.</p>
+                <a href="../../index.html#free-learning-materials" class="celebration-btn">
+                    ✅ Kembali ke Beranda
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- POPUP KECIL (reusable: istilah glossary & detail diagram) -->
+    <div class="popup-backdrop" id="popupBackdrop" onclick="closePopupOnBackdrop(event)">
+        <div class="popup-box anim-fade-scale" id="popupBox">
+            <button class="popup-close-btn" onclick="closePopup()">&times;</button>
+            <div class="popup-icon-wrap" id="popupIconWrap">
+                <img class="popup-icon" id="popupIcon" alt="">
+                <div class="popup-icon-fallback" id="popupIconFallback"></div>
+            </div>
+            <h4 id="popupTitle"></h4>
+            <p id="popupText"></p>
+            <p class="popup-meta" id="popupMeta"></p>
+            <ul class="popup-features" id="popupFeatures"></ul>
+            <p class="popup-note" id="popupNote"></p>
+        </div>
+    </div>
+
+    <script src="glossary-data.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

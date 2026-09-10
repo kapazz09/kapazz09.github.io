@@ -448,7 +448,8 @@ h1 {
     counter-increment: learning-counter;
     display: flex;
     align-items: center;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 6px 10px;
     padding: 10px 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
@@ -486,6 +487,18 @@ h1 {
     margin-left: 6px;
 }
 
+.new-badge {
+    flex-shrink: 0;
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, #f7931a, #ffb347);
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
 .learning-item.done::before {
     content: "✓";
     background: #16a34a;
@@ -501,9 +514,18 @@ h1 {
     display: inline;
 }
 
+.learning-item.done .new-badge {
+    opacity: 0.6;
+}
+
 @media (max-width: 480px) {
     .learning-item a {
         font-size: 13px;
+    }
+
+    .new-badge {
+        font-size: 9px;
+        padding: 2px 6px;
     }
 }
 

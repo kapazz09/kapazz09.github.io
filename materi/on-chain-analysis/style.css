@@ -1,0 +1,730 @@
+/*==================================================
+    MATERI: ON-CHAIN ANALYSIS — STYLE KHUSUS
+    (variabel warna & komponen umum ada di tema.css)
+
+    CATATAN PENTING SOAL RESPONSIVE:
+    Materi ini SENGAJA tidak menumpuk diagram/kartu
+    perbandingan/chart jadi vertikal di mobile seperti
+    beberapa materi sebelumnya — semua tetap horizontal,
+    cuma diperkecil ukurannya (font/padding/gap).
+==================================================*/
+
+/* ---------- CATATAN PENULIS ---------- */
+.author-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    border: 1.5px dashed rgba(247, 147, 26, 0.45);
+    border-radius: var(--kb-radius-sm);
+    background: rgba(247, 147, 26, 0.06);
+    padding: 16px 16px;
+    margin-bottom: 22px;
+}
+
+.author-note-icon {
+    flex-shrink: 0;
+    font-size: 18px;
+    line-height: 1.4;
+}
+
+.author-note p {
+    margin: 0 !important;
+    font-size: 13px !important;
+    font-style: italic;
+    color: var(--kb-text-dim) !important;
+    line-height: 1.65;
+}
+
+/* ---------- SECTION 1: DIAGRAM ALUR ON-CHAIN ANALYSIS ---------- */
+.mini-flow-diagram {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 6px;
+    margin-top: 18px;
+}
+
+.mini-flow-box {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 16px 8px;
+    border-radius: var(--kb-radius-sm);
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--kb-text-dim);
+    font-family: var(--kb-font);
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mini-flow-box:hover {
+    transform: translateY(-3px);
+}
+
+.mini-flow-box i {
+    width: 22px;
+    height: 22px;
+}
+
+.mini-flow-box span {
+    font-size: 11.5px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.mini-flow-box--grey {
+    border-color: rgba(180, 180, 190, 0.35);
+}
+
+.mini-flow-box--grey i {
+    color: #aaa;
+}
+
+.mini-flow-box--orange {
+    border-color: rgba(247, 147, 26, 0.45);
+    background: var(--kb-orange-soft);
+    color: var(--kb-orange-light);
+}
+
+.mini-flow-box--orange i {
+    color: var(--kb-orange);
+}
+
+.mini-flow-box--green {
+    border-color: rgba(76, 175, 125, 0.45);
+    background: rgba(76, 175, 125, 0.1);
+    color: #7fd99a;
+}
+
+.mini-flow-box--green i {
+    color: #4caf7d;
+}
+
+.mini-flow-arrow {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    color: var(--kb-text-faint);
+}
+
+.mini-flow-arrow i {
+    width: 16px;
+    height: 16px;
+}
+
+@media (max-width: 480px) {
+    .mini-flow-diagram {
+        gap: 3px;
+    }
+
+    .mini-flow-box {
+        padding: 10px 4px;
+    }
+
+    .mini-flow-box i {
+        width: 17px;
+        height: 17px;
+    }
+
+    .mini-flow-box span {
+        font-size: 9.5px;
+    }
+
+    .mini-flow-arrow i {
+        width: 13px;
+        height: 13px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mini-flow-box span {
+        font-size: 8.5px;
+    }
+}
+
+/* ---------- SECTION 2: CHART KEPADATAN TRANSAKSI ---------- */
+.chart-wrap {
+    margin-top: 18px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--kb-card-border);
+    border-radius: var(--kb-radius-sm);
+    padding: 14px 12px 10px 12px;
+}
+
+.chart-wrap svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-size: 10.5px;
+    color: var(--kb-text-faint);
+}
+
+@media (max-width: 480px) {
+    .chart-wrap {
+        padding: 10px 8px 8px 8px;
+    }
+
+    .chart-legend {
+        font-size: 9px;
+    }
+}
+
+/* ---------- SECTION 2: LINK TERKAIT ---------- */
+.related-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--kb-card-border);
+    color: var(--kb-orange-light);
+    font-size: 12.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.related-link:hover {
+    border-color: var(--kb-orange);
+    background: var(--kb-orange-soft);
+}
+
+/* ---------- SECTION 3: DIAGRAM WHALE & EXCHANGE FLOW ---------- */
+.exchange-flow-diagram {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 6px;
+    margin-top: 18px;
+}
+
+.exchange-flow-box {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 16px 8px;
+    border-radius: var(--kb-radius-sm);
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--kb-text-dim);
+    font-family: var(--kb-font);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.exchange-flow-box:hover {
+    transform: translateY(-3px);
+}
+
+.exchange-flow-box i {
+    width: 22px;
+    height: 22px;
+    color: var(--kb-text-faint);
+}
+
+.exchange-flow-box span {
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.exchange-flow-box--inflow {
+    border-color: rgba(224, 93, 93, 0.5);
+}
+
+.exchange-flow-box--inflow i {
+    color: #e05d5d;
+}
+
+.exchange-flow-box--outflow {
+    border-color: rgba(76, 175, 125, 0.5);
+}
+
+.exchange-flow-box--outflow i {
+    color: #4caf7d;
+}
+
+.exchange-flow-arrow {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 9px;
+    font-weight: 700;
+    text-align: center;
+    padding: 0 2px;
+}
+
+.exchange-flow-arrow i {
+    width: 18px;
+    height: 18px;
+}
+
+.exchange-flow-arrow--red {
+    color: #e05d5d;
+}
+
+.exchange-flow-arrow--green {
+    color: #4caf7d;
+}
+
+@media (max-width: 480px) {
+    .exchange-flow-diagram {
+        gap: 3px;
+    }
+
+    .exchange-flow-box {
+        padding: 10px 4px;
+    }
+
+    .exchange-flow-box i {
+        width: 17px;
+        height: 17px;
+    }
+
+    .exchange-flow-box span {
+        font-size: 9px;
+    }
+
+    .exchange-flow-arrow {
+        font-size: 7.5px;
+    }
+
+    .exchange-flow-arrow i {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+@media (max-width: 360px) {
+    .exchange-flow-box span {
+        font-size: 8px;
+    }
+
+    .exchange-flow-arrow {
+        font-size: 6.5px;
+    }
+}
+
+/* ---------- KARTU PERBANDINGAN (dipakai section 4 & 5) ---------- */
+.compare-cards {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.compare-card {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 12px;
+    border-radius: var(--kb-radius-sm);
+    border: 2px solid var(--kb-card-border);
+    border-top-width: 3px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--kb-text-dim);
+    font-family: var(--kb-font);
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.compare-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.3);
+}
+
+.compare-card--orange {
+    border-top-color: var(--kb-orange);
+}
+
+.compare-card--grey {
+    border-top-color: rgba(180, 180, 190, 0.6);
+}
+
+.compare-card-title {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.compare-card-sub {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--kb-text-faint);
+}
+
+.compare-card-desc {
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--kb-text-dim);
+}
+
+@media (max-width: 480px) {
+    .compare-cards {
+        gap: 6px;
+    }
+
+    .compare-card {
+        padding: 12px 8px;
+    }
+
+    .compare-card-title {
+        font-size: 12px;
+    }
+
+    .compare-card-sub {
+        font-size: 8.5px;
+    }
+
+    .compare-card-desc {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 360px) {
+    .compare-card-desc {
+        display: none;
+    }
+}
+
+/* ---------- SECTION 6: DORMANCY & COIN DAYS DESTROYED ---------- */
+.dormancy-diagram {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.dormancy-circle {
+    flex: 1 1 0;
+    max-width: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 18px 8px;
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
+    justify-content: center;
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--kb-text-dim);
+    font-family: var(--kb-font);
+    transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.dormancy-circle i {
+    width: 20px;
+    height: 20px;
+    color: var(--kb-text-faint);
+}
+
+.dormancy-circle span {
+    font-size: 10.5px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.dormancy-circle.pulse {
+    border-color: rgba(180, 180, 190, 0.8);
+    box-shadow: 0 0 0 6px rgba(180, 180, 190, 0.12);
+    transform: scale(1.05);
+}
+
+.dormancy-circle.lit {
+    border-color: #e05d5d;
+    background: rgba(224, 93, 93, 0.16);
+    color: #ff8a8a;
+    box-shadow: 0 0 18px rgba(224, 93, 93, 0.4);
+    transform: scale(1.06);
+}
+
+.dormancy-circle.lit i {
+    color: #e05d5d;
+}
+
+.dormancy-arrow {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--kb-text-faint);
+    text-align: center;
+    transition: color 0.3s ease;
+}
+
+.dormancy-arrow i {
+    width: 20px;
+    height: 20px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.dormancy-arrow.active {
+    color: #e05d5d;
+}
+
+.dormancy-arrow.active i {
+    color: #e05d5d;
+    transform: scale(1.2);
+}
+
+@media (max-width: 480px) {
+    .dormancy-circle {
+        padding: 10px 4px;
+        max-width: 110px;
+    }
+
+    .dormancy-circle i {
+        width: 16px;
+        height: 16px;
+    }
+
+    .dormancy-circle span {
+        font-size: 9px;
+    }
+
+    .dormancy-arrow {
+        font-size: 7.5px;
+    }
+
+    .dormancy-arrow i {
+        width: 15px;
+        height: 15px;
+    }
+}
+
+@media (max-width: 360px) {
+    .dormancy-circle span {
+        font-size: 8px;
+    }
+}
+
+/* ---------- MINI-QUIZ (1 SOAL PILIHAN GANDA) ---------- */
+.mini-quiz-card {
+    margin-top: 16px;
+    padding: 18px;
+    border-radius: var(--kb-radius-sm);
+    border: 1px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.mini-quiz-statement {
+    font-size: 14.5px !important;
+    color: var(--kb-text) !important;
+    line-height: 1.6;
+    margin: 0 0 16px 0 !important;
+}
+
+.mini-quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mini-quiz-option {
+    text-align: left;
+    padding: 13px 14px;
+    border-radius: 10px;
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--kb-text);
+    font-family: var(--kb-font);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.mini-quiz-option:disabled {
+    cursor: default;
+}
+
+.mini-quiz-option--correct {
+    border-color: #4caf7d;
+    background: rgba(76, 175, 125, 0.16);
+    color: #7fd99a;
+}
+
+.mini-quiz-option--wrong {
+    border-color: #e05d5d;
+    background: rgba(224, 93, 93, 0.16);
+    color: #ff8a8a;
+}
+
+.mini-quiz-feedback {
+    display: none;
+    margin-top: 14px !important;
+    font-size: 13px !important;
+    color: var(--kb-text-dim) !important;
+    line-height: 1.6;
+    padding-top: 12px;
+    border-top: 1px solid var(--kb-card-border);
+}
+
+.mini-quiz-feedback.show {
+    display: block;
+}
+
+/* ---------- PENUTUP KHUSUS: NAVIGASI & PERAYAAN ---------- */
+.prev-materi-nav {
+    margin-top: 30px;
+}
+
+.prev-materi-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    border-radius: 14px;
+    border: 1px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--kb-text-dim);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.prev-materi-btn:hover {
+    border-color: var(--kb-orange);
+    color: var(--kb-orange-light);
+}
+
+.prev-materi-btn i {
+    width: 16px;
+    height: 16px;
+}
+
+.celebration-box {
+    position: relative;
+    overflow: hidden;
+    margin-top: 16px;
+    padding: 30px 22px;
+    border-radius: var(--kb-radius);
+    border: 3px solid var(--kb-orange);
+    background: linear-gradient(160deg, rgba(247, 147, 26, 0.16), rgba(247, 147, 26, 0.04));
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(247, 147, 26, 0.25);
+}
+
+.celebration-emoji {
+    font-size: 34px;
+    margin-bottom: 10px;
+    display: block;
+    animation: kbBounce 1.6s ease-in-out infinite;
+}
+
+.celebration-box h3 {
+    margin: 0 0 8px 0;
+    font-size: 19px;
+    color: #fff;
+}
+
+.celebration-box p {
+    margin: 0 0 20px 0 !important;
+    font-size: 13.5px !important;
+    color: var(--kb-text-dim) !important;
+}
+
+.celebration-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 26px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--kb-orange), var(--kb-orange-light));
+    color: #fff;
+    font-size: 14.5px;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 10px 25px rgba(247, 147, 26, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.celebration-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(247, 147, 26, 0.45);
+}
+
+.confetti-piece {
+    position: absolute;
+    top: -14px;
+    font-size: 15px;
+    opacity: 0.9;
+    animation: kbConfettiFall 3.2s linear infinite;
+}
+
+@keyframes kbConfettiFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.9;
+    }
+
+    100% {
+        transform: translateY(180px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes kbBounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+@media (max-width: 480px) {
+    .celebration-box {
+        padding: 24px 16px;
+    }
+
+    .celebration-emoji {
+        font-size: 28px;
+    }
+
+    .celebration-box h3 {
+        font-size: 16.5px;
+    }
+}

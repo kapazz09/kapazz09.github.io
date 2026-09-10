@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Self-Custody & Cold Wallet (Air-Gapped) | Kapazz Bitcoin</title>
+    <meta name="description"
+        content="Fondasi keamanan menyimpan Bitcoin sendiri: kenapa self-custody penting, dan perbedaan hot wallet vs cold wallet.">
+    <link rel="shortcut icon" href="../../assets/icons/favicon.ico">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- FALLBACK: variabel tema didefinisikan ulang inline di sini supaya
+         halaman tetap bertema (dark + oranye #f7931a) walaupun karena suatu
+         sebab tema.css gagal termuat di live site (contoh: file/folder
+         belum ter-push, salah taruh path saat commit). tema.css di bawah tetap
+         jadi sumber utama dan akan menimpa nilai yang sama ini kalau berhasil load. -->
+    <style>
+        :root {
+            --kb-orange: #f7931a;
+            --kb-orange-light: #ffb347;
+            --kb-orange-soft: rgba(247, 147, 26, 0.14);
+            --kb-purple: #6c4bb6;
+            --kb-purple-dark: #2e2050;
+            --kb-bg: #101014;
+            --kb-bg-alt: #17171d;
+            --kb-card: rgba(255, 255, 255, 0.05);
+            --kb-card-border: rgba(255, 255, 255, 0.1);
+            --kb-text: #ececec;
+            --kb-text-dim: #b6b6b6;
+            --kb-text-faint: #8a8a8a;
+            --kb-font: 'Inter', Arial, sans-serif;
+            --kb-radius: 18px;
+            --kb-radius-sm: 12px;
+            --kb-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(180deg, var(--kb-bg) 0%, var(--kb-bg-alt) 100%);
+            color: var(--kb-text);
+            font-family: var(--kb-font);
+        }
+    </style>
+
+    <link rel="stylesheet" href="tema.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="reading-progress-bar">
+        <div class="reading-progress-fill" id="readingProgressFill"></div>
+    </div>
+
+    <div class="materi-page">
+
+        <header class="materi-header">
+            <a href="../../index.html" class="back-btn">
+                <i data-lucide="arrow-left"></i> Kembali ke Beranda
+            </a>
+            <p class="materi-eyebrow">Materi 2 dari 8</p>
+            <h1>Bitcoin Self-Custody & Cold Wallet (Air-Gapped)</h1>
+            <p class="materi-subtitle">Fondasi Keamanan Menyimpan Bitcoin Sendiri</p>
+        </header>
+
+        <!-- ========== SECTION 1 ========== -->
+        <section class="materi-section" id="section-1">
+            <span class="section-tag">Bagian 1</span>
+            <h2>Kenapa Self-Custody Itu Penting</h2>
+
+            <p>
+                Kalau Bitcoin kamu masih nongkrong di exchange kayak Indodax atau Tokocrypto, secara teknis itu
+                bukan sepenuhnya Bitcoin kamu — itu cuma klaim atas saldo yang dicatat exchange. Prinsip yang sering
+                didengungkan di komunitas Bitcoin adalah <strong>"Not your keys, not your coins"</strong>: kalau
+                kamu tidak pegang sendiri
+                <span class="glossary-term" data-term="private key">private key</span>-nya, kamu tidak benar-benar
+                mengendalikan dananya. Exchange bisa saja diretas, bangkrut, atau membekukan akunmu kapan saja —
+                dan kamu cuma bisa berharap semuanya baik-baik saja.
+            </p>
+            <p>
+                <span class="glossary-term" data-term="self-custody">Self-custody</span> membalik situasi ini: kamu
+                sendiri yang memegang private key, bukan pihak ketiga. Inilah yang disebut wallet
+                <span class="glossary-term" data-term="non-custodial">non-custodial</span> — kendali penuh ada di
+                tanganmu, tapi konsekuensinya, tanggung jawab keamanannya juga sepenuhnya jadi urusanmu sendiri.
+            </p>
+
+            <div class="custody-diagram">
+                <button class="custody-box custody-box--custodial" data-popup-title="Exchange (Custodial)"
+                    data-popup-text="Kamu punya klaim atas saldo yang tercatat di sistem exchange, tapi bukan kendali langsung — private key-nya dipegang dan dikelola oleh pihak exchange. Kalau mereka diretas atau bangkrut, dana kamu ikut berisiko.">
+                    <i data-lucide="lock"></i>
+                    <span class="custody-box-label">Exchange (Custodial)</span>
+                    <span class="custody-box-desc">Private key dipegang oleh exchange</span>
+                </button>
+
+                <div class="custody-diagram-arrow">
+                    <i data-lucide="arrow-right"></i>
+                    <span>pindah ke</span>
+                </div>
+
+                <button class="custody-box custody-box--noncustodial" data-popup-title="Self-Custody (Non-Custodial)"
+                    data-popup-text="Kamu pegang sendiri private key-nya, jadi kendali penuh atas Bitcoin ada di tanganmu. Tapi ini juga berarti tanggung jawab penuh: kalau seed phrase hilang, tidak ada 'lupa password' untuk memulihkannya.">
+                    <i data-lucide="key"></i>
+                    <span class="custody-box-label">Self-Custody (Non-Custodial)</span>
+                    <span class="custody-box-desc">Private key dipegang oleh kamu sendiri</span>
+                </button>
+            </div>
+            <p class="diagram-hint">Tap salah satu kotak di atas untuk lihat penjelasan lebih detail.</p>
+        </section>
+
+        <!-- ========== SECTION 2 ========== -->
+        <section class="materi-section" id="section-2">
+            <span class="section-tag">Bagian 2</span>
+            <h2>Hot Wallet vs Cold Wallet</h2>
+
+            <p>
+                <span class="glossary-term" data-term="hot wallet">Hot wallet</span> adalah wallet yang aplikasinya
+                terhubung ke internet, misalnya wallet BTC yang kamu pasang di HP. Praktis banget buat transaksi
+                harian karena tinggal buka aplikasi, tapi karena selalu online, ini juga jadi target empuk malware
+                atau serangan hack jarak jauh.
+            </p>
+            <p>
+                <span class="glossary-term" data-term="cold wallet">Cold wallet</span> sebaliknya — perangkat yang
+                menyimpan private key-nya sepenuhnya offline. Ini jadi standar buat nyimpan Bitcoin dalam jumlah
+                besar untuk jangka panjang, karena tidak ada jalur online yang bisa dieksploitasi untuk mencuri
+                private key-nya.
+            </p>
+
+            <div class="temp-gradient-wrap">
+                <div class="temp-gradient-bar">
+                    <button class="temp-hotspot" style="left:6%"
+                        data-risk="Risiko di sisi ini: rentan malware, hack jarak jauh, atau HP dicuri dalam kondisi terbuka."
+                        aria-label="Titik risiko hot wallet"></button>
+                    <button class="temp-hotspot" style="left:50%"
+                        data-risk="Titik tengah: hardware wallet cuma konek sekali (USB/QR) buat tanda tangan transaksi, sisanya tetap offline."
+                        aria-label="Titik risiko hardware wallet"></button>
+                    <button class="temp-hotspot" style="left:94%"
+                        data-risk="Risiko di sisi ini: perangkat hilang, rusak, atau seed phrase-nya tidak tersimpan dengan aman."
+                        aria-label="Titik risiko cold wallet"></button>
+                </div>
+                <div class="temp-gradient-labels">
+                    <span class="temp-label temp-label--hot">PANAS<small>Wallet HP/App, sering online</small></span>
+                    <span class="temp-label temp-label--mid">Hardware Wallet<small>(USB, sekali konek)</small></span>
+                    <span class="temp-label temp-label--cold">DINGIN<small>Air-Gapped, tidak pernah online</small></span>
+                </div>
+                <p class="temp-risk-display" id="tempRiskDisplay">Klik/hover titik pada bar untuk lihat risikonya.
+                </p>
+            </div>
+
+            <div class="wallet-examples">
+                <h3 class="wallet-examples-title wallet-examples-title--hot">Contoh Hot Wallet</h3>
+                <div class="wallet-card-grid">
+                    <button type="button" class="wallet-card wallet-card--hot" data-wallet="trust-wallet">Trust Wallet</button>
+                    <button type="button" class="wallet-card wallet-card--hot" data-wallet="metamask">MetaMask</button>
+                    <button type="button" class="wallet-card wallet-card--hot" data-wallet="bitget-wallet">Bitget
+                        Wallet</button>
+                    <button type="button" class="wallet-card wallet-card--hot" data-wallet="electrum">Electrum
+                        (Desktop)</button>
+                    <button type="button" class="wallet-card wallet-card--hot" data-wallet="blink">Blink
+                        Wallet</button>
+                    <button type="button" class="wallet-card wallet-card--hot" data-wallet="phoenix">Phoenix
+                        Wallet</button>
+                </div>
+
+                <h3 class="wallet-examples-title wallet-examples-title--cold">Contoh Cold Wallet</h3>
+                <div class="wallet-card-grid">
+                    <button type="button" class="wallet-card wallet-card--cold" data-wallet="ledger">Ledger</button>
+                    <button type="button" class="wallet-card wallet-card--cold" data-wallet="trezor">Trezor</button>
+                    <button type="button" class="wallet-card wallet-card--cold" data-wallet="bitbox">BitBox</button>
+                    <button type="button" class="wallet-card wallet-card--cold" data-wallet="coldcard">Coldcard</button>
+                    <button type="button" class="wallet-card wallet-card--cold" data-wallet="keystone">Keystone</button>
+                    <button type="button" class="wallet-card wallet-card--cold" data-wallet="safepal">SafePal</button>
+                </div>
+                <p class="diagram-hint">Tap salah satu kartu untuk lihat penjelasan singkatnya.</p>
+            </div>
+
+            <div class="highlight-box">
+                <i data-lucide="info"></i>
+                <p>Tidak semua cold wallet dari merek yang sama punya metode koneksi yang sama (USB / Bluetooth /
+                    air-gapped) — ini akan dibahas lebih detail di bagian selanjutnya.</p>
+            </div>
+        </section>
+
+        <!-- ========== SECTION 3 ========== -->
+        <section class="materi-section" id="section-3">
+            <span class="section-tag">Bagian 3</span>
+            <h2>Kenapa Air-Gapped Adalah Level Tertinggi Cold Storage</h2>
+
+            <p>
+                Hardware wallet yang tetap konek USB ke komputer saat transaksi memang tersimpan offline, tapi
+                tetap ada momen "kontak" ke perangkat yang terhubung internet. Wallet
+                <span class="glossary-term" data-term="air-gapped">air-gapped</span> secara fisik tidak pernah punya
+                jalur komunikasi digital ke internet sama sekali — transaksi ditandatangani sepenuhnya offline,
+                data dipindahkan lewat QR code yang dipindai kamera, bukan kabel data, Bluetooth, atau WiFi.
+            </p>
+            <p>
+                Karena tidak ada jalur transfer data aktif, malware tidak bisa "menjangkau" private key dari jarak
+                jauh — penyerang harus punya akses fisik langsung ke perangkatnya. Ini yang bikin air-gapped
+                dianggap level tertinggi dari cold storage.
+            </p>
+
+            <p class="flow-caption">Tidak ada kabel USB. Tidak ada Bluetooth. Tidak ada WiFi.</p>
+
+            <button type="button" class="animate-flow-btn" id="animateFlowBtn">▶ Lihat Animasi Alur</button>
+
+            <div class="flow-diagram" id="flowDiagram">
+                <div class="flow-step" data-step="0">
+                    <i data-lucide="monitor"></i>
+                    <span>HP / Komputer</span>
+                    <small>Online, transaksi belum ditandatangani</small>
+                </div>
+                <div class="flow-arrow" data-arrow="0"><i data-lucide="arrow-right"></i></div>
+                <div class="flow-step" data-step="1">
+                    <i data-lucide="qr-code"></i>
+                    <span>QR Code</span>
+                    <small>Data transaksi mentah</small>
+                </div>
+                <div class="flow-arrow" data-arrow="1"><i data-lucide="arrow-right"></i></div>
+                <div class="flow-step" data-step="2">
+                    <i data-lucide="cpu"></i>
+                    <span>Wallet Air-Gapped</span>
+                    <small>Scan QR, tanda tangan di dalam</small>
+                </div>
+                <div class="flow-arrow" data-arrow="2"><i data-lucide="arrow-right"></i></div>
+                <div class="flow-step" data-step="3">
+                    <i data-lucide="qr-code"></i>
+                    <span>QR Code</span>
+                    <small>Transaksi sudah ditandatangani</small>
+                </div>
+                <div class="flow-arrow" data-arrow="3"><i data-lucide="arrow-right"></i></div>
+                <div class="flow-step" data-step="4">
+                    <i data-lucide="send"></i>
+                    <span>Broadcast</span>
+                    <small>Kembali online ke jaringan Bitcoin</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== SECTION 4 ========== -->
+        <section class="materi-section" id="section-4">
+            <span class="section-tag">Bagian 4</span>
+            <h2>Tingkatan Keamanan Berdasarkan Cara Koneksi</h2>
+
+            <p>
+                Ini bukan skor resmi dari lembaga audit manapun — cuma perbandingan kualitatif berdasarkan
+                seberapa banyak "jalur digital" yang aktif di tiap jenis perangkat. Makin sedikit jalurnya, makin
+                kecil permukaan serangannya. Tap tiap kartu di bawah untuk lihat detailnya.
+            </p>
+
+            <div class="tier-accordion" id="tierAccordion">
+                <div class="tier-item">
+                    <button type="button" class="tier-header" data-tier-target="tier-1-body"
+                        aria-expanded="false">
+                        <span class="tier-badge tier-badge--1">Tier 1</span>
+                        <span class="tier-title">USB-Connected</span>
+                        <i data-lucide="chevron-down" class="tier-chevron"></i>
+                    </button>
+                    <div class="tier-body" id="tier-1-body">
+                        <p>Contoh: Trezor, Ledger, BitBox (mode kabel USB). Offline saat disimpan, tapi ada momen
+                            tersambung fisik ke komputer/HP saat transaksi — celah terkecil, tapi tetap ada.</p>
+                    </div>
+                </div>
+                <div class="tier-item">
+                    <button type="button" class="tier-header" data-tier-target="tier-2-body"
+                        aria-expanded="false">
+                        <span class="tier-badge tier-badge--2">Tier 2</span>
+                        <span class="tier-title">Bluetooth-Connected</span>
+                        <i data-lucide="chevron-down" class="tier-chevron"></i>
+                    </button>
+                    <div class="tier-body" id="tier-2-body">
+                        <p>Contoh: SafePal X-series, sebagian mode Ledger. Lebih praktis karena nirkabel, tapi
+                            sinyal Bluetooth secara teori bisa jadi permukaan serangan tambahan dibanding USB
+                            langsung.</p>
+                    </div>
+                </div>
+                <div class="tier-item">
+                    <button type="button" class="tier-header" data-tier-target="tier-3-body"
+                        aria-expanded="false">
+                        <span class="tier-badge tier-badge--3">Tier 3</span>
+                        <span class="tier-title">Air-Gapped Murni (QR/SD Card)</span>
+                        <i data-lucide="chevron-down" class="tier-chevron"></i>
+                    </button>
+                    <div class="tier-body" id="tier-3-body">
+                        <p>Contoh: Keystone, SafePal S-series, Coldcard (mode SD), Foundation Passport. Tidak ada
+                            jalur digital sama sekali — transfer data hanya lewat QR code/kartu SD yang dipindai
+                            manual. Permukaan serangan jarak jauh paling kecil.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <i data-lucide="info"></i>
+                <p>Perangkat di tier lebih tinggi (USB/Bluetooth) bukan berarti tidak aman. Selama private key
+                    tetap di <span class="glossary-term" data-term="secure element">secure element</span> dan tidak
+                    pernah keluar dalam bentuk mentah, risikonya tetap jauh lebih rendah dibanding hot wallet.
+                    Air-gapped hanya menghilangkan satu kategori risiko tambahan, bukan satu-satunya faktor
+                    keamanan yang berarti.</p>
+            </div>
+        </section>
+
+        <!-- ========== SECTION 5 ========== -->
+        <section class="materi-section" id="section-5">
+            <span class="section-tag">Bagian 5</span>
+            <h2>Seed Phrase & BIP39: Kunci dari Segala Kunci</h2>
+
+            <p>
+                Saat pertama kali setup wallet, kamu diberi
+                <span class="glossary-term" data-term="seed phrase">seed phrase</span> — 12 atau 24 kata — yang
+                mengikuti standar <span class="glossary-term" data-term="BIP39">BIP39</span>. Alurnya sederhana:
+                hardware wallet membuat <span class="glossary-term" data-term="entropy">entropy</span> (angka
+                acak), lalu dipetakan ke wordlist BIP39 (2048 kata baku bahasa Inggris), jadi
+                <span class="glossary-term" data-term="mnemonic">mnemonic</span> 12/24 kata, lalu diproses jadi
+                seed — angka besar yang jadi induk dari semua private key di wallet itu.
+            </p>
+
+            <div class="seed-diagram">
+                <button type="button" class="flow-step" data-popup-title="Entropy Acak"
+                    data-popup-text="Angka acak berkualitas tinggi yang dihasilkan hardware wallet sebagai titik awal. Makin acak sumbernya, makin sulit ditebak siapa pun.">
+                    <i data-lucide="dices"></i><span>Entropy Acak</span>
+                </button>
+                <div class="flow-arrow"><i data-lucide="arrow-right"></i></div>
+                <button type="button" class="flow-step" data-popup-title="Wordlist BIP39 (2048 Kata)"
+                    data-popup-text="Entropy dipetakan ke daftar baku 2048 kata bahasa Inggris yang sudah distandarkan lewat BIP39, supaya bisa dicatat manusia dan tetap kompatibel antar wallet.">
+                    <i data-lucide="book-open"></i><span>Wordlist BIP39<br>(2048 kata)</span>
+                </button>
+                <div class="flow-arrow"><i data-lucide="arrow-right"></i></div>
+                <button type="button" class="flow-step" data-popup-title="Seed Phrase (Mnemonic)"
+                    data-popup-text="Rangkaian 12/24 kata hasil pemetaan tadi. Inilah yang kamu tulis di kertas/metal backup sebagai cadangan utama wallet.">
+                    <i data-lucide="key-round"></i><span>Seed Phrase<br>(Mnemonic)</span>
+                </button>
+            </div>
+
+            <div class="branch-arrow-down"><i data-lucide="arrow-down"></i></div>
+
+            <div class="seed-branch">
+                <button type="button" class="branch-box" data-popup-title="Tanpa Passphrase"
+                    data-popup-text="Seed phrase dipakai apa adanya. Siapa pun yang tahu 12/24 katanya, langsung dapat akses penuh ke dana di wallet ini.">
+                    <i data-lucide="unlock"></i><span>Tanpa Passphrase</span><small>Akses penuh ke dana</small>
+                </button>
+                <button type="button" class="branch-box branch-box--accent"
+                    data-popup-title="Dengan Passphrase (Kata ke-25)"
+                    data-popup-text="Seed phrase yang sama + passphrase tambahan menghasilkan wallet yang sepenuhnya berbeda — alamat dan saldonya lain sendiri, tersembunyi dari siapa pun yang cuma tahu seed phrase-nya saja.">
+                    <i data-lucide="lock-keyhole"></i><span>Dengan Passphrase</span><small>Wallet tersembunyi
+                        berbeda</small>
+                </button>
+            </div>
+
+            <h3 class="sub-heading">Passphrase: Kata ke-25 yang Membuat Perbedaan</h3>
+            <p>
+                Seed phrase yang sama, ditambah
+                <span class="glossary-term" data-term="passphrase">passphrase</span> yang berbeda, menghasilkan
+                wallet yang sepenuhnya berbeda — alamat dan saldonya lain sendiri. Tanpa passphrase yang benar,
+                wallet tersembunyi ini tidak bisa dibuka — sistemnya bahkan tidak bisa membedakan passphrase yang
+                benar atau salah, dia cuma akan menampilkan wallet kosong yang berbeda-beda tiap kali passphrase-nya
+                diganti.
+            </p>
+            <p>
+                Efeknya: kalau seed phrase kamu dicuri, atau kamu dipaksa menyerahkannya, dana asli tetap aman
+                selama passphrase tidak diketahui penyerang.
+            </p>
+
+            <div class="highlight-box highlight-box--warning">
+                <i data-lucide="alert-triangle"></i>
+                <p><strong>Penting:</strong> passphrase TIDAK BOLEH ditulis di plat metal yang sama dengan seed
+                    phrase — itu menghilangkan seluruh manfaatnya. Idealnya disimpan di ingatan, atau di lokasi
+                    yang benar-benar terpisah dari seed phrase.</p>
+            </div>
+
+            <h3 class="sub-heading">Cara Membuat Passphrase yang Kuat</h3>
+            <ul class="checklist">
+                <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>Panjang
+                        lebih penting dari rumit — kalimat acak yang panjang lebih kuat dari kata pendek yang
+                        "terlihat" rumit.</span></li>
+                <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>Logikanya
+                        cukup masuk akal buat diri sendiri (personal secara struktur berpikir, bukan personal
+                        secara data).</span></li>
+                <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>Bisa
+                        pakai metode
+                        <span class="glossary-term" data-term="diceware">diceware</span> — pilih kata acak pakai
+                        lempar dadu dari daftar kata baku.</span></li>
+                <li class="checklist-item checklist-item--bad"><span class="checklist-icon">❌</span><span>Jangan
+                        pakai data yang bisa dicari orang lain (nama, tanggal lahir, nomor HP, alamat) — biasanya
+                        ada di KTP/medsos dan gampang ditelusuri.</span></li>
+                <li class="checklist-item checklist-item--bad"><span class="checklist-icon">❌</span><span>Jangan
+                        pakai kutipan terkenal, lirik lagu, atau frasa populer — rentan kena
+                        <span class="glossary-term" data-term="dictionary attack">dictionary attack</span>.</span>
+                </li>
+            </ul>
+
+            <h3 class="sub-heading">Disimpan di Kepala Saja: Boleh, dengan Syarat</h3>
+            <p>
+                Menyimpan passphrase hanya di ingatan itu valid dan banyak dipakai — cara ini menghilangkan risiko
+                passphrase ditemukan bersama seed phrase. Tapi ada trade-off: risikonya berpindah dari "dicuri"
+                jadi "lupa permanen". Kalau sampai lupa, dana di wallet tersembunyi itu hilang selamanya — seed
+                phrase yang benar sekalipun tidak akan membantu.
+            </p>
+
+            <div class="highlight-box highlight-box--warning">
+                <i data-lucide="brain"></i>
+                <p>Disiplinkan diri untuk mengucapkan atau mengetik ulang passphrase secara berkala (misalnya
+                    tiap kali recovery test) supaya tidak pudar dari ingatan.</p>
+            </div>
+        </section>
+
+        <!-- ========== SECTION 6 ========== -->
+        <section class="materi-section" id="section-6">
+            <span class="section-tag">Bagian 6</span>
+            <h2>Kenapa Backup Kertas Tidak Cukup: Metal Backup</h2>
+
+            <p>
+                Kertas rentan kebakaran, banjir, rayap, dan lapuk dimakan waktu — bukan media yang cocok untuk
+                menyimpan sesuatu seumur hidup. Metal seed backup (plat logam tahan api dan air) jauh lebih tahan
+                lama untuk menyimpan seed phrase.
+            </p>
+            <p>
+                Prinsip yang disarankan: simpan salinan backup di 3 lokasi terpisah. Tap tiap lingkaran di bawah
+                untuk detailnya.
+            </p>
+
+            <div class="location-circles">
+                <button type="button" class="location-circle" data-popup-title="Lokasi 1 — Tempat Utama"
+                    data-popup-text="Di rumah, di tempat tersembunyi atau brankas yang tidak mudah ditemukan orang lain — ini salinan yang paling sering/mudah kamu akses sendiri.">
+                    <span class="location-circle-num">1</span>
+                    <span class="location-circle-label">Tempat Utama</span>
+                </button>
+                <button type="button" class="location-circle"
+                    data-popup-title="Lokasi 2 — Pihak/Tempat Tepercaya Kedua"
+                    data-popup-text="Rumah keluarga tepercaya, atau safe deposit box di bank — lapisan kedua kalau salinan pertama rusak atau tidak bisa diakses.">
+                    <span class="location-circle-num">2</span>
+                    <span class="location-circle-label">Pihak Tepercaya Kedua</span>
+                </button>
+                <button type="button" class="location-circle"
+                    data-popup-title="Lokasi 3 — Jarak Geografis Berbeda"
+                    data-popup-text="Kota atau wilayah yang berbeda dari dua lokasi sebelumnya, supaya bencana lokal (gempa, banjir, kebakaran) tidak menghapus lebih dari satu salinan sekaligus.">
+                    <span class="location-circle-num">3</span>
+                    <span class="location-circle-label">Jarak Geografis Berbeda</span>
+                </button>
+            </div>
+
+            <div class="highlight-box">
+                <i data-lucide="info"></i>
+                <p>Semakin banyak lokasi, semakin tahan terhadap kehilangan — tapi juga semakin banyak titik yang
+                    berpotensi "bocor" kalau salah satu lokasi tidak dijaga dengan baik. Ini soal keseimbangan,
+                    bukan aturan mutlak yang harus terus ditambah.</p>
+            </div>
+        </section>
+
+        <!-- ========== SECTION 7 ========== -->
+        <section class="materi-section" id="section-7">
+            <span class="section-tag">Bagian 7</span>
+            <h2>Recovery Test: Langkah yang Sering Dilewatkan Pemula</h2>
+
+            <p>
+                Setup wallet tanpa pernah menguji proses pemulihannya itu seperti punya alat pemadam kebakaran
+                yang tidak pernah dicek apakah masih berfungsi. <strong>Recovery test</strong> artinya sengaja
+                memulihkan akses wallet — pakai wallet kosong terpisah — hanya bermodalkan backup yang kamu
+                simpan.
+            </p>
+
+            <ul class="checklist">
+                <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>Memastikan
+                        tidak ada kesalahan urutan atau ejaan kata di backup kamu.</span></li>
+                <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>Memastikan
+                        plat metal atau kertas backup belum rusak, aus, atau sulit dibaca.</span></li>
+                <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>Melatih
+                        diri sendiri supaya tidak panik saat benar-benar butuh recovery dalam kondisi
+                        darurat.</span></li>
+            </ul>
+        </section>
+
+        <!-- ========== SECTION 8 ========== -->
+        <section class="materi-section" id="section-8">
+            <span class="section-tag">Bagian 8</span>
+            <h2>Legacy: Rencana Warisan untuk Keluarga</h2>
+
+            <p>
+                Ada risiko yang sering diabaikan: kalau terjadi sesuatu pada pemilik wallet dan tidak ada satu
+                pun orang yang tahu cara mengaksesnya, dana itu hilang selamanya. Tapi memberi tahu keluarga
+                begitu saja juga berisiko — makin banyak orang yang tahu di mana dan bagaimana sekaligus, makin
+                besar risiko pencurian dari dalam.
+            </p>
+
+            <div class="legacy-diagram">
+                <button type="button" class="flow-step" data-popup-title="Kamu (Pemilik)"
+                    data-popup-text="Satu-satunya yang tahu seluruh gambaran lengkap: lokasi fisik backup dan cara mengaksesnya.">
+                    <i data-lucide="user"></i><span>Kamu (Pemilik)</span>
+                </button>
+                <div class="branch-arrow-down"><i data-lucide="arrow-down"></i></div>
+                <div class="legacy-branch">
+                    <button type="button" class="branch-box" data-popup-title="Info &quot;DI MANA&quot;"
+                        data-popup-text="Keluarga inti tahu lokasi fisik backup disimpan — tapi tidak otomatis tahu cara membukanya.">
+                        <i data-lucide="map-pin"></i><span>Info "DI MANA"</span><small>Keluarga tahu lokasi
+                            fisik</small>
+                    </button>
+                    <button type="button" class="branch-box branch-box--accent"
+                        data-popup-title="Info &quot;BAGAIMANA&quot;"
+                        data-popup-text="Instruksi tertulis terpisah tentang cara mengakses — disegel dan dititipkan ke notaris atau pihak tepercaya, tanpa menyertakan seed phrase itu sendiri.">
+                        <i data-lucide="file-lock"></i><span>Info "BAGAIMANA"</span><small>Instruksi tertulis
+                            terpisah</small>
+                    </button>
+                </div>
+                <div class="branch-arrow-down"><i data-lucide="arrow-down"></i></div>
+                <button type="button" class="flow-step flow-step--merge" data-popup-title="Baru Bisa Akses"
+                    data-popup-text="Keluarga baru bisa benar-benar mengakses dana kalau mereka punya KEDUA informasi ini sekaligus — cuma tahu lokasi saja atau instruksinya saja, tidak cukup.">
+                    <i data-lucide="shield-check"></i><span>Baru Bisa Akses JIKA PUNYA KEDUANYA</span>
+                </button>
+            </div>
+
+            <ul class="plain-list">
+                <li>Pisahkan "di mana" dan "bagaimana" — keluarga inti tahu lokasi fisik backup, sementara
+                    instruksi lengkap cara akses ditulis terpisah (misalnya dokumen tersegel yang dititipkan ke
+                    notaris).</li>
+                <li>Buat instruksi tertulis, bukan cuma lisan — tanpa menyertakan seed phrase itu sendiri di
+                    dokumen yang sama.</li>
+                <li>Lakukan recovery test bersama, secukupnya — minimal sekali, ajak pasangan/anak memahami dan
+                    mencoba proses pemulihannya.</li>
+            </ul>
+
+            <div class="highlight-box">
+                <i data-lucide="info"></i>
+                <p>Ini bagian yang masih terus disempurnakan sendiri — keseimbangan antara "keluarga bisa
+                    mengakses kalau perlu" dan "tidak membuka celah keamanan baru" tidak punya jawaban tunggal
+                    yang pas untuk semua orang.</p>
+            </div>
+        </section>
+
+        <!-- ========== SECTION 9 (MINI-QUIZ) ========== -->
+        <section class="materi-section" id="section-9">
+            <span class="section-tag">Bagian 9</span>
+            <h2>Kesalahan Umum Pemula</h2>
+            <p>Sebelum lanjut, coba cek pemahamanmu lewat 5 pertanyaan singkat Benar/Salah berikut ini.</p>
+
+            <div class="mini-quiz-card" id="miniQuizCard"></div>
+        </section>
+
+        <!-- ========== PENUTUP ========== -->
+        <section class="materi-section" id="section-penutup">
+            <span class="section-tag">Penutup</span>
+            <h2>Kesimpulan</h2>
+            <p>
+                Self-custody memberi kendali penuh, tapi kendali itu datang dengan tanggung jawab penuh — tidak
+                ada "lupa password, klik reset" seperti di exchange. Prinsip air-gapped, BIP39 dengan passphrase
+                yang dipahami dengan benar, backup di beberapa lokasi terpisah, recovery test rutin, dan rencana
+                warisan yang jujur adalah pendekatan yang paling masuk akal untuk siapa pun yang serius menyimpan
+                Bitcoin jangka panjang.
+            </p>
+
+            <a href="assets/pdf/self-custody-cold-wallet.pdf" target="_blank" class="pdf-link">
+                <i data-lucide="file-text"></i> Lihat versi PDF
+            </a>
+        </section>
+
+        <div class="materi-bottom-nav">
+            <a href="../utxo-fee-alamat/index.html" class="next-section-btn">Lanjut ke Bagian
+                Berikutnya →</a>
+            <p class="next-section-hint">Lanjut ke Materi #3: UTXO, Fee, Alamat Wallet.</p>
+        </div>
+
+    </div>
+
+    <!-- POPUP KECIL (reusable: istilah glossary, detail diagram, & kartu wallet) -->
+    <div class="popup-backdrop" id="popupBackdrop" onclick="closePopupOnBackdrop(event)">
+        <div class="popup-box anim-fade-scale" id="popupBox">
+            <button class="popup-close-btn" onclick="closePopup()">&times;</button>
+            <div class="popup-icon-wrap" id="popupIconWrap">
+                <img class="popup-icon" id="popupIcon" alt="">
+                <div class="popup-icon-fallback" id="popupIconFallback"></div>
+            </div>
+            <h4 id="popupTitle"></h4>
+            <p id="popupText"></p>
+            <p class="popup-meta" id="popupMeta"></p>
+            <ul class="popup-features" id="popupFeatures"></ul>
+            <p class="popup-note" id="popupNote"></p>
+
+            <!-- GALERI CONTOH GAMBAR SERI (khusus kartu cold wallet yang punya data.images) -->
+            <button type="button" class="wallet-gallery-toggle-btn" id="popupGalleryToggle">
+                <i data-lucide="images"></i> Lihat Contoh Gambar
+            </button>
+            <div class="wallet-gallery" id="popupGallery">
+                <p class="wallet-gallery-series" id="popupGallerySeries"></p>
+                <div class="wallet-gallery-viewer">
+                    <button type="button" class="wallet-gallery-arrow wallet-gallery-arrow--prev"
+                        id="popupGalleryPrev" aria-label="Seri sebelumnya">
+                        <i data-lucide="chevron-left"></i>
+                    </button>
+                    <div class="wallet-gallery-image-wrap">
+                        <img class="wallet-gallery-image" id="popupGalleryImage" alt="">
+                        <div class="wallet-gallery-image-fallback" id="popupGalleryImageFallback">Gambar belum
+                            tersedia</div>
+                    </div>
+                    <button type="button" class="wallet-gallery-arrow wallet-gallery-arrow--next"
+                        id="popupGalleryNext" aria-label="Seri berikutnya">
+                        <i data-lucide="chevron-right"></i>
+                    </button>
+                </div>
+                <p class="wallet-gallery-counter" id="popupGalleryCounter"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="glossary-data.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

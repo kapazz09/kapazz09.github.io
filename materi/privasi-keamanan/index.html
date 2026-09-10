@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privasi & Keamanan dalam Bitcoin | Kapazz Bitcoin</title>
+<meta name="description" content="Menjaga kerahasiaan transaksi dan melindungi dana dari ancaman digital — materi 4 dari 8 seri belajar Kapazz Bitcoin.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+    :root {
+        --kb-orange: #f7931a;
+        --kb-orange-light: #ffb347;
+        --kb-bg: #101014;
+        --kb-bg-alt: #17171d;
+        --kb-text: #ececec;
+        --kb-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+        margin: 0;
+        background: linear-gradient(180deg, var(--kb-bg) 0%, var(--kb-bg-alt) 100%);
+        color: var(--kb-text);
+        font-family: var(--kb-font);
+    }
+</style>
+<link rel="stylesheet" href="tema.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="reading-progress-bar">
+    <div class="reading-progress-fill" id="readingProgressFill"></div>
+</div>
+
+<div class="materi-page">
+
+    <header class="materi-header">
+        <a href="../../index.html" class="back-btn">
+            <i data-lucide="arrow-left"></i>
+            Kembali ke Beranda
+        </a>
+        <p class="materi-eyebrow">Materi 4 dari 8</p>
+        <h1>Privasi & Keamanan dalam Bitcoin</h1>
+        <p class="materi-subtitle">Menjaga Kerahasiaan Transaksi dan Melindungi Dana dari Ancaman Digital</p>
+    </header>
+
+    <!-- ===================== BAGIAN 1 ===================== -->
+    <section class="materi-section" id="section-1">
+        <span class="section-tag">Bagian 1</span>
+        <h2>Privasi vs Keamanan: Dua Hal yang Berbeda</h2>
+        <p>Banyak pemula mengira privasi dan keamanan itu sama, padahal keduanya adalah dua hal berbeda meski saling berkaitan. Bitcoin secara desain justru transparan — semua transaksi tercatat permanen di blockchain dan bisa dilihat siapa saja yang mau mengeceknya. Yang tersembunyi bukan transaksinya, melainkan identitas asli di balik alamat wallet.</p>
+        <p>Memahami perbedaan keduanya penting supaya kamu tahu ancaman mana yang sedang dihadapi, dan solusi seperti apa yang sebenarnya dibutuhkan.</p>
+
+        <div class="privsec-diagram">
+            <button type="button" class="privsec-box privsec-box--privacy" data-popup-title="Privasi" data-popup-text="Privasi soal sejauh mana orang lain bisa MENGETAHUI aktivitas finansialmu — saldo, riwayat transaksi, dan dengan siapa kamu bertransaksi. Contoh pertanyaannya: apakah orang lain bisa melihat saldo dan riwayat transaksimu?">
+                <i data-lucide="eye-off"></i>
+                <span class="privsec-box-label">PRIVASI</span>
+                <span class="privsec-box-desc">Siapa yang bisa TAHU apa yang kamu lakukan</span>
+            </button>
+            <button type="button" class="privsec-box privsec-box--security" data-popup-title="Keamanan" data-popup-text="Keamanan soal sejauh mana dana kamu TERLINDUNGI dari pencurian atau akses tidak sah — terlepas dari apakah orang lain tahu kamu punya Bitcoin atau tidak. Contoh pertanyaannya: apakah private key-mu bisa dicuri lewat malware atau perangkat yang disusupi?">
+                <i data-lucide="shield"></i>
+                <span class="privsec-box-label">KEAMANAN</span>
+                <span class="privsec-box-desc">Siapa yang bisa AKSES atau MENCURI dana kamu</span>
+            </button>
+        </div>
+        <p class="diagram-hint">Tap salah satu kotak di atas untuk lihat penjelasan lebih detail.</p>
+
+        <div class="highlight-box">
+            <i data-lucide="link"></i>
+            <p>Kenapa keduanya saling berkaitan: kebocoran privasi (misalnya orang lain tahu kamu menyimpan Bitcoin dalam jumlah besar) bisa jadi langkah awal serangan keamanan yang lebih serius — mulai dari penipuan yang menyasar spesifik dirimu, sampai ancaman fisik.</p>
+        </div>
+    </section>
+
+    <!-- ===================== BAGIAN 2 ===================== -->
+    <section class="materi-section" id="section-2">
+        <span class="section-tag">Bagian 2</span>
+        <h2>Address Reuse: Kebiasaan Dasar yang Paling Berdampak</h2>
+        <p><span class="glossary-term" data-term="address reuse">Address reuse</span> adalah kebiasaan memakai alamat wallet yang sama secara berulang untuk menerima Bitcoin. Ini kebiasaan paling umum dilakukan pemula, tapi dampaknya ke privasi jauh lebih besar dibanding teknik privasi lanjutan apa pun — karena inilah fondasi paling dasar yang justru sering diabaikan.</p>
+
+        <div class="reuse-diagram">
+            <div class="reuse-column reuse-column--danger">
+                <h3 class="reuse-column-title">Alamat Dipakai Berulang</h3>
+                <div class="reuse-tx-row">
+                    <div class="reuse-tx-box">Tx dari Gaji</div>
+                    <div class="reuse-tx-box">Tx dari Exchange</div>
+                    <div class="reuse-tx-box">Tx dari Teman</div>
+                    <div class="reuse-tx-box">Tx Belanja</div>
+                </div>
+                <div class="reuse-arrow-down"><i data-lucide="arrow-down"></i></div>
+                <div class="reuse-address-box reuse-address-box--danger">
+                    <i data-lucide="wallet"></i><span>1 Alamat yang Sama</span>
+                </div>
+                <button type="button" class="reuse-highlight-btn" id="reuseHighlightBtn">👁 Lihat Kenapa Berbahaya</button>
+                <p class="reuse-column-caption">Semua transaksi bisa dikaitkan jadi satu profil</p>
+            </div>
+
+            <div class="reuse-column reuse-column--safe">
+                <h3 class="reuse-column-title">Alamat Baru Tiap Transaksi</h3>
+                <div class="reuse-pair-grid">
+                    <div class="reuse-pair">
+                        <div class="reuse-address-box reuse-address-box--safe"><i data-lucide="wallet"></i><span>Alamat Baru</span></div>
+                        <div class="reuse-tx-box reuse-tx-box--safe">Tx dari Gaji</div>
+                    </div>
+                    <div class="reuse-pair">
+                        <div class="reuse-address-box reuse-address-box--safe"><i data-lucide="wallet"></i><span>Alamat Baru</span></div>
+                        <div class="reuse-tx-box reuse-tx-box--safe">Tx dari Exchange</div>
+                    </div>
+                    <div class="reuse-pair">
+                        <div class="reuse-address-box reuse-address-box--safe"><i data-lucide="wallet"></i><span>Alamat Baru</span></div>
+                        <div class="reuse-tx-box reuse-tx-box--safe">Tx dari Teman</div>
+                    </div>
+                    <div class="reuse-pair">
+                        <div class="reuse-address-box reuse-address-box--safe"><i data-lucide="wallet"></i><span>Alamat Baru</span></div>
+                        <div class="reuse-tx-box reuse-tx-box--safe">Tx Belanja</div>
+                    </div>
+                </div>
+                <p class="reuse-column-caption">Transaksi lebih sulit dikaitkan satu sama lain</p>
+            </div>
+        </div>
+
+        <ul class="plain-list">
+            <li>Karena blockchain transparan, siapa pun bisa melihat semua transaksi masuk dan keluar dari 1 alamat yang sama.</li>
+            <li>Alamat yang dipakai berulang membuat semua transaksi otomatis terhubung jadi 1 profil aktivitas — total saldo, frekuensi, sampai pola pengeluaran.</li>
+            <li>Wallet modern berbasis <span class="glossary-term" data-term="HD wallet">HD wallet</span> (BIP32) otomatis membuat alamat baru tiap kali menerima dana, meski semuanya tetap berasal dari 1 seed phrase yang sama.</li>
+        </ul>
+
+        <div class="highlight-box">
+            <i data-lucide="info"></i>
+            <p><strong>Praktik sederhana:</strong> biarkan wallet menghasilkan alamat baru secara otomatis (kebanyakan wallet modern sudah begitu), dan hindari membagikan 1 alamat yang sama secara publik berulang kali (misalnya di media sosial) untuk banyak pembayaran yang berbeda.</p>
+        </div>
+    </section>
+
+    <!-- ===================== BAGIAN 3 ===================== -->
+    <section class="materi-section" id="section-3">
+        <span class="section-tag">Bagian 3</span>
+        <h2>CoinJoin: Teknik Privasi Lanjutan</h2>
+        <p><span class="glossary-term" data-term="CoinJoin">CoinJoin</span> adalah teknik menggabungkan input transaksi dari beberapa pengguna jadi 1 transaksi besar, lalu memecahnya lagi jadi output milik masing-masing peserta. Hasilnya, pengamat dari luar jadi sulit menentukan input mana yang sebenarnya terhubung ke output mana.</p>
+
+        <button type="button" class="animate-flow-btn" id="animateCoinjoinBtn">▶ Lihat Animasi</button>
+
+        <div class="coinjoin-diagram">
+            <div class="coinjoin-col coinjoin-col--input">
+                <div class="coinjoin-box coinjoin-box--input">User A Input</div>
+                <div class="coinjoin-box coinjoin-box--input">User B Input</div>
+                <div class="coinjoin-box coinjoin-box--input">User C Input</div>
+            </div>
+
+            <div class="coinjoin-center">
+                <i data-lucide="shuffle"></i>
+                <span>1 Transaksi Gabungan (CoinJoin)</span>
+                <small>Semua input dicampur</small>
+            </div>
+
+            <div class="coinjoin-col coinjoin-col--output">
+                <div class="coinjoin-box coinjoin-box--output">Output A</div>
+                <div class="coinjoin-box coinjoin-box--output">Output B</div>
+                <div class="coinjoin-box coinjoin-box--output">Output C</div>
+            </div>
+
+            <svg class="coinjoin-lines" viewBox="0 0 300 200" preserveAspectRatio="none">
+                <path class="coinjoin-line coinjoin-line--1" d="M0,30 C60,30 60,170 108,170"></path>
+                <path class="coinjoin-line coinjoin-line--2" d="M0,100 C64,100 64,100 108,100"></path>
+                <path class="coinjoin-line coinjoin-line--3" d="M0,170 C60,170 60,30 108,30"></path>
+
+                <path class="coinjoin-line coinjoin-line--3" d="M204,30 C244,30 244,170 300,170"></path>
+                <path class="coinjoin-line coinjoin-line--1" d="M204,100 C240,100 240,100 300,100"></path>
+                <path class="coinjoin-line coinjoin-line--2" d="M204,170 C244,170 244,30 300,30"></path>
+            </svg>
+        </div>
+        <p class="flow-caption">Garis menyilang menunjukkan: sulit dipastikan input mana yang benar-benar terhubung ke output mana.</p>
+    </section>
+
+    <!-- ===================== BAGIAN 4 ===================== -->
+    <section class="materi-section" id="section-4">
+        <span class="section-tag">Bagian 4</span>
+        <h2>Manfaat dan Risiko Praktis</h2>
+        <p>Seperti kebanyakan hal dalam Bitcoin, CoinJoin bukan solusi tanpa trade-off. Ada manfaat nyata untuk privasi, tapi juga risiko praktis di sisi lain yang perlu dipahami sebelum memutuskan memakainya.</p>
+
+        <div class="benefit-risk-grid">
+            <div class="benefit-risk-card benefit-risk-card--benefit">
+                <span class="benefit-risk-tag">MANFAAT</span>
+                <ul class="plain-list">
+                    <li>Riwayat transaksi lebih sulit dilacak <span class="glossary-term" data-term="chain analysis">chain analysis</span>.</li>
+                    <li>Privasi finansial lebih terjaga.</li>
+                </ul>
+            </div>
+            <div class="benefit-risk-card benefit-risk-card--risk">
+                <span class="benefit-risk-tag benefit-risk-tag--risk">RISIKO PRAKTIS</span>
+                <ul class="plain-list">
+                    <li>Sebagian exchange menandai atau bahkan membekukan dana yang pernah di-mix.</li>
+                    <li>Bisa diminta verifikasi tambahan soal asal dana.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="highlight-box highlight-box--danger">
+            <i data-lucide="alert-triangle"></i>
+            <p>Ini bagian yang jujur perlu disampaikan, bukan hanya dipromosikan sebagai solusi tanpa trade-off: beberapa exchange dan penyedia layanan yang tunduk aturan <span class="glossary-term" data-term="KYC/AML">KYC/AML</span> ketat menggunakan alat chain analysis untuk mendeteksi dana yang pernah melewati CoinJoin/mixer. Dana seperti itu kadang ditandai, diminta verifikasi tambahan, atau bahkan dibekukan sementara saat disetor ke exchange tersebut.</p>
+        </div>
+
+        <p>CoinJoin bukan keputusan sekali pakai tanpa konsekuensi — ini trade-off antara privasi on-chain yang lebih baik dengan kemungkinan gesekan administratif di sisi layanan custodial. Teknik ini paling relevan untuk pengguna yang sudah memahami risiko tersebut dan punya alasan jelas untuk memakainya, bukan langkah default untuk semua orang.</p>
+    </section>
+
+    <!-- ===================== BAGIAN 5 ===================== -->
+    <section class="materi-section" id="section-5">
+        <span class="section-tag">Bagian 5</span>
+        <h2>Keamanan Perangkat: Lapisan yang Sering Diabaikan</h2>
+        <p>Sekuat apa pun seed phrase dan hardware wallet yang kamu pakai, semuanya bisa runtuh kalau perangkat yang dipakai untuk berinteraksi dengan wallet sudah disusupi <span class="glossary-term" data-term="malware">malware</span> atau dipakai sembarangan.</p>
+
+        <div class="device-diagram">
+            <div class="device-threats">
+                <button type="button" class="device-threat" data-popup-title="Link Mencurigakan" data-popup-text="Terutama yang mengaku dari 'support' wallet/exchange atau menjanjikan sesuatu yang terlalu bagus untuk nyata. Jangan pernah klik link semacam ini dari chat, SMS, atau email.">
+                    <i data-lucide="link-2"></i>
+                    <span>Link mencurigakan di chat/SMS/email</span>
+                </button>
+                <button type="button" class="device-threat" data-popup-title="Aplikasi Tidak Resmi" data-popup-text="Hindari APK dari luar app store resmi atau link yang dibagikan orang lain — aplikasi semacam ini rawan disusupi kode berbahaya.">
+                    <i data-lucide="package-x"></i>
+                    <span>Aplikasi/APK dari luar app store resmi</span>
+                </button>
+                <button type="button" class="device-threat" data-popup-title="Software Wallet Palsu" data-popup-text="Tampilannya mirip aslinya, tapi dibuat khusus untuk mencuri seed phrase saat diketik — salah satu bentuk phishing yang menyasar pengguna wallet.">
+                    <i data-lucide="copy-x"></i>
+                    <span>Software wallet palsu (clone/phishing)</span>
+                </button>
+            </div>
+            <div class="device-arrow-down"><i data-lucide="arrow-down"></i></div>
+            <div class="device-center">
+                <i data-lucide="smartphone"></i>
+                <span>Perangkat dengan Wallet Terinstal (HP/Komputer)</span>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <i data-lucide="info"></i>
+            <p>Prinsip: pisahkan perangkat untuk wallet dari perangkat untuk browsing bebas/klik-klik link, jika memungkinkan. Jangan sembarang instal aplikasi di perangkat yang sama dengan wallet.</p>
+        </div>
+
+        <h3 class="sub-heading">Kebiasaan Dasar yang Wajib Dijaga</h3>
+        <ul class="checklist">
+            <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>Jangan sembarang klik link dari chat/SMS/email, terutama yang mengaku dari "support".</span></li>
+            <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>Hanya instal aplikasi wallet dari sumber resmi (situs resmi developer, app store resmi).</span></li>
+            <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>Waspadai software wallet palsu (clone/<span class="glossary-term" data-term="phishing">phishing</span>).</span></li>
+            <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>Kalau memungkinkan, pisahkan perangkat wallet dari perangkat browsing bebas.</span></li>
+        </ul>
+    </section>
+
+    <!-- ===================== BAGIAN 6: MINI QUIZ ===================== -->
+    <section class="materi-section" id="section-6">
+        <span class="section-tag">Bagian 6</span>
+        <h2>Uji Pemahaman</h2>
+        <p>Sebelum lanjut, coba jawab pertanyaan singkat berikut ini.</p>
+        <div class="mini-quiz-card" id="miniQuizCard"></div>
+    </section>
+
+    <!-- ===================== PENUTUP ===================== -->
+    <section class="materi-section" id="section-penutup">
+        <span class="section-tag">Penutup</span>
+        <h2>Ringkasan Praktis</h2>
+        <ul class="checklist">
+            <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>Privasi (siapa tahu) dan keamanan (siapa bisa akses) adalah dua hal berbeda, tapi kebocoran privasi bisa memicu ancaman keamanan.</span></li>
+            <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>Hindari address reuse — kebiasaan dasar paling berdampak, jauh sebelum mempertimbangkan teknik lanjutan.</span></li>
+            <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>CoinJoin efektif untuk privasi on-chain, tapi punya risiko praktis (dana ditandai/dibekukan exchange) yang harus dipahami dulu.</span></li>
+            <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>Keamanan perangkat — hindari link mencurigakan dan aplikasi tidak resmi — sering jadi titik kegagalan nyata, lebih sering terjadi dibanding serangan kriptografis canggih.</span></li>
+        </ul>
+
+        <a href="assets/pdf/privasi-keamanan.pdf" target="_blank" rel="noopener" class="pdf-link">
+            <i data-lucide="file-text"></i> Lihat versi PDF
+        </a>
+    </section>
+
+    <div class="materi-bottom-nav materi-bottom-nav--dual">
+        <a href="../utxo-fee-alamat/index.html" class="prev-section-btn">← Materi Sebelumnya</a>
+        <a href="../lightning-network/index.html" class="next-section-btn">Lanjut ke Materi Berikutnya →</a>
+    </div>
+
+</div>
+
+<!-- ===================== POPUP MODAL (istilah & diagram) ===================== -->
+<div class="popup-backdrop" id="popupBackdrop">
+    <div class="popup-box anim-fade-scale">
+        <button type="button" class="popup-close-btn" id="popupCloseBtn">✕</button>
+        <div class="popup-icon-wrap" id="popupIconWrap" style="display:none;">
+            <img class="popup-icon" id="popupIcon" src="" alt="">
+        </div>
+        <h4 id="popupTitle"></h4>
+        <p id="popupText"></p>
+    </div>
+</div>
+
+<script src="glossary-data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

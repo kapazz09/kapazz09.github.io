@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mining & Mining Pool | Kapazz Bitcoin</title>
+<meta name="description" content="Bagaimana Bitcoin baru tercipta lewat Proof-of-Work, kenapa mining pool ada, evolusi alat mining dari CPU ke ASIC, dan ekonomi di balik mining Bitcoin.">
+<link rel="icon" href="../../assets/icons/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tema.css">
+<link rel="stylesheet" href="style.css">
+<style>
+    /* Fallback inline: variabel tema dasar, jaga-jaga kalau tema.css gagal load */
+    :root {
+        --kb-orange: #f7931a;
+        --kb-orange-light: #ffb347;
+        --kb-bg: #101014;
+        --kb-bg-alt: #17171d;
+        --kb-text: #ececec;
+        --kb-font: 'Inter', Arial, sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: linear-gradient(180deg, var(--kb-bg) 0%, var(--kb-bg-alt) 100%);
+        color: var(--kb-text);
+        font-family: var(--kb-font);
+    }
+</style>
+</head>
+<body>
+
+<div class="reading-progress-bar">
+    <div class="reading-progress-fill" id="readingProgressFill"></div>
+</div>
+
+<main class="materi-page">
+
+    <header class="materi-header">
+        <a href="../../index.html" class="back-btn">
+            <i data-lucide="arrow-left"></i>
+            Kembali ke Beranda
+        </a>
+        <p class="materi-eyebrow">Materi 7 dari 8</p>
+        <h1>Mining & Mining Pool</h1>
+        <p class="materi-subtitle">Bagaimana Bitcoin Baru Tercipta dan Jaringan Tetap Aman</p>
+    </header>
+
+    <div class="author-note">
+        <span class="author-note-icon">✍️</span>
+        <p>Catatan penulis: ini topik Tier 2 dalam proses belajar saya. Ditulis sejauh yang saya pahami saat ini, terutama dari sisi konsep dan ekonomi mining, bukan dari pengalaman praktik langsung mengoperasikan mesin mining.</p>
+    </div>
+
+    <!-- ============ BAGIAN 1: APA ITU PROSES MINING ============ -->
+    <section class="materi-section" id="section-1">
+        <span class="section-tag">Bagian 1</span>
+        <h2>Apa Itu Proses Mining</h2>
+        <p>Mining adalah proses menyusun transaksi-transaksi yang sedang menunggu jadi satu blok baru, lalu menambahkannya ke blockchain lewat mekanisme <span class="glossary-term" data-term="proof-of-work">Proof-of-Work</span>. Semua miner di jaringan berlomba menemukan <span class="glossary-term" data-term="nonce">nonce</span> — angka acak yang, kalau digabung dengan data blok dan diproses lewat fungsi <span class="glossary-term" data-term="hash">hash</span>, menghasilkan angka di bawah target kesulitan tertentu.</p>
+        <p>Karena hasil hash sifatnya acak dan tidak bisa diprediksi, satu-satunya cara menemukan nonce yang tepat adalah trial and error secepat mungkin — coba, ganti sedikit, coba lagi, berkali-kali sampai triliunan kali per detik. Miner pertama yang menemukan hash valid berhak menyiarkan bloknya ke jaringan dan menerima reward: block subsidy ditambah semua fee transaksi yang ada di blok itu.</p>
+
+        <div class="mine-flow" id="mineFlow">
+            <div class="mine-step">
+                <i data-lucide="inbox"></i>
+                <span>Kumpulkan Transaksi Menunggu</span>
+            </div>
+            <div class="mine-arrow"><i data-lucide="arrow-right"></i></div>
+            <div class="mine-step">
+                <i data-lucide="layers"></i>
+                <span>Susun jadi Calon Blok</span>
+            </div>
+            <div class="mine-arrow"><i data-lucide="arrow-right"></i></div>
+            <div class="mine-step" id="mineNonceStep">
+                <i data-lucide="dices"></i>
+                <span>Coba Angka Acak (Nonce) Berkali-kali</span>
+            </div>
+            <div class="mine-arrow"><i data-lucide="arrow-right"></i></div>
+            <div class="mine-step" id="mineHashStep">
+                <i data-lucide="hash"></i>
+                <span>Hash Hasil &lt; Target Kesulitan?</span>
+            </div>
+            <div class="mine-arrow" id="mineArrowToReward"><i data-lucide="arrow-right"></i></div>
+            <div class="mine-step mine-step--reward" id="mineRewardStep">
+                <i data-lucide="party-popper"></i>
+                <span>Blok Baru Tersiar + Reward</span>
+            </div>
+        </div>
+
+        <div class="mine-loop" id="mineLoop">
+            <i data-lucide="rotate-ccw"></i>
+            <span>Kalau hash belum memenuhi target: kembali coba nonce lain, berulang-ulang (loop)</span>
+        </div>
+
+        <button class="animate-flow-btn" id="mineSimBtn">▶ Simulasikan Proses Mining</button>
+        <p class="diagram-hint">Tombol di atas mensimulasikan betapa acaknya proses trial-and-error ini.</p>
+    </section>
+
+    <!-- ============ BAGIAN 2: REWARD MINING ============ -->
+    <section class="materi-section" id="section-2">
+        <span class="section-tag">Bagian 2</span>
+        <h2>Reward Mining: dari Awal hingga Sekarang</h2>
+        <p>Bagian reward yang berasal dari koin baru yang diciptakan sistem (bukan dari fee transaksi) disebut <span class="glossary-term" data-term="block subsidy">block subsidy</span>. Nilai ini terus mengecil separuh tiap kali <span class="glossary-term" data-term="halving">halving</span> terjadi — peristiwa yang berlangsung tiap ~4 tahun atau tepatnya tiap 210.000 blok. Ini bagian dari desain suplai tetap Bitcoin yang dibatasi maksimal 21 juta koin selamanya.</p>
+
+        <div class="halving-chart" id="halvingChart">
+            <button class="halving-bar" data-popup-title="2009" data-popup-text="Reward blok: 50 BTC per blok — nilai awal saat Bitcoin baru diluncurkan Januari 2009.">
+                <span class="halving-bar-fill" style="height: 100%;"></span>
+                <span class="halving-bar-value">50</span>
+                <span class="halving-bar-year">2009</span>
+            </button>
+            <button class="halving-bar" data-popup-title="2012" data-popup-text="Reward blok: 25 BTC per blok — hasil halving pertama, November 2012.">
+                <span class="halving-bar-fill" style="height: 65%;"></span>
+                <span class="halving-bar-value">25</span>
+                <span class="halving-bar-year">2012</span>
+            </button>
+            <button class="halving-bar" data-popup-title="2016" data-popup-text="Reward blok: 12.5 BTC per blok — hasil halving kedua, Juli 2016.">
+                <span class="halving-bar-fill" style="height: 42%;"></span>
+                <span class="halving-bar-value">12.5</span>
+                <span class="halving-bar-year">2016</span>
+            </button>
+            <button class="halving-bar" data-popup-title="2020" data-popup-text="Reward blok: 6.25 BTC per blok — hasil halving ketiga, Mei 2020.">
+                <span class="halving-bar-fill" style="height: 27%;"></span>
+                <span class="halving-bar-value">6.25</span>
+                <span class="halving-bar-year">2020</span>
+            </button>
+            <button class="halving-bar halving-bar--current" data-popup-title="2024 — Sekarang" data-popup-text="Reward saat ini: 3.125 BTC per blok — hasil halving keempat, April 2024. Ini reward yang berlaku sampai halving berikutnya.">
+                <span class="halving-bar-fill" style="height: 17%;"></span>
+                <span class="halving-bar-value">3.125</span>
+                <span class="halving-bar-year">2024<br><small>SEKARANG</small></span>
+            </button>
+            <button class="halving-bar halving-bar--projected" data-popup-title="~2028 — Perkiraan" data-popup-text="Proyeksi reward halving berikutnya: sekitar 1.5625 BTC per blok. Ini perkiraan — waktu pastinya tergantung kecepatan penambangan blok di jaringan.">
+                <span class="halving-bar-fill" style="height: 11%;"></span>
+                <span class="halving-bar-value">1.5625</span>
+                <span class="halving-bar-year">~2028<br><small>Perkiraan</small></span>
+            </button>
+        </div>
+        <p class="diagram-hint">Tap tiap bar untuk lihat tahun & jumlah reward. (Tinggi bar untuk kejelasan visual, bukan skala linear persis.)</p>
+
+        <div class="highlight-box">
+            <i data-lucide="lightbulb"></i>
+            <p>Seiring reward subsidy terus mengecil, fee transaksi diproyeksikan menjadi porsi yang makin penting dari penghasilan miner di masa depan, menggantikan peran subsidy yang terus menyusut.</p>
+        </div>
+    </section>
+
+    <!-- ============ BAGIAN 3: SOLO MINING VS MINING POOL ============ -->
+    <section class="materi-section" id="section-3">
+        <span class="section-tag">Bagian 3</span>
+        <h2>Solo Mining vs Mining Pool</h2>
+        <p>Menambang sendirian (solo mining) secara teori bisa, tapi peluangnya sangat kecil untuk operasi skala kecil — <span class="glossary-term" data-term="hashrate">hashrate</span> individu jauh kalah besar dibanding total hashrate jaringan global, jadi bisa bertahun-tahun tanpa pernah menemukan satu blok pun. <span class="glossary-term" data-term="mining pool">Mining pool</span> hadir untuk menjawab masalah ini: banyak miner menggabungkan hashrate mereka, lalu reward yang didapat dibagi proporsional sesuai kontribusi kerja masing-masing.</p>
+
+        <div class="compare-grid-2">
+            <div class="compare-card compare-card--gray">
+                <h3>Solo Mining</h3>
+                <p>Menang sendiri = dapat seluruh reward blok. Tapi peluang menang sangat kecil, bisa bertahun-tahun tanpa hasil.</p>
+            </div>
+            <div class="compare-card compare-card--orange">
+                <h3>Mining Pool</h3>
+                <p>Gabung hashrate, reward dibagi proporsional. Penghasilan lebih kecil per orang, tapi konsisten & terprediksi.</p>
+            </div>
+        </div>
+
+        <p class="sub-heading">Contoh Pool & Perusahaan Mining Besar (data 2026)</p>
+        <div class="mp-card-grid">
+            <div class="mp-card">
+                <h4>Foundry USA</h4>
+                <p>Pool terbesar, berbasis AS, sekitar 25-30% hashrate global.</p>
+            </div>
+            <div class="mp-card">
+                <h4>AntPool</h4>
+                <p>Dioperasikan Bitmain, sekitar 15-19% hashrate global.</p>
+            </div>
+            <div class="mp-card">
+                <h4>F2Pool & ViaBTC</h4>
+                <p>Pool global dengan basis penambang tersebar luas.</p>
+            </div>
+            <div class="mp-card">
+                <h4>MARA, Riot, CleanSpark</h4>
+                <p>Perusahaan mining publik dengan operasi skala besar.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ BAGIAN 4: ALAT MINING DARI MASA KE MASA ============ -->
+    <section class="materi-section" id="section-4">
+        <span class="section-tag">Bagian 4</span>
+        <h2>Alat Mining dari Masa ke Masa</h2>
+        <p>Mesin yang dipakai untuk mining berevolusi drastis demi mengejar efisiensi — dari sekadar prosesor komputer biasa, sampai akhirnya chip <span class="glossary-term" data-term="asic">ASIC</span> yang dirancang khusus hanya untuk satu tugas ini.</p>
+
+        <div class="timeline-diagram">
+            <div class="timeline-step" data-popup-title="CPU (2009-2010)" data-popup-text="Prosesor komputer biasa. Di masa awal Bitcoin, siapa pun bisa ikut menambang hanya dengan laptop atau PC rumahan.">
+                <i data-lucide="cpu"></i>
+                <span>CPU<small>2009-2010</small></span>
+            </div>
+            <div class="timeline-arrow"><i data-lucide="arrow-right"></i></div>
+            <div class="timeline-step" data-popup-title="GPU (2010-2011)" data-popup-text="Kartu grafis. Jauh lebih cepat dari CPU untuk kalkulasi hash yang berulang-ulang, mulai menyingkirkan penambang CPU.">
+                <i data-lucide="monitor"></i>
+                <span>GPU<small>2010-2011</small></span>
+            </div>
+            <div class="timeline-arrow"><i data-lucide="arrow-right"></i></div>
+            <div class="timeline-step" data-popup-title="FPGA (2011)" data-popup-text="Chip semi-custom yang bisa diprogram ulang untuk tugas tertentu. Lebih efisien dari GPU, tapi masa pakainya di dunia mining relatif singkat sebelum digantikan ASIC.">
+                <i data-lucide="circuit-board"></i>
+                <span>FPGA<small>2011</small></span>
+            </div>
+            <div class="timeline-arrow"><i data-lucide="arrow-right"></i></div>
+            <div class="timeline-step timeline-step--accent" data-popup-title="ASIC (2013-sekarang)" data-popup-text="Chip yang dirancang khusus hanya untuk mining Bitcoin — jauh lebih cepat dan hemat energi dibanding CPU, GPU, maupun FPGA. Standar industri sejak 2013 sampai sekarang.">
+                <i data-lucide="zap"></i>
+                <span>ASIC<small>2013-sekarang</small></span>
+            </div>
+        </div>
+        <p class="diagram-hint">Tap tiap kotak untuk detail. Perlombaan efisiensi mendorong pergantian generasi perangkat keras mining.</p>
+    </section>
+
+    <!-- ============ BAGIAN 5: LISTRIK YANG DIPAKAI ============ -->
+    <section class="materi-section" id="section-5">
+        <span class="section-tag">Bagian 5</span>
+        <h2>Listrik yang Dipakai</h2>
+        <p>Mining Bitcoin mengonsumsi energi besar karena Proof-of-Work butuh kerja komputasi nyata. Konsumsi energi ini berfluktuasi mengikuti harga BTC, efisiensi ASIC, dan jumlah miner aktif — sebaiknya dicek dari sumber pemantauan energi terkini (seperti Cambridge Bitcoin Electricity Consumption Index) daripada mengandalkan angka statis.</p>
+        <ul class="plain-list">
+            <li>Operasi mining skala besar mencari lokasi listrik termurah — sering memanfaatkan energi berlebih (<span class="glossary-term" data-term="stranded energy">stranded energy</span>) seperti gas flare, hidro musim hujan, atau surplus jaringan listrik.</li>
+            <li>Listrik umumnya menjadi komponen biaya operasional terbesar dalam mining.</li>
+        </ul>
+    </section>
+
+    <!-- ============ BAGIAN 6: FEE DIBAGI BERDASARKAN APA ============ -->
+    <section class="materi-section" id="section-6">
+        <span class="section-tag">Bagian 6</span>
+        <h2>Dalam Mining Pool, Fee Dibagi Berdasarkan Apa?</h2>
+        <p>Tiap miner dalam pool mengirim bukti kerja kecil yang disebut <span class="glossary-term" data-term="share">share</span> — hasil hash yang belum tentu memenuhi target kesulitan penuh jaringan, tapi cukup untuk membuktikan kontribusi kerja nyata. Cara pool menghitung pembayaran dari share ini punya beberapa model:</p>
+
+        <div class="compare-grid-3">
+            <div class="compare-card compare-card--green">
+                <h3>PPS</h3>
+                <p>Pay Per Share. Dibayar tetap per share kerja yang dikirim, tanpa peduli pool menang blok atau tidak.</p>
+            </div>
+            <div class="compare-card compare-card--orange">
+                <h3>FPPS</h3>
+                <p>Full Pay Per Share. Seperti PPS, plus estimasi bagian fee transaksi ditambahkan ke pembayaran tetap.</p>
+            </div>
+            <div class="compare-card compare-card--gray">
+                <h3>PPLNS</h3>
+                <p>Pay Per Last N Shares. Dibayar dari jendela share terakhir hanya saat pool menemukan blok — variasi lebih tinggi, fee lebih rendah.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ BAGIAN 7: STRATUM V1 VS V2 ============ -->
+    <section class="materi-section" id="section-7">
+        <span class="section-tag">Bagian 7</span>
+        <h2>Stratum V1 vs V2</h2>
+        <p><span class="glossary-term" data-term="stratum">Stratum</span> adalah protokol komunikasi antara miner dan pool.</p>
+
+        <div class="compare-grid-2">
+            <div class="compare-card compare-card--gray">
+                <h3>Stratum V1</h3>
+                <p>Pool operator yang menyusun isi blok (pilih transaksi mana yang masuk). Risiko: sentralisasi kontrol atas isi blok.</p>
+            </div>
+            <div class="compare-card compare-card--green">
+                <h3>Stratum V2</h3>
+                <p>Miner individu bisa menyusun sendiri isi blok lewat <span class="glossary-term" data-term="job negotiation">job negotiation</span>. Mengembalikan kendali ke miner, mengurangi sentralisasi.</p>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <i data-lucide="trending-up"></i>
+            <p>Update 2026: 7 pool besar (mewakili ~75% hashrate global) mulai mendukung Stratum V2 — langkah desentralisasi terbesar di dunia mining Bitcoin dalam beberapa tahun terakhir.</p>
+        </div>
+    </section>
+
+    <!-- ============ BAGIAN 8: KENAPA TETAP ANTUSIAS ============ -->
+    <section class="materi-section" id="section-8">
+        <span class="section-tag">Bagian 8</span>
+        <h2>Kenapa Tetap Antusias Meski Biaya Sangat Besar</h2>
+
+        <div class="mp-card-grid">
+            <div class="mp-card">
+                <h4>Skala Ekonomi</h4>
+                <p>Operasi besar dapat harga alat & listrik lebih murah per unit.</p>
+            </div>
+            <div class="mp-card">
+                <h4>Listrik Murah / Stranded Energy</h4>
+                <p>Memanfaatkan energi berlebih atau lokasi dengan tarif sangat rendah.</p>
+            </div>
+            <div class="mp-card">
+                <h4>Model Bisnis Perusahaan Publik</h4>
+                <p>Sebagian mengumpulkan BTC + jual saham, bukan cuma jual hasil mining.</p>
+            </div>
+            <div class="mp-card">
+                <h4>Spekulasi Kenaikan Harga</h4>
+                <p>Sebagian pelaku bertaruh nilai BTC naik lebih cepat dari biaya.</p>
+            </div>
+        </div>
+
+        <div class="highlight-box highlight-box--critical">
+            <i data-lucide="alert-triangle"></i>
+            <p>Catatan penting: ini bukan berarti mining otomatis menguntungkan. Profitabilitasnya sangat bergantung pada harga listrik, efisiensi perangkat, dan harga BTC yang volatil — beberapa laporan bahkan mencatat sebagian operator beroperasi di titik impas atau rugi pada periode tertentu. Ini penjelasan faktual kenapa minat tetap ada, bukan rekomendasi bahwa mining adalah keputusan finansial yang pasti menguntungkan.</p>
+        </div>
+    </section>
+
+    <!-- ============ BAGIAN 9: MINI-QUIZ CHECKPOINT ============ -->
+    <section class="materi-section" id="section-9">
+        <span class="section-tag">Bagian 9</span>
+        <h2>Cek Pemahaman</h2>
+        <div class="mini-quiz-card" id="miniQuizCard"></div>
+    </section>
+
+    <!-- ============ PENUTUP: RINGKASAN PRAKTIS ============ -->
+    <section class="materi-section" id="section-penutup">
+        <span class="section-tag">Penutup</span>
+        <h2>Ringkasan Praktis</h2>
+        <ul class="checklist">
+            <li class="checklist-item checklist-item--good">
+                <span class="checklist-icon">✅</span>
+                <span>Mining adalah proses Proof-of-Work: mencari nonce yang menghasilkan hash di bawah target kesulitan, lalu mendapat reward.</span>
+            </li>
+            <li class="checklist-item checklist-item--good">
+                <span class="checklist-icon">✅</span>
+                <span>Reward terus berkurang lewat halving tiap ~4 tahun: dari 50 BTC (2009) menjadi 3.125 BTC (2024).</span>
+            </li>
+            <li class="checklist-item checklist-item--good">
+                <span class="checklist-icon">✅</span>
+                <span>Solo mining nyaris mustahil untuk operasi kecil; mining pool mengubah peluang kecil jadi penghasilan konsisten.</span>
+            </li>
+            <li class="checklist-item checklist-item--good">
+                <span class="checklist-icon">✅</span>
+                <span>Alat mining berevolusi dari CPU, GPU, FPGA, hingga ASIC yang jauh lebih efisien.</span>
+            </li>
+            <li class="checklist-item checklist-item--good">
+                <span class="checklist-icon">✅</span>
+                <span>Fee pool dibagi berdasarkan share (bukti kerja), lewat model PPS, FPPS, atau PPLNS.</span>
+            </li>
+            <li class="checklist-item checklist-item--good">
+                <span class="checklist-icon">✅</span>
+                <span>Stratum V2 mengembalikan kendali penyusunan blok ke miner individu, kini didukung mayoritas hashrate global.</span>
+            </li>
+            <li class="checklist-item checklist-item--good">
+                <span class="checklist-icon">✅</span>
+                <span>Minat mining tetap tinggi karena skala ekonomi, energi murah, model bisnis perusahaan publik, dan spekulasi harga — bukan karena mining otomatis menguntungkan.</span>
+            </li>
+        </ul>
+
+        <a href="assets/pdf/mining-pool.pdf" target="_blank" class="pdf-link">
+            <i data-lucide="file-text"></i>
+            📄 Lihat versi PDF
+        </a>
+    </section>
+
+    <nav class="materi-bottom-nav">
+        <div class="bottom-nav-row">
+            <a href="../bip/index.html" class="prev-section-btn">← Materi Sebelumnya</a>
+            <a href="../on-chain-analysis/index.html" class="next-section-btn">Lanjut ke Materi Berikutnya →</a>
+        </div>
+    </nav>
+
+</main>
+
+<!-- ============ POPUP MODAL REUSABLE (istilah glossary & detail diagram) ============ -->
+<div class="popup-backdrop" id="popupBackdrop">
+    <div class="popup-box" id="popupBox">
+        <button class="popup-close-btn" id="popupCloseBtn">✕</button>
+        <div class="popup-icon-wrap">
+            <img class="popup-icon" id="popupIcon" src="" alt="">
+            <div class="popup-icon-fallback" id="popupIconFallback"></div>
+        </div>
+        <h4 id="popupTitle"></h4>
+        <p id="popupText"></p>
+        <p id="popupMeta" class="popup-meta"></p>
+        <ul id="popupFeatures" class="popup-features"></ul>
+        <p id="popupNote" class="popup-note"></p>
+    </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="glossary-data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

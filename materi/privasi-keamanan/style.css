@@ -1,0 +1,657 @@
+/* ==================================================
+   KAPAZZ BITCOIN — STYLE KHUSUS
+   Materi 4/8: Privasi & Keamanan dalam Bitcoin
+   File ini LOKAL untuk folder materi ini saja.
+   ================================================== */
+
+.diagram-hint {
+    font-size: 12.5px !important;
+    color: var(--kb-text-faint) !important;
+    text-align: center;
+    margin-top: 10px !important;
+}
+
+/* ---------- 1) DIAGRAM PRIVASI VS KEAMANAN ---------- */
+.privsec-diagram {
+    display: flex;
+    gap: clamp(6px, 2.5vw, 14px);
+    margin-top: 18px;
+}
+
+.privsec-box {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(4px, 1.5vw, 8px);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--kb-card-border);
+    border-radius: var(--kb-radius-sm);
+    padding: clamp(10px, 4vw, 20px) clamp(6px, 2.5vw, 14px);
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.privsec-box:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.privsec-box--privacy {
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+.privsec-box--privacy i {
+    color: var(--kb-text-dim);
+}
+
+.privsec-box--security {
+    border-color: var(--kb-orange);
+}
+
+.privsec-box--security i {
+    color: var(--kb-orange);
+}
+
+.privsec-box i {
+    width: clamp(18px, 6vw, 26px);
+    height: clamp(18px, 6vw, 26px);
+}
+
+.privsec-box-label {
+    font-size: clamp(10.5px, 3.2vw, 13px);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #fff;
+}
+
+.privsec-box-desc {
+    font-size: clamp(9.5px, 2.8vw, 12.5px);
+    color: var(--kb-text-dim);
+    line-height: 1.5;
+}
+
+/* ---------- 2) DIAGRAM ADDRESS REUSE ---------- */
+.reuse-diagram {
+    display: flex;
+    gap: clamp(6px, 2.5vw, 14px);
+    margin-top: 18px;
+}
+
+.reuse-column {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--kb-card-border);
+    border-radius: var(--kb-radius-sm);
+    padding: clamp(10px, 3.5vw, 16px) clamp(6px, 2.5vw, 12px) clamp(12px, 4vw, 18px) clamp(6px, 2.5vw, 12px);
+}
+
+.reuse-column--danger {
+    border-top: 3px solid #ff5c5c;
+}
+
+.reuse-column--safe {
+    border-top: 3px solid #3ddc84;
+}
+
+.reuse-column-title {
+    font-size: clamp(11px, 3.2vw, 13.5px);
+    color: #fff;
+    margin: 0 0 12px 0;
+    text-align: center;
+}
+
+.reuse-tx-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(4px, 1.5vw, 6px);
+    margin-bottom: 8px;
+}
+
+.reuse-tx-box {
+    font-size: clamp(8.5px, 2.5vw, 11px);
+    font-weight: 600;
+    color: var(--kb-text-dim);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--kb-card-border);
+    border-radius: 8px;
+    padding: clamp(5px, 1.8vw, 7px) clamp(3px, 1.5vw, 8px);
+    text-align: center;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.reuse-tx-box--safe {
+    width: 100%;
+}
+
+.reuse-arrow-down {
+    color: #ff5c5c;
+    margin: 2px 0;
+    transition: filter 0.2s ease;
+}
+
+.reuse-arrow-down i {
+    width: clamp(14px, 4vw, 18px);
+    height: clamp(14px, 4vw, 18px);
+}
+
+.reuse-address-box {
+    display: flex;
+    align-items: center;
+    gap: clamp(4px, 1.5vw, 8px);
+    font-size: clamp(9.5px, 2.8vw, 12.5px);
+    font-weight: 700;
+    border-radius: 10px;
+    padding: clamp(6px, 2vw, 10px) clamp(8px, 2.5vw, 14px);
+    margin-bottom: 10px;
+    transition: box-shadow 0.2s ease;
+}
+
+.reuse-address-box i {
+    width: clamp(12px, 3.5vw, 16px);
+    height: clamp(12px, 3.5vw, 16px);
+    flex-shrink: 0;
+}
+
+.reuse-address-box--danger {
+    background: rgba(255, 92, 92, 0.12);
+    border: 1px solid rgba(255, 92, 92, 0.4);
+    color: #ff8787;
+}
+
+.reuse-address-box--safe {
+    background: rgba(61, 220, 132, 0.12);
+    border: 1px solid rgba(61, 220, 132, 0.4);
+    color: #6be6a4;
+    font-size: clamp(8.5px, 2.5vw, 11px);
+    padding: clamp(4px, 1.5vw, 7px) clamp(3px, 1.5vw, 8px);
+    margin-bottom: 6px;
+    justify-content: center;
+    width: 100%;
+}
+
+.reuse-highlight-btn {
+    font-size: clamp(9.5px, 2.8vw, 12px);
+    font-weight: 700;
+    color: var(--kb-orange-light);
+    background: var(--kb-orange-soft);
+    border: 1px solid rgba(247, 147, 26, 0.35);
+    border-radius: 20px;
+    padding: clamp(5px, 1.8vw, 7px) clamp(8px, 2.5vw, 14px);
+    cursor: pointer;
+    margin-bottom: 10px;
+    font-family: inherit;
+    transition: background 0.2s ease;
+}
+
+.reuse-highlight-btn:hover {
+    background: rgba(247, 147, 26, 0.22);
+}
+
+.reuse-column-caption {
+    font-size: clamp(9.5px, 2.6vw, 12px) !important;
+    color: var(--kb-text-faint) !important;
+    text-align: center;
+    margin: 0 !important;
+}
+
+.reuse-pair-grid {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(5px, 1.8vw, 8px);
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.reuse-pair {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Animasi "kenapa berbahaya" — dipicu lewat JS menambah class .danger-pulse */
+@keyframes kbDangerPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 rgba(255, 92, 92, 0);
+        border-color: rgba(255, 92, 92, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 14px rgba(255, 92, 92, 0.8);
+        border-color: #ff5c5c;
+    }
+}
+
+.danger-pulse .reuse-tx-box,
+.danger-pulse.reuse-address-box {
+    animation: kbDangerPulse 0.6s ease-in-out 3;
+    border-color: #ff5c5c;
+    color: #fff;
+}
+
+.danger-pulse .reuse-arrow-down {
+    filter: drop-shadow(0 0 6px rgba(255, 92, 92, 0.9));
+}
+
+/* ---------- 3) DIAGRAM COINJOIN ---------- */
+.animate-flow-btn {
+    display: inline-block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--kb-orange-light);
+    background: var(--kb-orange-soft);
+    border: 1px solid rgba(247, 147, 26, 0.35);
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin-bottom: 16px;
+    font-family: inherit;
+    transition: background 0.2s ease;
+}
+
+.animate-flow-btn:hover {
+    background: rgba(247, 147, 26, 0.22);
+}
+
+.animate-flow-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.coinjoin-diagram {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(4px, 1.5vw, 8px);
+    min-height: 200px;
+    padding: 10px 4px;
+}
+
+.coinjoin-col {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: clamp(10px, 4vw, 18px);
+    height: 180px;
+    flex-shrink: 0;
+    width: 27%;
+}
+
+.coinjoin-box {
+    font-size: clamp(8px, 2.4vw, 10.5px);
+    font-weight: 700;
+    text-align: center;
+    border-radius: 8px;
+    padding: clamp(5px, 1.8vw, 8px) 4px;
+}
+
+.coinjoin-box--input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--kb-card-border);
+    color: var(--kb-text-dim);
+}
+
+.coinjoin-box--output {
+    background: rgba(61, 220, 132, 0.12);
+    border: 1px solid rgba(61, 220, 132, 0.4);
+    color: #6be6a4;
+}
+
+.coinjoin-center {
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+    width: 34%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    background: var(--kb-orange-soft);
+    border: 1.5px solid var(--kb-orange);
+    border-radius: var(--kb-radius-sm);
+    padding: clamp(8px, 3vw, 14px) clamp(4px, 2vw, 8px);
+}
+
+.coinjoin-center i {
+    width: clamp(16px, 5vw, 22px);
+    height: clamp(16px, 5vw, 22px);
+    color: var(--kb-orange);
+}
+
+.coinjoin-center span {
+    font-size: clamp(9px, 2.6vw, 11px);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.4;
+}
+
+.coinjoin-center small {
+    font-size: clamp(8px, 2.2vw, 10px);
+    color: var(--kb-text-dim);
+}
+
+.coinjoin-lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: visible;
+}
+
+.coinjoin-line {
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-dasharray: 4 3;
+    opacity: 0.9;
+}
+
+.coinjoin-line--1 {
+    stroke: var(--kb-orange-light);
+}
+
+.coinjoin-line--2 {
+    stroke: var(--kb-purple);
+}
+
+.coinjoin-line--3 {
+    stroke: #6be6a4;
+}
+
+.flow-caption {
+    font-size: 12.5px !important;
+    color: var(--kb-text-faint) !important;
+    text-align: center;
+    margin-top: 14px !important;
+}
+
+/* ---------- 4) MANFAAT VS RISIKO ---------- */
+.benefit-risk-grid {
+    display: flex;
+    gap: clamp(6px, 2.5vw, 14px);
+    margin-top: 18px;
+}
+
+.benefit-risk-card {
+    flex: 1;
+    min-width: 0;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--kb-card-border);
+    border-radius: var(--kb-radius-sm);
+    padding: clamp(10px, 3.5vw, 16px) clamp(8px, 3vw, 14px);
+}
+
+.benefit-risk-card--benefit {
+    border-top: 3px solid #3ddc84;
+}
+
+.benefit-risk-card--risk {
+    border-top: 3px solid #ff5c5c;
+}
+
+.benefit-risk-tag {
+    display: inline-block;
+    font-size: clamp(9.5px, 2.6vw, 11px);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #6be6a4;
+    background: rgba(61, 220, 132, 0.12);
+    padding: 4px clamp(6px, 2vw, 10px);
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+
+.benefit-risk-tag--risk {
+    color: #ff8787;
+    background: rgba(255, 92, 92, 0.12);
+}
+
+.benefit-risk-card .plain-list {
+    margin-top: 0;
+    padding-left: clamp(14px, 4vw, 18px);
+}
+
+.benefit-risk-card .plain-list li {
+    font-size: clamp(10.5px, 3vw, 13px);
+    margin-bottom: 8px;
+}
+
+.benefit-risk-card--benefit .plain-list li::marker {
+    color: #3ddc84;
+}
+
+.benefit-risk-card--risk .plain-list li::marker {
+    color: #ff5c5c;
+}
+
+/* ---------- HIGHLIGHT BOX VARIAN "PERINGATAN JUJUR" (khusus materi ini) ---------- */
+.highlight-box--danger {
+    background: rgba(255, 92, 92, 0.1);
+    border-color: rgba(255, 92, 92, 0.4);
+}
+
+.highlight-box--danger i {
+    color: #ff5c5c;
+}
+
+/* ---------- 5) DIAGRAM KEAMANAN PERANGKAT ---------- */
+.device-diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 18px;
+}
+
+.device-threats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(5px, 2vw, 10px);
+    width: 100%;
+}
+
+.device-threat {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(4px, 1.5vw, 8px);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--kb-card-border);
+    border-radius: var(--kb-radius-sm);
+    padding: clamp(8px, 3vw, 14px) clamp(4px, 2vw, 10px);
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.device-threat:hover {
+    transform: translateY(-3px);
+    border-color: var(--kb-orange);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.device-threat i {
+    width: clamp(16px, 5vw, 22px);
+    height: clamp(16px, 5vw, 22px);
+    color: #ff9f43;
+}
+
+.device-threat span {
+    font-size: clamp(9px, 2.6vw, 12px);
+    color: var(--kb-text-dim);
+    line-height: 1.35;
+}
+
+.device-arrow-down {
+    color: var(--kb-orange);
+    margin: 10px 0;
+}
+
+.device-arrow-down i {
+    width: 20px;
+    height: 20px;
+}
+
+.device-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    width: 100%;
+    background: var(--kb-orange-soft);
+    border: 1.5px solid var(--kb-orange);
+    border-radius: var(--kb-radius-sm);
+    padding: 18px 14px;
+}
+
+.device-center i {
+    width: 28px;
+    height: 28px;
+    color: var(--kb-orange);
+}
+
+.device-center span {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* ---------- 6) MINI QUIZ (soal tunggal pilihan ganda) ---------- */
+.mini-quiz-card {
+    margin-top: 16px;
+}
+
+.mini-quiz-question {
+    font-size: 14.5px;
+    color: var(--kb-text);
+    margin: 0 0 16px 0;
+    line-height: 1.6;
+    text-align: justify;
+    text-align-last: left;
+}
+
+.mini-quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mini-quiz-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    text-align: left;
+    font-size: 13.5px;
+    color: var(--kb-text-dim);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--kb-card-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    font-family: inherit;
+    line-height: 1.5;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.mini-quiz-option span:last-child {
+    text-align: justify;
+    text-align-last: left;
+}
+
+.mini-quiz-option:hover:not(:disabled) {
+    border-color: var(--kb-orange);
+}
+
+.mini-quiz-option:disabled {
+    cursor: default;
+}
+
+.mini-quiz-option-letter {
+    flex-shrink: 0;
+    font-weight: 700;
+    color: var(--kb-orange-light);
+}
+
+.mini-quiz-option--correct {
+    border-color: #3ddc84;
+    background: rgba(61, 220, 132, 0.1);
+    color: #d5f5e3;
+}
+
+.mini-quiz-option--wrong {
+    border-color: #ff5c5c;
+    background: rgba(255, 92, 92, 0.1);
+    color: #ffd6d6;
+}
+
+.mini-quiz-feedback {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--kb-card-border);
+    color: var(--kb-text-dim);
+    text-align: justify;
+    text-align-last: left;
+}
+
+.mini-quiz-feedback strong {
+    color: #fff;
+}
+
+/* ---------- NAVIGASI BAWAH GANDA (Sebelumnya + Berikutnya) ---------- */
+.materi-bottom-nav--dual {
+    display: flex;
+    gap: clamp(6px, 2.5vw, 10px);
+}
+
+.prev-section-btn {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: clamp(10px, 3.5vw, 15px) clamp(6px, 2vw, 12px);
+    border-radius: 14px;
+    border: 1px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--kb-text-dim);
+    font-size: clamp(11px, 3.2vw, 14px);
+    font-weight: 700;
+    text-decoration: none;
+    line-height: 1.3;
+    transition: 0.25s;
+}
+
+.prev-section-btn:hover {
+    border-color: var(--kb-orange);
+    color: #fff;
+}
+
+.materi-bottom-nav--dual .next-section-btn {
+    flex: 1;
+    min-width: 0;
+    padding: clamp(10px, 3.5vw, 15px) clamp(6px, 2vw, 12px);
+    font-size: clamp(11px, 3.2vw, 14px);
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

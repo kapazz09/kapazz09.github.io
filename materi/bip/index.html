@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Improvement Proposal (BIP) | Kapazz Bitcoin</title>
+    <meta name="description"
+        content="Bagaimana Bitcoin berubah dan berkembang secara formal lewat mekanisme Bitcoin Improvement Proposal (BIP) — dari P2SH, SegWit, Taproot, sampai BIP360.">
+    <link rel="shortcut icon" href="../../assets/icons/favicon.ico">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- FALLBACK: variabel tema didefinisikan ulang inline di sini supaya
+         halaman tetap bertema (dark + oranye #f7931a) walaupun karena suatu
+         sebab tema.css gagal termuat di live site (contoh: file/folder
+         belum ter-push, salah taruh path saat commit). tema.css di bawah tetap
+         jadi sumber utama dan akan menimpa nilai yang sama ini kalau berhasil load. -->
+    <style>
+        :root {
+            --kb-orange: #f7931a;
+            --kb-orange-light: #ffb347;
+            --kb-orange-soft: rgba(247, 147, 26, 0.14);
+            --kb-purple: #6c4bb6;
+            --kb-purple-dark: #2e2050;
+            --kb-bg: #101014;
+            --kb-bg-alt: #17171d;
+            --kb-card: rgba(255, 255, 255, 0.05);
+            --kb-card-border: rgba(255, 255, 255, 0.1);
+            --kb-text: #ececec;
+            --kb-text-dim: #b6b6b6;
+            --kb-text-faint: #8a8a8a;
+            --kb-font: 'Inter', Arial, sans-serif;
+            --kb-radius: 18px;
+            --kb-radius-sm: 12px;
+            --kb-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(180deg, var(--kb-bg) 0%, var(--kb-bg-alt) 100%);
+            color: var(--kb-text);
+            font-family: var(--kb-font);
+        }
+    </style>
+
+    <link rel="stylesheet" href="tema.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="reading-progress-bar">
+        <div class="reading-progress-fill" id="readingProgressFill"></div>
+    </div>
+
+    <div class="materi-page">
+
+        <header class="materi-header">
+            <a href="../../index.html" class="back-btn">
+                <i data-lucide="arrow-left"></i> Kembali ke Beranda
+            </a>
+            <p class="materi-eyebrow">Materi 6 dari 8</p>
+            <h1>Bitcoin Improvement Proposal (BIP)</h1>
+            <p class="materi-subtitle">Bagaimana Bitcoin Berubah dan Berkembang Secara Formal</p>
+        </header>
+
+        <!-- ========== CATATAN PENULIS ========== -->
+        <div class="author-note">
+            <span class="author-note-icon">✍️</span>
+            <p>
+                Catatan penulis: materi ini adalah topik Tier 2 dalam proses belajar saya. Saya menulisnya
+                sejauh yang benar-benar saya pahami saat ini, bukan sebagai rangkuman lengkap seluruh BIP
+                yang pernah ada — kalau ada yang kurang tepat atau bisa diperdalam, saya masih terus belajar
+                dan terbuka untuk koreksi.
+            </p>
+        </div>
+
+        <!-- ========== SECTION 1 ========== -->
+        <section class="materi-section" id="section-1">
+            <span class="section-tag">Bagian 1</span>
+            <h2>Apa Itu BIP?</h2>
+
+            <p>
+                <span class="glossary-term" data-term="bip">BIP</span> (Bitcoin Improvement Proposal) adalah
+                dokumen formal berisi usulan perubahan atau penambahan fitur protokol Bitcoin. Mirip proses
+                standar teknis terbuka lain (seperti RFC di dunia internet) — siapa pun bisa mengajukan, tapi
+                tidak otomatis diterima.
+            </p>
+            <p>
+                Karena Bitcoin tidak punya otoritas pusat, perubahan protokol tidak bisa dipaksakan satu
+                pihak. BIP jadi mekanisme untuk mengusulkan perubahan secara transparan, didiskusikan publik,
+                lalu diterima secara sukarela oleh
+                <span class="glossary-term" data-term="node">node</span> & wallet HANYA JIKA dianggap aman
+                dan bermanfaat. Jumlah BIP yang benar-benar dipakai massal jauh lebih sedikit dari jumlah
+                yang pernah diajukan.
+            </p>
+
+            <div class="bip-flow-scroll">
+                <div class="bip-flow-diagram">
+                    <button type="button" class="bip-flow-step" data-popup-title="Ide/Usulan Perubahan"
+                        data-popup-text="Siapa pun — developer, peneliti, atau anggota komunitas — bisa punya ide perubahan atau penambahan fitur protokol Bitcoin.">
+                        <i data-lucide="lightbulb"></i>
+                        <span>Ide/Usulan Perubahan</span>
+                    </button>
+                    <div class="bip-flow-arrow"><i data-lucide="arrow-right"></i></div>
+                    <button type="button" class="bip-flow-step" data-popup-title="Ditulis jadi Draft BIP"
+                        data-popup-text="Ide dituangkan ke dokumen formal mengikuti format standar BIP, lengkap dengan spesifikasi teknis dan alasan kenapa perubahan itu diperlukan.">
+                        <i data-lucide="file-text"></i>
+                        <span>Ditulis jadi Draft BIP</span>
+                    </button>
+                    <div class="bip-flow-arrow"><i data-lucide="arrow-right"></i></div>
+                    <button type="button" class="bip-flow-step"
+                        data-popup-title="Didiskusikan Komunitas & Developer"
+                        data-popup-text="Draft dibahas terbuka lewat mailing list, forum, dan review dari developer lain — bisa berlangsung lama, direvisi berkali-kali, atau bahkan tidak lanjut sama sekali.">
+                        <i data-lucide="message-square"></i>
+                        <span>Didiskusikan Komunitas & Developer</span>
+                    </button>
+                    <div class="bip-flow-arrow"><i data-lucide="arrow-right"></i></div>
+                    <button type="button" class="bip-flow-step" data-popup-title="Diberi Nomor BIP Resmi"
+                        data-popup-text="Kalau draft dianggap cukup matang dan lengkap, seorang editor BIP memberinya nomor resmi — ini menandakan draft itu terdokumentasi dengan baik, bukan berarti otomatis disetujui atau dipakai.">
+                        <i data-lucide="hash"></i>
+                        <span>Diberi Nomor BIP Resmi</span>
+                    </button>
+                    <div class="bip-flow-arrow"><i data-lucide="arrow-right"></i></div>
+                    <button type="button" class="bip-flow-step"
+                        data-popup-title="Diadopsi Node/Wallet (jika disetujui)"
+                        data-popup-text="Software node dan wallet HANYA akan menerapkan perubahan ini kalau pengelolanya memutuskan untuk mengikutinya — tidak ada otoritas pusat yang bisa memaksakan adopsi.">
+                        <i data-lucide="check-circle"></i>
+                        <span>Diadopsi Node/Wallet (jika disetujui)</span>
+                    </button>
+                </div>
+            </div>
+            <p class="bip-flow-hint">Tidak semua BIP disetujui atau dipakai — banyak yang berhenti di tahap
+                draft/diskusi. Tap tiap kotak untuk detailnya.</p>
+        </section>
+
+        <!-- ========== SECTION 2 ========== -->
+        <section class="materi-section" id="section-2">
+            <span class="section-tag">Bagian 2</span>
+            <h2>BIP-BIP Landmark yang Sejauh Ini Saya Pahami</h2>
+
+            <p>
+                Berikut BIP-BIP yang paling berpengaruh dan benar-benar dipakai luas — bukan daftar lengkap
+                semua BIP yang pernah ada, tapi yang menurut saya paling penting dipahami dan paling sering
+                muncul dalam diskusi Bitcoin sehari-hari.
+            </p>
+
+            <div class="bip-accordion" id="bipAccordion">
+                <div class="bip-item">
+                    <button type="button" class="bip-header" data-bip-target="bip-1-body" aria-expanded="false">
+                        <span class="bip-badge">BIP 16</span>
+                        <span class="bip-header-text">
+                            <span class="bip-title">Pay-to-Script-Hash (P2SH)</span>
+                            <span class="bip-year">2012</span>
+                        </span>
+                        <i data-lucide="chevron-down" class="bip-chevron"></i>
+                    </button>
+                    <div class="bip-body" id="bip-1-body">
+                        <p>Memungkinkan alamat Bitcoin merepresentasikan skrip kompleks (misalnya
+                            <span class="glossary-term" data-term="p2sh">multisig</span> — butuh beberapa
+                            tanda tangan), bukan cuma satu kunci publik tunggal. Fondasi awal banyak fitur
+                            lanjutan Bitcoin.</p>
+                    </div>
+                </div>
+
+                <div class="bip-item">
+                    <button type="button" class="bip-header" data-bip-target="bip-2-body" aria-expanded="false">
+                        <span class="bip-badge">BIP 32/39/44</span>
+                        <span class="bip-header-text">
+                            <span class="bip-title">Standar HD Wallet</span>
+                            <span class="bip-year">2012–2014</span>
+                        </span>
+                        <i data-lucide="chevron-down" class="bip-chevron"></i>
+                    </button>
+                    <div class="bip-body" id="bip-2-body">
+                        <p>Mendefinisikan bagaimana satu seed phrase menghasilkan banyak alamat deterministik
+                            (BIP32), direpresentasikan sebagai kata-kata mudah dibaca (BIP39), dan struktur
+                            turunan alamat standar yang dipakai hampir semua
+                            <span class="glossary-term" data-term="hd wallet">wallet modern</span> (BIP44).</p>
+                    </div>
+                </div>
+
+                <div class="bip-item">
+                    <button type="button" class="bip-header" data-bip-target="bip-3-body" aria-expanded="false">
+                        <span class="bip-badge">BIP 65/68/112/113</span>
+                        <span class="bip-header-text">
+                            <span class="bip-title">Timelock</span>
+                            <span class="bip-year">2015</span>
+                        </span>
+                        <i data-lucide="chevron-down" class="bip-chevron"></i>
+                    </button>
+                    <div class="bip-body" id="bip-3-body">
+                        <p>Memungkinkan dana dikunci hingga waktu atau ketinggian blok tertentu sebelum bisa
+                            dibelanjakan — dikenal sebagai
+                            <span class="glossary-term" data-term="timelock">timelock</span>. Fondasi kontrak
+                            pintar sederhana di Bitcoin, termasuk mekanisme penalti di channel Lightning
+                            Network.</p>
+                    </div>
+                </div>
+
+                <div class="bip-item">
+                    <button type="button" class="bip-header" data-bip-target="bip-4-body" aria-expanded="false">
+                        <span class="bip-badge">BIP 141/143</span>
+                        <span class="bip-header-text">
+                            <span class="bip-title">Segregated Witness (SegWit)</span>
+                            <span class="bip-year">2017</span>
+                        </span>
+                        <i data-lucide="chevron-down" class="bip-chevron"></i>
+                    </button>
+                    <div class="bip-body" id="bip-4-body">
+                        <p>Memisahkan data tanda tangan (witness) dari data transaksi utama lewat
+                            <span class="glossary-term" data-term="segwit">SegWit</span>, mengurangi ukuran
+                            transaksi secara efektif, sekaligus memperbaiki bug transaction malleability yang
+                            sempat menghambat pengembangan Lightning Network.</p>
+                    </div>
+                </div>
+
+                <div class="bip-item">
+                    <button type="button" class="bip-header" data-bip-target="bip-5-body" aria-expanded="false">
+                        <span class="bip-badge">BIP 173/350</span>
+                        <span class="bip-header-text">
+                            <span class="bip-title">Format Alamat Bech32/Bech32m</span>
+                            <span class="bip-year">2017/2019</span>
+                        </span>
+                        <i data-lucide="chevron-down" class="bip-chevron"></i>
+                    </button>
+                    <div class="bip-body" id="bip-5-body">
+                        <p>Format alamat
+                            <span class="glossary-term" data-term="bech32">Bech32</span> diawali bc1... —
+                            lebih tahan kesalahan ketik (deteksi error bawaan) dan lebih efisien data
+                            dibanding Legacy. Bech32m (BIP350) adalah versi lanjutan khusus alamat Taproot.</p>
+                    </div>
+                </div>
+
+                <div class="bip-item">
+                    <button type="button" class="bip-header" data-bip-target="bip-6-body" aria-expanded="false">
+                        <span class="bip-badge">BIP 340/341/342</span>
+                        <span class="bip-header-text">
+                            <span class="bip-title">Schnorr Signature & Taproot</span>
+                            <span class="bip-year">2021</span>
+                        </span>
+                        <i data-lucide="chevron-down" class="bip-chevron"></i>
+                    </button>
+                    <div class="bip-body" id="bip-6-body">
+                        <p>Skema tanda tangan
+                            <span class="glossary-term" data-term="schnorr signature">Schnorr</span> (lebih
+                            efisien, mendukung penggabungan tanda tangan) dan
+                            <span class="glossary-term" data-term="taproot">Taproot</span> (transaksi
+                            kompleks seperti multisig terlihat sama seperti transaksi biasa di blockchain —
+                            privasi & efisiensi lebih baik).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== SECTION 3 ========== -->
+        <section class="materi-section" id="section-3">
+            <span class="section-tag">Bagian 3</span>
+            <h2>BIP360: Proposal yang Masih Dipertimbangkan</h2>
+
+            <p>
+                Berbeda dari BIP-BIP di atas yang sudah lama diadopsi, BIP360 masih berupa draft dan aktif
+                diperdebatkan (pertengahan 2026) — contoh baik untuk memahami bagaimana proses BIP bekerja
+                secara nyata, bukan cuma sejarah yang sudah selesai.
+            </p>
+
+            <h3 class="sub-heading">Kenapa BIP360 Diajukan</h3>
+            <p>
+                Lahir dari kekhawatiran soal
+                <span class="glossary-term" data-term="komputer kuantum">komputer kuantum</span> masa depan.
+                Tiap kali alamat Taproot dibelanjakan lewat jalur
+                <span class="glossary-term" data-term="key-path">key-path</span> (jalur tercepat, 1 tanda
+                tangan Schnorr), kunci publiknya jadi terlihat di blockchain — risikonya, komputer kuantum
+                yang cukup kuat di masa depan berpotensi memakai kunci publik yang terekspos itu untuk
+                menghitung mundur private key.
+            </p>
+
+            <div class="compare-cards">
+                <div class="compare-card compare-card--taproot">
+                    <div class="compare-card-head">
+                        <i data-lucide="shield"></i>
+                        <span>Taproot (P2TR)</span>
+                    </div>
+                    <span class="compare-card-tag">STANDAR SAAT INI</span>
+                    <ul class="compare-list">
+                        <li><span class="ci">🔑</span><span>Key-path: 1 tanda tangan Schnorr langsung</span></li>
+                        <li><span class="ci">🌿</span><span>Script-path: buka salah satu cabang skrip</span></li>
+                    </ul>
+                </div>
+                <div class="compare-card compare-card--bip360">
+                    <div class="compare-card-head">
+                        <i data-lucide="atom"></i>
+                        <span>BIP360 (P2MR)</span>
+                    </div>
+                    <span class="compare-card-tag">MASIH DRAFT</span>
+                    <ul class="compare-list">
+                        <li class="removed"><span class="ci">🚫</span><span>Key-path DIHAPUS (rentan
+                                komputer kuantum)</span></li>
+                        <li><span class="ci">🌿</span><span>Hanya via
+                                <span class="glossary-term" data-term="script-path">script-path</span>, komit
+                                ke Merkle root</span></li>
+                    </ul>
+                </div>
+            </div>
+            <p class="compare-caption">P2MR mempertahankan hampir semua fungsi Taproot (kompatibel
+                Lightning, multisig, timelock), hanya menghilangkan jalur yang dianggap paling rentan.</p>
+
+            <p>
+                BIP360 mengusulkan jenis output baru bernama Pay-to-Merkle-Root
+                (<span class="glossary-term" data-term="p2mr">P2MR</span>) — fungsi mirip Taproot, tapi
+                menghapus jalur key-path yang dianggap rentan. Penting dicatat: BIP360 sendiri BELUM
+                mengganti skema tanda tangan Bitcoin dengan algoritma tahan-kuantum sepenuhnya — ini lebih
+                seperti "fondasi" untuk perubahan kriptografi yang lebih besar di masa depan, bukan solusi
+                akhir yang menyeluruh.
+            </p>
+        </section>
+
+        <!-- ========== SECTION 4 ========== -->
+        <section class="materi-section" id="section-4">
+            <span class="section-tag">Bagian 4</span>
+            <h2>Status Saat Ini: Masih Dipertimbangkan</h2>
+
+            <div class="status-stepper-scroll">
+                <div class="status-stepper">
+                    <div class="status-step status-step--done">
+                        <i data-lucide="flag"></i>
+                        <span>Draft Diajukan</span>
+                        <small>Feb 2026</small>
+                    </div>
+                    <div class="status-arrow"><i data-lucide="arrow-right"></i></div>
+                    <div class="status-step status-step--active">
+                        <i data-lucide="message-circle"></i>
+                        <span>Diskusi & Review Komunitas</span>
+                        <small>Berjalan</small>
+                    </div>
+                    <div class="status-arrow"><i data-lucide="arrow-right"></i></div>
+                    <div class="status-step status-step--active">
+                        <i data-lucide="flask-conical"></i>
+                        <span>Uji Coba Testnet</span>
+                        <small>BTQ, Mar 2026</small>
+                    </div>
+                    <div class="status-arrow"><i data-lucide="arrow-right"></i></div>
+                    <div class="status-step status-step--pending">
+                        <i data-lucide="rocket"></i>
+                        <span>Aktivasi Mainnet</span>
+                        <small>Belum dijadwalkan</small>
+                    </div>
+                </div>
+            </div>
+            <p class="status-hint">Masih tahap draft — belum ada jadwal aktivasi di jaringan utama Bitcoin.
+            </p>
+
+            <p>
+                Proposal ini diajukan Februari 2026 oleh Hunter Beast, Ethan Heilman, dan Isabel Foxen Duke,
+                lalu diikuti proposal terkait bernama BIP361 (diajukan April 2026) yang mengusulkan jadwal
+                migrasi paksa — termasuk kemungkinan membekukan dana di alamat lama yang rentan jika
+                pemiliknya tidak memindahkan dana ke format baru dalam jangka waktu tertentu.
+            </p>
+
+            <div class="highlight-box highlight-box--perspective">
+                <i data-lucide="scale"></i>
+                <p>Ini bagian yang menurut saya paling menarik sekaligus kontroversial: sebagian komunitas
+                    Bitcoin menganggap membekukan dana — termasuk kemungkinan dana lama milik Satoshi
+                    Nakamoto yang tidak pernah dipindahkan — bertentangan dengan prinsip dasar Bitcoin soal
+                    kepemilikan permanen dan tanpa izin siapa pun. Pihak yang mendukung proposal ini
+                    melihatnya sebagai langkah pertahanan yang perlu diambil lebih awal, sebelum ancaman
+                    kuantum benar-benar nyata. Sejauh pemahaman saya, ini masih perdebatan terbuka tanpa
+                    kesimpulan, dan belum ada jadwal aktivasi resmi di jaringan utama.</p>
+            </div>
+        </section>
+
+        <!-- ========== SECTION 5 (MINI-QUIZ) ========== -->
+        <section class="materi-section" id="section-5">
+            <span class="section-tag">Bagian 5</span>
+            <h2>Cek Pemahaman</h2>
+            <p>Sebelum lanjut, coba jawab satu pertanyaan singkat berikut ini.</p>
+
+            <div class="bip-quiz-card" id="bipQuizCard"></div>
+        </section>
+
+        <!-- ========== PENUTUP ========== -->
+        <section class="materi-section" id="section-penutup">
+            <span class="section-tag">Penutup</span>
+            <h2>Ringkasan Praktis</h2>
+
+            <ul class="checklist">
+                <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>
+                        BIP adalah mekanisme formal untuk mengusulkan perubahan protokol Bitcoin secara
+                        transparan, tapi tidak semua BIP diadopsi.</span></li>
+                <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>
+                        BIP-BIP landmark yang dipakai massal mencakup P2SH, HD Wallet (BIP32/39/44),
+                        timelock, SegWit, format alamat Bech32, dan Taproot.</span></li>
+                <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>
+                        BIP360 adalah proposal terkini (masih draft) yang mengantisipasi ancaman komputer
+                        kuantum lewat desain output baru bernama P2MR.</span></li>
+                <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>
+                        Proposal terkait, BIP361, memicu perdebatan soal migrasi paksa dan pembekuan dana —
+                        contoh nyata bagaimana perubahan protokol Bitcoin bisa memicu diskusi filosofis,
+                        bukan hanya teknis.</span></li>
+            </ul>
+
+            <a href="assets/pdf/bip.pdf" target="_blank" class="pdf-link">
+                <i data-lucide="file-text"></i> Lihat versi PDF
+            </a>
+        </section>
+
+        <div class="materi-bottom-nav-dual">
+            <a href="../lightning-network/index.html" class="prev-section-btn">
+                <i data-lucide="arrow-left"></i> Materi Sebelumnya
+            </a>
+            <a href="../mining-pool/index.html" class="next-section-btn">Lanjut ke Materi
+                Berikutnya →</a>
+        </div>
+
+    </div>
+
+    <!-- POPUP KECIL (reusable: istilah glossary & detail diagram) -->
+    <div class="popup-backdrop" id="popupBackdrop" onclick="closePopupOnBackdrop(event)">
+        <div class="popup-box anim-fade-scale" id="popupBox">
+            <button class="popup-close-btn" onclick="closePopup()">&times;</button>
+            <div class="popup-icon-wrap" id="popupIconWrap">
+                <img class="popup-icon" id="popupIcon" alt="">
+                <div class="popup-icon-fallback" id="popupIconFallback"></div>
+            </div>
+            <h4 id="popupTitle"></h4>
+            <p id="popupText"></p>
+            <p class="popup-meta" id="popupMeta"></p>
+            <ul class="popup-features" id="popupFeatures"></ul>
+            <p class="popup-note" id="popupNote"></p>
+        </div>
+    </div>
+
+    <script src="glossary-data.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

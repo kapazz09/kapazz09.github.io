@@ -1,0 +1,787 @@
+/*==================================================
+    MATERI: MINING & MINING POOL — STYLE KHUSUS
+    (variabel warna & komponen umum ada di tema.css)
+
+    CATATAN RESPONSIVE: semua grid/diagram di file ini
+    SENGAJA tetap berjajar horizontal di mobile (hanya
+    diperkecil ukuran/font), TIDAK disusun ulang jadi
+    tumpuk vertikal — sesuai permintaan konsistensi
+    layout desktop-mobile untuk materi ini.
+==================================================*/
+
+/* ---------- CATATAN PENULIS ---------- */
+.author-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    border: 1px dashed var(--kb-card-border);
+    border-radius: var(--kb-radius-sm);
+    padding: 14px 16px;
+    margin: 0 0 26px 0;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.author-note-icon {
+    font-size: 17px;
+    line-height: 1.3;
+    flex-shrink: 0;
+}
+
+.author-note p {
+    margin: 0 !important;
+    font-size: 12.5px !important;
+    font-style: italic;
+    color: var(--kb-text-faint) !important;
+    line-height: 1.6;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+/* ---------- SECTION 1: DIAGRAM ALUR MINING + LOOP ---------- */
+.mine-flow {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 4px;
+    margin-top: 18px;
+    overflow: visible;
+}
+
+.mine-step {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 5px;
+    padding: 12px 6px;
+    border-radius: var(--kb-radius-sm);
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--kb-text-dim);
+    font-family: var(--kb-font);
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.mine-step i {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.mine-step span {
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.3;
+    overflow-wrap: break-word;
+}
+
+.mine-step--reward {
+    border-color: rgba(76, 175, 125, 0.35);
+    background: rgba(76, 175, 125, 0.06);
+}
+
+.mine-arrow {
+    flex: 0 0 auto;
+    color: var(--kb-text-faint);
+    transition: color 0.2s ease;
+}
+
+.mine-arrow i {
+    width: 14px;
+    height: 14px;
+}
+
+.mine-arrow.active {
+    color: var(--kb-orange);
+}
+
+@keyframes mineTrying {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.mine-step.trying {
+    border-color: var(--kb-orange);
+    background: var(--kb-orange-soft);
+    color: var(--kb-orange-light);
+    animation: mineTrying 0.5s ease infinite;
+}
+
+.mine-step.trying i {
+    color: var(--kb-orange);
+}
+
+.mine-step.fail {
+    border-color: #e05d5d;
+    background: rgba(224, 93, 93, 0.18);
+    color: #ff8a8a;
+    animation: none;
+}
+
+.mine-step.fail i {
+    color: #ff8a8a;
+}
+
+.mine-step.success {
+    border-color: #4caf7d;
+    background: rgba(76, 175, 125, 0.18);
+    color: #7fd99a;
+    animation: none;
+}
+
+.mine-step.success i {
+    color: #7fd99a;
+}
+
+@keyframes mineCelebrate {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.14); }
+    65% { transform: scale(0.96); }
+    100% { transform: scale(1); }
+}
+
+.mine-step--reward.celebrate {
+    animation: mineCelebrate 0.6s ease;
+}
+
+.mine-loop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 12px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--kb-text-faint);
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.mine-loop i {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+}
+
+.mine-loop.active {
+    background: rgba(224, 93, 93, 0.14);
+    color: #ff8a8a;
+}
+
+.mine-loop.active i {
+    color: #ff8a8a;
+    animation: mineTrying 0.5s ease infinite;
+}
+
+@media (max-width: 480px) {
+    .mine-flow {
+        gap: 3px;
+    }
+
+    .mine-step {
+        padding: 9px 4px;
+    }
+
+    .mine-step i {
+        width: 15px;
+        height: 15px;
+    }
+
+    .mine-step span {
+        font-size: 8.5px;
+    }
+
+    .mine-arrow i {
+        width: 11px;
+        height: 11px;
+    }
+
+    .mine-loop {
+        font-size: 10px;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mine-step {
+        padding: 7px 3px;
+    }
+
+    .mine-step span {
+        font-size: 7.8px;
+    }
+
+    .mine-loop {
+        font-size: 9px;
+    }
+}
+
+/* ---------- SECTION 2: CHART HALVING ---------- */
+.halving-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 170px;
+    margin-top: 20px;
+    padding: 0 2px;
+}
+
+.halving-bar {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: var(--kb-font);
+    color: var(--kb-text-dim);
+}
+
+.halving-bar-fill {
+    width: 100%;
+    border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, var(--kb-orange-light), var(--kb-orange));
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.halving-bar:hover .halving-bar-fill {
+    filter: brightness(1.12);
+}
+
+.halving-bar-value {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--kb-text);
+    margin-top: 6px;
+}
+
+.halving-bar-year {
+    font-size: 9px;
+    color: var(--kb-text-faint);
+    margin-top: 2px;
+    line-height: 1.35;
+}
+
+.halving-bar--current .halving-bar-fill {
+    border: 2px solid var(--kb-orange);
+}
+
+.halving-bar--current .halving-bar-value,
+.halving-bar--current .halving-bar-year {
+    color: var(--kb-orange-light);
+    font-weight: 700;
+}
+
+.halving-bar--projected .halving-bar-fill {
+    background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.16) 4px, rgba(255, 255, 255, 0.04) 4px, rgba(255, 255, 255, 0.04) 8px);
+    border: 2px dashed var(--kb-text-faint);
+}
+
+.halving-bar--projected .halving-bar-year {
+    font-style: italic;
+}
+
+@media (max-width: 480px) {
+    .halving-chart {
+        height: 145px;
+        gap: 4px;
+    }
+
+    .halving-bar-value {
+        font-size: 9px;
+    }
+
+    .halving-bar-year {
+        font-size: 8px;
+    }
+}
+
+@media (max-width: 360px) {
+    .halving-chart {
+        height: 125px;
+        gap: 3px;
+    }
+
+    .halving-bar-value {
+        font-size: 8px;
+    }
+
+    .halving-bar-year {
+        font-size: 7.3px;
+    }
+}
+
+/* ---------- KARTU PERBANDINGAN (reusable dalam materi ini: 2 & 3 kolom) ---------- */
+.compare-grid-2,
+.compare-grid-3 {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.compare-grid-2 {
+    grid-template-columns: 1fr 1fr;
+}
+
+.compare-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.compare-card {
+    border-radius: var(--kb-radius-sm);
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 16px 12px;
+}
+
+.compare-card h3 {
+    font-size: 13px;
+    margin: 0 0 8px 0;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    line-height: 1.3;
+}
+
+.compare-card p {
+    margin: 0 !important;
+    font-size: 12px !important;
+    color: var(--kb-text-dim) !important;
+    line-height: 1.55;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.compare-card--gray {
+    border-color: rgba(180, 180, 190, 0.35);
+}
+
+.compare-card--orange {
+    border-color: rgba(247, 147, 26, 0.5);
+    background: var(--kb-orange-soft);
+}
+
+.compare-card--orange h3 {
+    color: var(--kb-orange-light);
+}
+
+.compare-card--green {
+    border-color: rgba(76, 175, 125, 0.45);
+    background: rgba(76, 175, 125, 0.08);
+}
+
+.compare-card--green h3 {
+    color: #7fd99a;
+}
+
+@media (max-width: 480px) {
+
+    .compare-grid-2,
+    .compare-grid-3 {
+        gap: 7px;
+    }
+
+    .compare-card {
+        padding: 12px 8px;
+    }
+
+    .compare-card h3 {
+        font-size: 11.5px;
+    }
+
+    .compare-card p {
+        font-size: 10.8px !important;
+    }
+}
+
+@media (max-width: 360px) {
+    .compare-card {
+        padding: 10px 6px;
+    }
+
+    .compare-card h3 {
+        font-size: 10.5px;
+        margin-bottom: 6px;
+    }
+
+    .compare-card p {
+        font-size: 10px !important;
+    }
+}
+
+/* ---------- GRID KARTU 4-KOLOM (reusable: contoh pool & alasan antusias) ----------
+   SENGAJA tetap 4 kolom di SEMUA ukuran layar (sama seperti desktop) —
+   hanya ukuran font/padding yang mengecil, tidak berubah jadi 2 kolom. */
+.mp-card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+    margin-top: 14px;
+}
+
+.mp-card {
+    min-width: 0;
+    border-radius: 10px;
+    border: 1px solid var(--kb-card-border);
+    border-top: 3px solid var(--kb-orange);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px 7px;
+    text-align: center;
+}
+
+.mp-card h4 {
+    font-size: 10.5px;
+    margin: 0 0 5px 0;
+    color: #fff;
+    line-height: 1.28;
+    overflow-wrap: break-word;
+}
+
+.mp-card p {
+    margin: 0 !important;
+    font-size: 9.3px !important;
+    color: var(--kb-text-dim) !important;
+    line-height: 1.42;
+    text-align: left;
+    overflow-wrap: break-word;
+}
+
+@media (max-width: 480px) {
+    .mp-card-grid {
+        gap: 5px;
+    }
+
+    .mp-card {
+        padding: 8px 4px;
+    }
+
+    .mp-card h4 {
+        font-size: 8.8px;
+        margin-bottom: 4px;
+    }
+
+    .mp-card p {
+        font-size: 7.8px !important;
+        line-height: 1.35;
+    }
+}
+
+@media (max-width: 360px) {
+    .mp-card-grid {
+        gap: 4px;
+    }
+
+    .mp-card {
+        padding: 6px 3px;
+        border-radius: 8px;
+    }
+
+    .mp-card h4 {
+        font-size: 7.8px;
+        margin-bottom: 3px;
+    }
+
+    .mp-card p {
+        font-size: 7px !important;
+        line-height: 1.3;
+    }
+}
+
+/* ---------- SECTION 4: TIMELINE ALAT MINING ---------- */
+.timeline-diagram {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 5px;
+    margin-top: 18px;
+}
+
+.timeline-step {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 13px 6px;
+    border-radius: var(--kb-radius-sm);
+    border: 2px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--kb-text-dim);
+    font-family: var(--kb-font);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.timeline-step:hover {
+    transform: translateY(-2px);
+}
+
+.timeline-step i {
+    width: 20px;
+    height: 20px;
+}
+
+.timeline-step span {
+    font-size: 11.5px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.timeline-step small {
+    display: block;
+    font-size: 9px;
+    color: var(--kb-text-faint);
+    margin-top: 1px;
+}
+
+.timeline-step--accent {
+    border-color: rgba(247, 147, 26, 0.5);
+    background: var(--kb-orange-soft);
+    color: var(--kb-orange-light);
+}
+
+.timeline-step--accent i {
+    color: var(--kb-orange);
+}
+
+.timeline-step--accent small {
+    color: rgba(255, 179, 71, 0.75);
+}
+
+.timeline-arrow {
+    flex: 0 0 auto;
+    color: var(--kb-text-faint);
+}
+
+.timeline-arrow i {
+    width: 14px;
+    height: 14px;
+}
+
+@media (max-width: 480px) {
+    .timeline-diagram {
+        gap: 3px;
+    }
+
+    .timeline-step {
+        padding: 9px 4px;
+    }
+
+    .timeline-step i {
+        width: 16px;
+        height: 16px;
+    }
+
+    .timeline-step span {
+        font-size: 9.5px;
+    }
+
+    .timeline-step small {
+        font-size: 8px;
+    }
+
+    .timeline-arrow i {
+        width: 11px;
+        height: 11px;
+    }
+}
+
+@media (max-width: 360px) {
+    .timeline-step {
+        padding: 7px 3px;
+    }
+
+    .timeline-step span {
+        font-size: 8.5px;
+    }
+
+    .timeline-step small {
+        font-size: 7.3px;
+    }
+}
+
+/* ---------- HIGHLIGHT BOX VARIAN "PENTING/KRITIS" (merah, beda dari --warning oranye) ---------- */
+.highlight-box--critical {
+    background: rgba(224, 93, 93, 0.1);
+    border-color: rgba(224, 93, 93, 0.4);
+}
+
+.highlight-box--critical i {
+    color: #ff8a8a;
+}
+
+/* ---------- SECTION 9: MINI-QUIZ PILIHAN GANDA (kartu lokal, mandiri) ---------- */
+.mini-quiz-card {
+    background: var(--kb-card);
+    border: 1px solid var(--kb-card-border);
+    border-radius: var(--kb-radius-sm);
+    padding: 18px 16px;
+    margin-top: 12px;
+}
+
+.mini-quiz-statement {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 14px 0;
+    line-height: 1.5;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.mini-quiz-options {
+    display: flex;
+    gap: 10px;
+}
+
+.mini-quiz-option {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--kb-card-border);
+    border-radius: 10px;
+    padding: 12px;
+    color: var(--kb-text-dim);
+    font-family: var(--kb-font);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.mini-quiz-option:hover:not(:disabled) {
+    border-color: var(--kb-orange);
+    color: var(--kb-orange-light);
+}
+
+.mini-quiz-option:disabled {
+    cursor: default;
+}
+
+.mini-quiz-option--correct {
+    border-color: #4caf7d;
+    background: rgba(76, 175, 125, 0.18);
+    color: #7fd99a;
+}
+
+.mini-quiz-option--wrong {
+    border-color: #e05d5d;
+    background: rgba(224, 93, 93, 0.18);
+    color: #ff8a8a;
+}
+
+.mini-quiz-feedback {
+    margin: 14px 0 0 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--kb-card-border);
+    font-size: 12.5px;
+    color: var(--kb-text-dim);
+    line-height: 1.6;
+    text-align: justify;
+    text-justify: inter-word;
+    display: none;
+}
+
+.mini-quiz-feedback.show {
+    display: block;
+}
+
+.mini-quiz-options--vertical {
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mini-quiz-option--text {
+    text-align: left;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.5;
+    padding: 12px 14px;
+}
+
+@media (max-width: 480px) {
+    .mini-quiz-card {
+        padding: 15px 12px;
+    }
+
+    .mini-quiz-statement {
+        font-size: 13px;
+    }
+
+    .mini-quiz-option--text {
+        font-size: 11.5px;
+        padding: 10px 12px;
+    }
+}
+
+/* ---------- NAVIGASI BAWAH: SEBELUMNYA + BERIKUTNYA ---------- */
+.bottom-nav-row {
+    display: flex;
+    gap: 10px;
+}
+
+.prev-section-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 10px;
+    border-radius: 14px;
+    border: 1px solid var(--kb-card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--kb-text-dim);
+    font-size: 13.5px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: 0.25s;
+}
+
+.prev-section-btn:hover {
+    border-color: var(--kb-orange);
+    color: var(--kb-orange-light);
+}
+
+.bottom-nav-row .next-section-btn {
+    flex: 1.3;
+}
+
+@media (max-width: 480px) {
+    .bottom-nav-row {
+        gap: 7px;
+    }
+
+    .prev-section-btn {
+        font-size: 11.5px;
+        padding: 13px 6px;
+    }
+
+    .next-section-btn {
+        font-size: 13px;
+        padding: 13px 8px;
+    }
+}
+
+@media (max-width: 360px) {
+    .prev-section-btn {
+        font-size: 10.3px;
+        padding: 11px 4px;
+    }
+
+    .next-section-btn {
+        font-size: 11.5px;
+        padding: 11px 6px;
+    }
+}
