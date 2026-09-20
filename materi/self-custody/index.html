@@ -605,6 +605,32 @@
 
     <script src="glossary-data.js"></script>
     <script src="script.js"></script>
+
+    <script>
+        // ==================================================
+        // LEARNING PATH: tandai materi ini "selesai" otomatis
+        // begitu halaman ini selesai dimuat -- supaya navigasi
+        // lewat tombol "Lanjut"/"Sebelumnya" antar materi tetap
+        // tercatat, tidak cuma lewat klik dari halaman utama.
+        // Key & format storage HARUS SAMA PERSIS dengan index.html
+        // utama: localStorage['kapazzLearningProgress'] =
+        // { MATERIAL_ID_PLACEHOLDER: true, ... }
+        // ==================================================
+        (function () {
+            var MATERIAL_ID = "self-custody";
+            var STORAGE_KEY = "kapazzLearningProgress";
+            try {
+                var raw = localStorage.getItem(STORAGE_KEY);
+                var progress = raw ? JSON.parse(raw) : {};
+                if (!progress[MATERIAL_ID]) {
+                    progress[MATERIAL_ID] = true;
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+                }
+            } catch (e) {
+                // localStorage penuh/diblokir -- abaikan, tidak fatal
+            }
+        })();
+    </script>
 </body>
 
 </html>

@@ -458,6 +458,74 @@ h1 {
     border-bottom: none;
 }
 
+.uji-diri-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(247, 147, 26, 0.08), rgba(247, 147, 26, 0.03));
+    border: 1px solid rgba(247, 147, 26, 0.3);
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.uji-diri-card:hover {
+    transform: translateY(-2px);
+    border-color: #f7931a;
+    box-shadow: 0 10px 25px rgba(247, 147, 26, 0.2);
+}
+
+.uji-diri-card-icon {
+    flex-shrink: 0;
+    font-size: 26px;
+}
+
+.uji-diri-card-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.uji-diri-card-text strong {
+    color: #222;
+    font-size: 14.5px;
+}
+
+.uji-diri-card-text small {
+    color: #777;
+    font-size: 12.5px;
+}
+
+.uji-diri-card-arrow {
+    flex-shrink: 0;
+    color: #f7931a;
+    font-size: 18px;
+    font-weight: 700;
+    transition: transform 0.2s ease;
+}
+
+.uji-diri-card:hover .uji-diri-card-arrow {
+    transform: translateX(4px);
+}
+
+@media (max-width: 480px) {
+    .uji-diri-card {
+        padding: 14px;
+    }
+
+    .uji-diri-card-text strong {
+        font-size: 13.5px;
+    }
+
+    .uji-diri-card-text small {
+        font-size: 11.5px;
+    }
+}
+
 .learning-item::before {
     content: counter(learning-counter);
     flex-shrink: 0;
@@ -1482,6 +1550,65 @@ body.modal-open {
     position: relative;
     text-align: center;
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* ==================================================
+   SERTIFIKAT BELAJAR
+   ================================================== */
+.cert-generate-btn {
+    margin: 14px 0 20px 0;
+}
+
+.cert-modal-box {
+    max-width: 560px;
+    text-align: center;
+}
+
+.cert-modal-title {
+    margin: 0 0 12px;
+    color: #222;
+    font-size: 20px;
+}
+
+.cert-modal-hint {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 18px;
+    line-height: 1.5;
+}
+
+.cert-input-box {
+    margin-bottom: 16px;
+}
+
+.cert-canvas-wrap {
+    margin-bottom: 16px;
+}
+
+#certCanvas {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.cert-back-btn {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    color: #888;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.cert-back-btn:hover {
+    color: #f7931a;
 }
 
 @keyframes coinFlipIn {

@@ -1,0 +1,348 @@
+/* ==================================================
+   KAPAZZ BITCOIN — UJI DIRI: BISAKAH KAMU KENALI PENIPUAN?
+   Halaman berdiri sendiri, mandiri (tidak bergantung file
+   di folder lain). Tema mengikuti gaya dark + oranye #f7931a
+   yang sudah dipakai di seluruh situs.
+   ================================================== */
+
+:root {
+    --uji-orange: #f7931a;
+    --uji-orange-light: #ffb347;
+    --uji-orange-soft: rgba(247, 147, 26, 0.14);
+
+    --uji-green: #4caf7d;
+    --uji-green-soft: rgba(76, 175, 125, 0.14);
+    --uji-red: #e05d5d;
+    --uji-red-soft: rgba(224, 93, 93, 0.14);
+
+    --uji-bg: #101014;
+    --uji-bg-alt: #17171d;
+    --uji-card: rgba(255, 255, 255, 0.05);
+    --uji-card-border: rgba(255, 255, 255, 0.1);
+
+    --uji-text: #ececec;
+    --uji-text-dim: #b6b6b6;
+    --uji-text-faint: #8a8a8a;
+
+    --uji-font: 'Inter', Arial, sans-serif;
+    --uji-radius: 18px;
+    --uji-radius-sm: 12px;
+    --uji-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: linear-gradient(180deg, var(--uji-bg) 0%, var(--uji-bg-alt) 100%);
+    color: var(--uji-text);
+    font-family: var(--uji-font);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+.uji-page {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 28px 20px 60px 20px;
+}
+
+@media (max-width: 480px) {
+    .uji-page {
+        padding: 20px 14px 48px 14px;
+    }
+}
+
+/* ---------- HEADER ---------- */
+.uji-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--uji-text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    transition: color 0.2s ease;
+}
+
+.back-btn:hover {
+    color: var(--uji-orange);
+}
+
+.back-btn i {
+    width: 15px;
+    height: 15px;
+}
+
+.uji-header h1 {
+    font-size: 24px;
+    line-height: 1.35;
+    margin: 0 0 10px 0;
+    color: #fff;
+}
+
+@media (max-width: 480px) {
+    .uji-header h1 {
+        font-size: 20px;
+    }
+}
+
+.uji-subtitle {
+    font-size: 14.5px;
+    color: var(--uji-text-dim);
+    margin: 0;
+}
+
+/* ---------- KARTU (skenario & ringkasan, shared base) ---------- */
+.scenario-card,
+.summary-card {
+    background: var(--uji-card);
+    border: 1px solid var(--uji-card-border);
+    border-top: 3px solid var(--uji-orange);
+    border-radius: var(--uji-radius);
+    padding: 28px 24px;
+    box-shadow: var(--uji-shadow);
+}
+
+@media (max-width: 480px) {
+
+    .scenario-card,
+    .summary-card {
+        padding: 22px 18px;
+    }
+}
+
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card-enter {
+    animation: cardFadeIn 0.35s ease-out both;
+}
+
+/* ---------- SKENARIO ---------- */
+.scenario-progress {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--uji-orange);
+    margin: 0 0 14px 0;
+}
+
+.scenario-text {
+    font-size: 16px;
+    color: var(--uji-text);
+    line-height: 1.65;
+    margin: 0 0 24px 0;
+}
+
+.scenario-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.scenario-option {
+    width: 100%;
+    text-align: left;
+    padding: 16px 18px;
+    min-height: 52px;
+    border-radius: var(--uji-radius-sm);
+    border: 2px solid var(--uji-card-border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--uji-text);
+    font-family: var(--uji-font);
+    font-size: 14.5px;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+
+.scenario-option:hover:not(:disabled) {
+    border-color: var(--uji-orange);
+    background: var(--uji-orange-soft);
+}
+
+.scenario-option:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.scenario-option:disabled {
+    cursor: default;
+}
+
+.scenario-option--correct {
+    border-color: var(--uji-green);
+    background: var(--uji-green-soft);
+    color: #9ee6bd;
+}
+
+.scenario-option--wrong {
+    border-color: var(--uji-red);
+    background: var(--uji-red-soft);
+    color: #ffb3b3;
+}
+
+/* ---------- FEEDBACK ---------- */
+.scenario-feedback {
+    display: none;
+}
+
+.scenario-feedback.show {
+    display: block;
+}
+
+.feedback-text {
+    margin: 20px 0 0 0;
+    padding: 16px;
+    border-radius: var(--uji-radius-sm);
+    font-size: 14px;
+    line-height: 1.6;
+    animation: cardFadeIn 0.3s ease-out both;
+}
+
+.feedback-text--good {
+    background: var(--uji-green-soft);
+    border: 1px solid rgba(76, 175, 125, 0.4);
+    color: #bdeed2;
+}
+
+.feedback-text--bad {
+    background: var(--uji-red-soft);
+    border: 1px solid rgba(224, 93, 93, 0.4);
+    color: #ffd0d0;
+}
+
+.next-scenario-btn {
+    display: block;
+    width: 100%;
+    margin-top: 16px;
+    padding: 15px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--uji-orange), var(--uji-orange-light));
+    color: #fff;
+    font-family: var(--uji-font);
+    font-size: 14.5px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(247, 147, 26, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.next-scenario-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(247, 147, 26, 0.4);
+}
+
+/* ---------- RINGKASAN ---------- */
+.summary-card {
+    text-align: center;
+}
+
+.summary-score {
+    font-size: 18px;
+    color: #fff;
+    margin: 0 0 10px 0;
+    line-height: 1.5;
+}
+
+.summary-score strong {
+    color: var(--uji-orange-light);
+}
+
+.summary-message {
+    font-size: 15px;
+    color: var(--uji-text-dim);
+    margin: 0 0 20px 0;
+    line-height: 1.6;
+}
+
+.summary-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 22px 0;
+    padding: 12px 20px;
+    border-radius: 30px;
+    border: 1px solid rgba(247, 147, 26, 0.4);
+    background: var(--uji-orange-soft);
+    color: var(--uji-orange-light);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 700;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.summary-link:hover {
+    background: rgba(247, 147, 26, 0.24);
+    border-color: var(--uji-orange);
+}
+
+.summary-actions {
+    display: flex;
+    gap: 12px;
+}
+
+@media (max-width: 420px) {
+    .summary-actions {
+        flex-direction: column;
+    }
+}
+
+.retry-btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--uji-orange), var(--uji-orange-light));
+    color: #fff;
+    font-family: var(--uji-font);
+    font-size: 14.5px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(247, 147, 26, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.retry-btn:hover {
+    transform: translateY(-2px);
+}
+
+.home-btn-link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    border-radius: 14px;
+    border: 1px solid var(--uji-card-border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--uji-text-dim);
+    text-decoration: none;
+    font-size: 14.5px;
+    font-weight: 700;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.home-btn-link:hover {
+    border-color: var(--uji-orange);
+    color: var(--uji-orange-light);
+}

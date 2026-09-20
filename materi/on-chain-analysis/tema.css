@@ -196,6 +196,8 @@ body {
     font-size: 15px;
     color: var(--kb-text-dim);
     margin: 0 0 14px 0;
+    text-align: justify;
+    text-justify: inter-word;
 }
 
 .materi-section p:last-child {
@@ -295,6 +297,8 @@ body {
     font-size: 14px;
     color: var(--kb-text-dim);
     line-height: 1.6;
+    text-align: justify;
+    text-justify: inter-word;
 }
 
 /* Ikon popup (khusus konten yang punya gambar, mis. kartu hot wallet).
@@ -398,6 +402,8 @@ body {
     margin: 0;
     font-size: 13.5px;
     color: var(--kb-text-dim);
+    text-align: justify;
+    text-justify: inter-word;
 }
 
 /* ---------- NAVIGASI BAWAH HALAMAN ---------- */
@@ -489,6 +495,8 @@ body {
     font-size: 13.5px;
     color: var(--kb-text-dim);
     line-height: 1.55;
+    text-align: justify;
+    text-justify: inter-word;
 }
 
 /* ---------- DAFTAR POIN NETRAL (reusable, bukan good/bad) ---------- */
@@ -502,6 +510,8 @@ body {
     color: var(--kb-text-dim);
     line-height: 1.6;
     margin-bottom: 10px;
+    text-align: justify;
+    text-justify: inter-word;
 }
 
 .plain-list li::marker {

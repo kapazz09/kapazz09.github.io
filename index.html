@@ -123,7 +123,7 @@
         </select>
         <h2 id="aboutTitle">About Me</h2>
         <div id="aboutIntro">
-            <p>Haii, nama saya Pazkah.. Saya bekerja di bidang pelayanan kesehatan, dan perjalanan saya mengenal Bitcoin
+            <p>Hello, saya Pazkah.. Saya bekerja di bidang pelayanan kesehatan, dan perjalanan saya mengenal Bitcoin
                 dimulai
                 dari cara yang tidak terduga: ditipu.</p>
         </div>
@@ -162,6 +162,12 @@
                 menyimpannya.
                 Karena itu saya terus belajar, bereksperimen, dan membangun berbagai proyek kecil — termasuk situs ini —
                 untuk memperdalam pemahaman saya sekaligus berbagi ke orang lain.</p>
+            <p>Situs ini juga saya lengkapi dengan materi belajar interaktif (bukan sekadar PDF) yang mencakup
+                self-custody, UTXO & fee, privasi, Lightning Network, BIP, mining, hingga on-chain analysis — dan
+                akan terus saya perbarui atau tambahkan seiring pengalaman dan pengetahuan baru yang saya dapatkan.
+                Selain itu, ada berbagai tools interaktif yang saya buat untuk membantu memahami cara kerja dan
+                penggunaan Bitcoin sehari-hari, mulai dari kalkulator DCA, pengecekan saldo wallet, hingga estimasi
+                fee transaksi.</p>
             <p>Jika perjalanan belajar ini bermanfaat atau menginspirasi, dukungan Anda akan sangat berarti untuk
                 membantu
                 saya terus belajar, membuat konten edukasi, dan membangun tools yang berguna bagi komunitas Bitcoin.</p>
@@ -181,6 +187,8 @@
         <div class="learning-progress-bar">
             <div class="learning-progress-fill" id="learningProgressFill" style="width:0%;"></div>
         </div>
+        <button type="button" class="calculate-btn cert-generate-btn" id="certOpenBtn" style="display:none;"
+            onclick="openCertModal()">🎓 Buat Sertifikatku</button>
         <ol class="learning-list" id="learningList">
             <li class="learning-item" data-material-id="bitcoin-intro">
                 <a href="https://youtube.com/playlist?list=PL_5dSqXuoyfxWUJh27-Y8WDAWxnMZv7pP&si=o0ZjGl55S-p7SHPE"
@@ -188,18 +196,18 @@
                     class="material-check">&#10003;</span>
             </li>
             <li class="learning-item" data-material-id="self-custody">
-                <a href="materi/self-custody/index.html" target="_blank" onclick="markMaterialOpened(this)">Self Custody
-                    Cold Wallet</a>
+                <a href="materi/self-custody/index.html" target="_blank"
+                    onclick="markMaterialOpened(this)">Self Custody Cold Wallet</a>
                 <span class="new-badge">🆕 Interaktif</span><span class="material-check">&#10003;</span>
             </li>
             <li class="learning-item" data-material-id="utxo-fee">
-                <a href="materi/utxo-fee-alamat/index.html" target="_blank" onclick="markMaterialOpened(this)">UTXO,
-                    Fee, Alamat Wallet</a>
+                <a href="materi/utxo-fee-alamat/index.html" target="_blank"
+                    onclick="markMaterialOpened(this)">UTXO, Fee, Alamat Wallet</a>
                 <span class="new-badge">🆕 Interaktif</span><span class="material-check">&#10003;</span>
             </li>
             <li class="learning-item" data-material-id="privasi-keamanan">
-                <a href="materi/privasi-keamanan/index.html" target="_blank" onclick="markMaterialOpened(this)">Privasi
-                    dan Keamanan</a>
+                <a href="materi/privasi-keamanan/index.html" target="_blank"
+                    onclick="markMaterialOpened(this)">Privasi dan Keamanan</a>
                 <span class="new-badge">🆕 Interaktif</span><span class="material-check">&#10003;</span>
             </li>
             <li class="learning-item" data-material-id="lightning-network">
@@ -213,16 +221,25 @@
                 <span class="new-badge">🆕 Interaktif</span><span class="material-check">&#10003;</span>
             </li>
             <li class="learning-item" data-material-id="mining-pool">
-                <a href="materi/mining-pool/index.html" target="_blank" onclick="markMaterialOpened(this)">Mining dan
-                    Mining Pool</a>
+                <a href="materi/mining-pool/index.html" target="_blank"
+                    onclick="markMaterialOpened(this)">Mining dan Mining Pool</a>
                 <span class="new-badge">🆕 Interaktif</span><span class="material-check">&#10003;</span>
             </li>
             <li class="learning-item" data-material-id="on-chain-analysis">
-                <a href="materi/on-chain-analysis/index.html" target="_blank" onclick="markMaterialOpened(this)">On
-                    Chain Analysis</a>
+                <a href="materi/on-chain-analysis/index.html" target="_blank"
+                    onclick="markMaterialOpened(this)">On Chain Analysis</a>
                 <span class="new-badge">🆕 Interaktif</span><span class="material-check">&#10003;</span>
             </li>
         </ol>
+
+        <a href="uji-diri/index.html" class="uji-diri-card">
+            <span class="uji-diri-card-icon">🧠</span>
+            <span class="uji-diri-card-text">
+                <strong>Uji Diri: Bisakah Kamu Kenali Penipuan?</strong>
+                <small>5 skenario nyata — coba insting keamananmu</small>
+            </span>
+            <span class="uji-diri-card-arrow">→</span>
+        </a>
     </div>
 
     <div class="faq-section fade-in">
@@ -680,8 +697,7 @@
                         <p style="font-size:11px;color:#888;margin-top:10px;">*Data historis untuk edukasi,
                             <strong>bukan
                                 jaminan</strong> pola yang sama akan berulang di masa depan, dan bukan ajakan
-                            investasi/finansial.
-                        </p>
+                            investasi/finansial.</p>
                     </div>
                 </div>
             </div>
@@ -942,6 +958,31 @@
         </div>
     </div>
 
+    <div class="tool-modal-backdrop" id="certModalBackdrop" onclick="closeCertModalOnBackdrop(event)">
+        <div class="tool-display cert-modal-box anim-fade-scale" id="certModalBox">
+            <button class="modal-close-btn" onclick="closeCertModal()" aria-label="Tutup">✕</button>
+            <h3 class="cert-modal-title">🎓 Sertifikat Belajar</h3>
+
+            <div id="certFormView">
+                <p class="cert-modal-hint">Selamat! Kamu sudah menyelesaikan seluruh 8 materi. Masukkan nama untuk
+                    dicetak di sertifikat.</p>
+                <div class="input-box cert-input-box">
+                    <input type="text" id="certNameInput" placeholder="Masukkan nama untuk sertifikat" maxlength="30">
+                </div>
+                <button type="button" class="calculate-btn" onclick="generateCertificate()">Generate
+                    Sertifikat</button>
+            </div>
+
+            <div id="certPreviewView" style="display:none;">
+                <div class="cert-canvas-wrap">
+                    <canvas id="certCanvas" width="1200" height="850"></canvas>
+                </div>
+                <button type="button" class="calculate-btn" id="certDownloadBtn">⬇️ Download</button>
+                <button type="button" class="cert-back-btn" onclick="showCertForm()">← Ganti Nama</button>
+            </div>
+        </div>
+    </div>
+
     <div class="rating-section fade-in">
         <h2>⭐ Nilai Situs Ini</h2>
         <p class="rating-subtitle">Suka dengan materi atau tools di sini? Kasih rating ya!</p>
@@ -1017,6 +1058,10 @@
             <span>•</span>
             <a href="#"
                 onclick="document.querySelector('.crypto-support').scrollIntoView({behavior:'smooth'});return false;">Support</a>
+            <span>•</span>
+            <a href="uji-diri/index.html">🧠 Uji Diri</a>
+            <span>•</span>
+            <a href="changelog/index.html">📜 Changelog</a>
         </nav>
 
         <p>Built with HTML • CSS • JavaScript</p>

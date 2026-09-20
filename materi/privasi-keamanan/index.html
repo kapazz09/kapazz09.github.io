@@ -264,6 +264,11 @@
             <li class="checklist-item checklist-item--good"><span class="checklist-icon">✅</span><span>Keamanan perangkat — hindari link mencurigakan dan aplikasi tidak resmi — sering jadi titik kegagalan nyata, lebih sering terjadi dibanding serangan kriptografis canggih.</span></li>
         </ul>
 
+        <a href="../../uji-diri/index.html" class="cta-box">
+            <span class="cta-box-text">🧠 Yuk uji reaksimu lewat 5 skenario nyata soal penipuan crypto</span>
+            <span class="cta-box-arrow">→</span>
+        </a>
+
         <a href="assets/pdf/privasi-keamanan.pdf" target="_blank" rel="noopener" class="pdf-link">
             <i data-lucide="file-text"></i> Lihat versi PDF
         </a>
@@ -290,5 +295,31 @@
 
 <script src="glossary-data.js"></script>
 <script src="script.js"></script>
+
+    <script>
+        // ==================================================
+        // LEARNING PATH: tandai materi ini "selesai" otomatis
+        // begitu halaman ini selesai dimuat -- supaya navigasi
+        // lewat tombol "Lanjut"/"Sebelumnya" antar materi tetap
+        // tercatat, tidak cuma lewat klik dari halaman utama.
+        // Key & format storage HARUS SAMA PERSIS dengan index.html
+        // utama: localStorage['kapazzLearningProgress'] =
+        // { MATERIAL_ID_PLACEHOLDER: true, ... }
+        // ==================================================
+        (function () {
+            var MATERIAL_ID = "privasi-keamanan";
+            var STORAGE_KEY = "kapazzLearningProgress";
+            try {
+                var raw = localStorage.getItem(STORAGE_KEY);
+                var progress = raw ? JSON.parse(raw) : {};
+                if (!progress[MATERIAL_ID]) {
+                    progress[MATERIAL_ID] = true;
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+                }
+            } catch (e) {
+                // localStorage penuh/diblokir -- abaikan, tidak fatal
+            }
+        })();
+    </script>
 </body>
 </html>

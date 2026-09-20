@@ -1,0 +1,143 @@
+/* ==================================================
+   KAPAZZ BITCOIN — CHANGELOG
+   Halaman berdiri sendiri, mandiri (tidak bergantung file
+   di folder lain). Tema mengikuti gaya dark + oranye #f7931a
+   yang sudah dipakai di seluruh situs.
+   ================================================== */
+
+:root {
+    --cl-orange: #f7931a;
+    --cl-orange-light: #ffb347;
+    --cl-orange-soft: rgba(247, 147, 26, 0.1);
+
+    --cl-bg: #101014;
+    --cl-bg-alt: #17171d;
+    --cl-card: rgba(255, 255, 255, 0.05);
+    --cl-card-border: rgba(255, 255, 255, 0.1);
+
+    --cl-text: #ececec;
+    --cl-text-dim: #b6b6b6;
+    --cl-text-faint: #8a8a8a;
+
+    --cl-font: 'Inter', Arial, sans-serif;
+    --cl-radius: 16px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: linear-gradient(180deg, var(--cl-bg) 0%, var(--cl-bg-alt) 100%);
+    color: var(--cl-text);
+    font-family: var(--cl-font);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+.changelog-page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 28px 20px 60px 20px;
+}
+
+@media (max-width: 480px) {
+    .changelog-page {
+        padding: 20px 14px 48px 14px;
+    }
+}
+
+/* ---------- HEADER ---------- */
+.changelog-header {
+    margin-bottom: 30px;
+}
+
+.back-btn {
+    display: inline-block;
+    color: var(--cl-text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    transition: color 0.2s ease;
+}
+
+.back-btn:hover {
+    color: var(--cl-orange);
+}
+
+.changelog-header h1 {
+    font-size: 24px;
+    line-height: 1.35;
+    margin: 0 0 10px 0;
+    color: #fff;
+}
+
+@media (max-width: 480px) {
+    .changelog-header h1 {
+        font-size: 20px;
+    }
+}
+
+.changelog-subtitle {
+    font-size: 14.5px;
+    color: var(--cl-text-dim);
+    margin: 0;
+}
+
+/* ---------- DAFTAR ENTRY ---------- */
+.changelog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.changelog-entry {
+    background: var(--cl-card);
+    border: 1px solid var(--cl-card-border);
+    border-left: 3px solid var(--cl-orange);
+    border-radius: var(--cl-radius);
+    padding: 20px 22px;
+}
+
+@media (max-width: 480px) {
+    .changelog-entry {
+        padding: 16px 18px;
+    }
+}
+
+.changelog-entry h2 {
+    font-size: 16px;
+    color: #fff;
+    margin: 0 0 12px 0;
+}
+
+.changelog-entry ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.changelog-entry li {
+    font-size: 14px;
+    color: var(--cl-text-dim);
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+.changelog-entry li:last-child {
+    margin-bottom: 0;
+}
+
+.changelog-entry li::marker {
+    color: var(--cl-orange);
+}
+
+/* ---------- CATATAN PENUTUP ---------- */
+.changelog-footnote {
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--cl-text-faint);
+    margin: 26px 0 0 0;
+    font-style: italic;
+}
