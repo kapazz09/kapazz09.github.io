@@ -1,0 +1,51 @@
+name: Update BTC Price History
+
+on:
+  schedule:
+    # 00:28 UTC setiap hari (= 08:28 WITA). Menit tidak bulat sengaja
+    # dipilih supaya tidak numpuk dengan ribuan jadwal lain di GitHub
+    # Actions yang biasanya diset pas di menit :00.
+    - cron: '28 0 * * *'
+  workflow_dispatch: {}   # bisa dijalankan manual lewat tombol "Run workflow"
+
+permissions:
+  contents: write   # perlu izin tulis supaya bisa commit & push balik ke repo
+
+jobs:
+  update-price:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Jalankan skrip update harga
+        id: update
+        run: node .github/scripts/update-btc-price.js
+
+      - name: Commit & push kalau ada perubahan
+        run: |
+          if git diff --quiet -- data/btc-price-history.json; then
+            echo "Tidak ada perubahan pada data/btc-price-history.json, tidak perlu commit."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add data/btc-price-history.json
+            git commit -m "chore: update btc-price-history.json (otomatis, +${{ steps.update.outputs.days_added }} hari s/d ${{ steps.update.outputs.last_updated }})"
+            git push
+          fi
+
+      - name: Ringkasan run
+        if: always()
+        run: |
+          echo "### 📈 Update BTC Price History" >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "${{ steps.update.outputs.days_added }}" ] && [ "${{ steps.update.outputs.days_added }}" != "0" ]; then
+            echo "- Hari data baru ditambahkan: **${{ steps.update.outputs.days_added }}**" >> "$GITHUB_STEP_SUMMARY"
+            echo "- \`lastUpdated\` baru: **${{ steps.update.outputs.last_updated }}**" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- Tidak ada perubahan pada run ini (sudah up-to-date, atau pengambilan data gagal -- lihat log di atas)." >> "$GITHUB_STEP_SUMMARY"
+          fi
