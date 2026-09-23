@@ -189,6 +189,10 @@
         </div>
         <button type="button" class="calculate-btn cert-generate-btn" id="certOpenBtn" style="display:none;"
             onclick="openCertModal()">🎓 Buat Sertifikatku</button>
+        <a href="#" class="continue-learning-btn" id="continueLearningBtn" style="display:none;">
+            <span class="continue-learning-icon">↩️</span>
+            <span class="continue-learning-text">Lanjutkan dari...</span>
+        </a>
         <ol class="learning-list" id="learningList">
             <li class="learning-item" data-material-id="bitcoin-intro">
                 <a href="https://youtube.com/playlist?list=PL_5dSqXuoyfxWUJh27-Y8WDAWxnMZv7pP&si=o0ZjGl55S-p7SHPE"
@@ -1069,6 +1073,37 @@
         <p>Made with ❤️</p>
         <p id="footerCopyright">© <span id="footerYear"></span> Kapazz Bitcoin</p>
     </footer>
+
+    <button type="button" class="quick-nav-fab" id="quickNavFab" onclick="openQuickNav()"
+        aria-label="Navigasi cepat & cari di situs ini">
+        <i data-lucide="compass"></i>
+    </button>
+
+    <div class="quick-nav-backdrop" id="quickNavBackdrop" onclick="closeQuickNavOnBackdrop(event)">
+        <div class="quick-nav-panel anim-fade-scale" id="quickNavPanel">
+            <button class="modal-close-btn" onclick="closeQuickNav()" aria-label="Tutup">✕</button>
+            <h3 class="quick-nav-title">🧭 Navigasi Cepat</h3>
+
+            <div class="quick-nav-section">
+                <p class="quick-nav-label">Lompat ke Section</p>
+                <div class="quick-nav-links">
+                    <button type="button" onclick="quickNavScrollTo('.about')">About Me</button>
+                    <button type="button"
+                        onclick="quickNavScrollTo('#free-learning-materials')">Free Learning Materials</button>
+                    <button type="button" onclick="quickNavScrollTo('.faq-section')">FAQ</button>
+                    <button type="button" onclick="quickNavScrollTo('.toolkit-section')">Bitcoin Toolkit</button>
+                    <button type="button" onclick="quickNavScrollTo('.crypto-support')">Support</button>
+                </div>
+            </div>
+
+            <div class="quick-nav-section">
+                <p class="quick-nav-label">🔍 Cari di Situs Ini</p>
+                <input type="text" id="quickNavSearchInput" class="quick-nav-search-input"
+                    placeholder="Cari tool, istilah, materi, atau FAQ...">
+                <div class="quick-nav-results" id="quickNavResults"></div>
+            </div>
+        </div>
+    </div>
 
     <script src="js/script.js"></script>
     <script src="js/about-translations.js"></script>

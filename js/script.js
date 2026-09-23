@@ -462,6 +462,36 @@ function updateLearningProgressUI() {
 
     const certBtn = document.getElementById('certOpenBtn');
     if (certBtn) certBtn.style.display = (doneCount >= total) ? 'block' : 'none';
+
+    updateContinueLearningButton(Array.from(items), doneCount, total);
+}
+
+// Tombol "Lanjutkan dari [Materi] ->" -- cuma tampil kalau progress > 0
+// dan < total (sudah mulai, tapi belum tuntas semua). Materi berikutnya
+// diambil dari urutan asli daftar #learningList di HTML (data-material-id
+// pertama yang belum .done), jadi otomatis selalu sinkron dengan urutan
+// resmi tanpa perlu daftar terpisah yang bisa basi.
+function updateContinueLearningButton(items, doneCount, total) {
+    const btn = document.getElementById('continueLearningBtn');
+    if (!btn) return;
+
+    if (doneCount === 0 || doneCount >= total) {
+        btn.style.display = 'none';
+        return;
+    }
+
+    const nextItem = items.find(li => !li.classList.contains('done'));
+    const link = nextItem ? nextItem.querySelector('a') : null;
+    if (!link) {
+        btn.style.display = 'none';
+        return;
+    }
+
+    const textEl = btn.querySelector('.continue-learning-text');
+    if (textEl) textEl.textContent = 'Lanjutkan dari ' + link.textContent.trim() + ' →';
+    btn.href = link.getAttribute('href');
+    btn.target = link.getAttribute('target') || '_self';
+    btn.style.display = 'flex';
 }
 
 // ==================================================
@@ -743,7 +773,195 @@ document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     const toolBackdrop = document.getElementById('toolModalBackdrop');
     const cryptoBackdrop = document.getElementById('cryptoModalBackdrop');
+    const quickNavBackdrop = document.getElementById('quickNavBackdrop');
     if (toolBackdrop && toolBackdrop.classList.contains('open')) closeToolModal();
     if (cryptoBackdrop && cryptoBackdrop.classList.contains('open')) closeCryptoModal();
+    if (quickNavBackdrop && quickNavBackdrop.classList.contains('open')) closeQuickNav();
+});
+
+// ==================================================
+// TOMBOL MELAYANG: NAVIGASI CEPAT + SEARCH
+// Index pencarian dibangun dari elemen yang SUDAH ADA di
+// halaman (tool-icon, glossaryData, daftar materi, FAQ) --
+// bukan daftar terpisah -- supaya otomatis selalu sinkron
+// tanpa perlu diupdate manual tiap ada tool/materi/FAQ baru.
+// ==================================================
+let quickNavIndexCache = null;
+
+function escapeHtmlLite(str) {
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : str;
+    return div.innerHTML;
+}
+
+function buildQuickNavSearchIndex() {
+    const index = [];
+
+    // TOOLS (10 tool di Bitcoin Toolkit)
+    document.querySelectorAll('.toolkit-icons .tool-icon').forEach(el => {
+        const name = (el.querySelector('span')?.textContent || '').trim();
+        const desc = (el.querySelector('.tool-desc')?.textContent || '').trim();
+        if (!name) return;
+        index.push({
+            type: 'tool',
+            title: name,
+            subtitle: desc,
+            action: () => { closeQuickNav(); el.click(); }
+        });
+    });
+
+    // GLOSSARY (dari BitcoinTools.glossaryData yang sudah ada di glossary.js)
+    if (typeof BitcoinTools !== 'undefined' && Array.isArray(BitcoinTools.glossaryData)) {
+        const glossaryIcon = document.querySelector('.tool-icon[data-tool="glossary"]');
+        BitcoinTools.glossaryData.forEach(item => {
+            index.push({
+                type: 'glossary',
+                title: item.term,
+                subtitle: item.def,
+                action: () => {
+                    closeQuickNav();
+                    if (glossaryIcon) glossaryIcon.click();
+                    setTimeout(() => {
+                        const searchInput = document.getElementById('glossarySearch');
+                        if (searchInput) {
+                            searchInput.value = item.term;
+                            searchInput.dispatchEvent(new Event('input'));
+                        }
+                    }, 80);
+                }
+            });
+        });
+    }
+
+    // MATERI (8 materi belajar, urutan & link diambil langsung dari #learningList)
+    document.querySelectorAll('#learningList .learning-item a').forEach(a => {
+        const title = a.textContent.trim();
+        if (!title) return;
+        index.push({
+            type: 'materi',
+            title: title,
+            subtitle: 'Materi belajar',
+            action: () => { closeQuickNav(); a.click(); }
+        });
+    });
+
+    // FAQ (pertanyaan yang sudah ada di section FAQ)
+    document.querySelectorAll('.faq-item').forEach(item => {
+        const q = (item.querySelector('.faq-question span')?.textContent || '').trim();
+        if (!q) return;
+        index.push({
+            type: 'faq',
+            title: q,
+            subtitle: '',
+            action: () => {
+                closeQuickNav();
+                const list = document.getElementById('faqList');
+                if (list && (list.style.display === 'none' || list.style.display === '')) {
+                    toggleFaqSection();
+                }
+                item.classList.add('open');
+                setTimeout(() => item.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
+            }
+        });
+    });
+
+    return index;
+}
+
+function getQuickNavIndex() {
+    if (!quickNavIndexCache) quickNavIndexCache = buildQuickNavSearchIndex();
+    return quickNavIndexCache;
+}
+
+const QUICK_NAV_TYPE_META = {
+    tool: { icon: '🧰', label: 'Tool' },
+    glossary: { icon: '📖', label: 'Glossary' },
+    materi: { icon: '📚', label: 'Materi' },
+    faq: { icon: '❓', label: 'FAQ' }
+};
+
+function renderQuickNavResults(query) {
+    const resultsEl = document.getElementById('quickNavResults');
+    if (!resultsEl) return;
+
+    const q = query.trim().toLowerCase();
+    if (!q) {
+        resultsEl.classList.remove('show');
+        resultsEl.innerHTML = '';
+        return;
+    }
+
+    const matches = getQuickNavIndex()
+        .filter(item =>
+            item.title.toLowerCase().includes(q) ||
+            (item.subtitle && item.subtitle.toLowerCase().includes(q))
+        )
+        .slice(0, 20);
+
+    resultsEl.classList.add('show');
+
+    if (matches.length === 0) {
+        resultsEl.innerHTML = '<p class="quick-nav-no-result">Tidak ditemukan.</p>';
+        return;
+    }
+
+    resultsEl.innerHTML = matches.map((item, i) => {
+        const meta = QUICK_NAV_TYPE_META[item.type];
+        const subtitleText = item.subtitle ? (meta.label + ' — ' + item.subtitle) : meta.label;
+        return '<button type="button" class="quick-nav-result-item" data-result-index="' + i + '">' +
+            '<span class="quick-nav-result-icon">' + meta.icon + '</span>' +
+            '<span class="quick-nav-result-text">' +
+            '<strong>' + escapeHtmlLite(item.title) + '</strong>' +
+            '<small>' + escapeHtmlLite(subtitleText) + '</small>' +
+            '</span>' +
+            '</button>';
+    }).join('');
+
+    resultsEl.querySelectorAll('.quick-nav-result-item').forEach((btn, i) => {
+        btn.addEventListener('click', () => matches[i].action());
+    });
+}
+
+function openQuickNav() {
+    const backdrop = document.getElementById('quickNavBackdrop');
+    const panel = document.getElementById('quickNavPanel');
+    if (!backdrop || !panel) return;
+
+    panel.classList.remove('anim-fade-scale');
+    void panel.offsetWidth;
+    panel.classList.add('anim-fade-scale');
+
+    backdrop.classList.add('open');
+    document.body.classList.add('modal-open');
+
+    const input = document.getElementById('quickNavSearchInput');
+    if (input) {
+        input.value = '';
+        renderQuickNavResults('');
+        setTimeout(() => input.focus(), 150);
+    }
+}
+
+function closeQuickNav() {
+    const backdrop = document.getElementById('quickNavBackdrop');
+    if (backdrop) backdrop.classList.remove('open');
+    document.body.classList.remove('modal-open');
+}
+
+function closeQuickNavOnBackdrop(event) {
+    if (event.target.id === 'quickNavBackdrop') closeQuickNav();
+}
+
+function quickNavScrollTo(selector) {
+    closeQuickNav();
+    const el = document.querySelector(selector);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('quickNavSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => renderQuickNavResults(e.target.value));
+    }
 });
 
