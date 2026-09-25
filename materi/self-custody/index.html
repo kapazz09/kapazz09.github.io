@@ -50,6 +50,7 @@
 
     <link rel="stylesheet" href="tema.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../shared/quick-nav.css">
 </head>
 
 <body>
@@ -605,6 +606,37 @@
 
     <script src="glossary-data.js"></script>
     <script src="script.js"></script>
+    <script src="../shared/site-index.js"></script>
+    <script src="../shared/quick-nav.js"></script>
+
+    <button type="button" class="quick-nav-fab" id="quickNavFab" onclick="openQuickNav()"
+        aria-label="Navigasi cepat & cari lintas materi">
+        <i data-lucide="compass"></i>
+    </button>
+
+    <div class="quick-nav-backdrop" id="quickNavBackdrop" onclick="closeQuickNavOnBackdrop(event)">
+        <div class="quick-nav-panel quick-nav-anim" id="quickNavPanel">
+            <button class="quick-nav-close-btn" onclick="closeQuickNav()" aria-label="Tutup">✕</button>
+            <h3 class="quick-nav-title">🧭 Navigasi Cepat</h3>
+
+            <div class="quick-nav-section">
+                <p class="quick-nav-label">Bagian di Materi Ini</p>
+                <div class="quick-nav-links" id="quickNavCurrentSections"></div>
+            </div>
+
+            <div class="quick-nav-section">
+                <p class="quick-nav-label">Materi Lainnya</p>
+                <div class="quick-nav-links" id="quickNavOtherMateri"></div>
+            </div>
+
+            <div class="quick-nav-section">
+                <p class="quick-nav-label">🔍 Cari di Semua Materi</p>
+                <input type="text" id="quickNavSearchInput" class="quick-nav-search-input"
+                    placeholder="Cari istilah atau topik...">
+                <div class="quick-nav-results" id="quickNavResults"></div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // ==================================================

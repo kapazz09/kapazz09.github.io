@@ -1,0 +1,288 @@
+/*==================================================
+    KAPAZZ BITCOIN - QUICK NAV LINTAS MATERI (STYLE)
+    Dipakai di SEMUA halaman materi/*/index.html.
+    Sengaja SELF-CONTAINED (semua warna hardcode, tidak
+    pakai var(--kb-...) atau sejenisnya) supaya tampilan
+    tombol ini konsisten persis sama di semua 7 materi,
+    walau tiap materi punya tema.css lokal sendiri-sendiri
+    dengan kemungkinan nama variabel yang beda-beda.
+==================================================*/
+
+.quick-nav-fab {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #f7931a, #ffb347);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    cursor: pointer;
+    box-shadow: 0 8px 22px rgba(247, 147, 26, 0.4);
+    z-index: 9990;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quick-nav-fab:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 26px rgba(247, 147, 26, 0.5);
+}
+
+.quick-nav-fab svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2.2;
+}
+
+/* Sembunyikan FAB kalau ada popup lain (istilah/detail diagram) yang
+   sedang terbuka di halaman materi, supaya tidak bertabrakan. */
+body:has(.popup-backdrop.open) .quick-nav-fab,
+body:has(.quick-nav-backdrop.open) .quick-nav-fab {
+    display: none;
+}
+
+@media (max-width: 420px) {
+    .quick-nav-fab {
+        right: 14px;
+        bottom: 14px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .quick-nav-fab svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.quick-nav-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 5, 8, 0.72);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease;
+}
+
+.quick-nav-backdrop.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.quick-nav-panel {
+    background: #1c1c22;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 3px solid #f7931a;
+    border-radius: 20px 20px 0 0;
+    padding: 22px 20px 26px 20px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 82vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
+    font-family: 'Inter', Arial, sans-serif;
+}
+
+@media (min-width: 700px) {
+    .quick-nav-backdrop {
+        align-items: center;
+        padding: 20px;
+    }
+
+    .quick-nav-panel {
+        border-radius: 18px;
+        max-height: 78vh;
+    }
+}
+
+@keyframes quickNavFadeScale {
+    from {
+        opacity: 0;
+        transform: scale(0.94) translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.quick-nav-anim {
+    animation: quickNavFadeScale 0.25s ease-out both;
+}
+
+.quick-nav-close-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ececec;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.quick-nav-close-btn:hover {
+    background: #f7931a;
+    color: #fff;
+    transform: rotate(90deg);
+}
+
+.quick-nav-title {
+    margin: 0 0 18px 0;
+    color: #fff;
+    font-size: 17px;
+}
+
+.quick-nav-section {
+    margin-bottom: 20px;
+}
+
+.quick-nav-section:last-child {
+    margin-bottom: 0;
+}
+
+.quick-nav-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #8a8a8a;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 10px 0;
+}
+
+.quick-nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.quick-nav-links button {
+    padding: 9px 13px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(247, 147, 26, 0.35);
+    background: rgba(247, 147, 26, 0.08);
+    color: #ffb347;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.quick-nav-links button:hover {
+    background: rgba(247, 147, 26, 0.2);
+    border-color: #f7931a;
+}
+
+.quick-nav-search-input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    color: #ececec;
+    font-size: 14px;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+}
+
+.quick-nav-search-input::placeholder {
+    color: #8a8a8a;
+}
+
+.quick-nav-search-input:focus {
+    outline: none;
+    border-color: #f7931a;
+}
+
+.quick-nav-results {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.quick-nav-results.show {
+    display: flex;
+}
+
+.quick-nav-result-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.quick-nav-result-item:hover {
+    background: rgba(247, 147, 26, 0.12);
+    border-color: rgba(247, 147, 26, 0.35);
+}
+
+.quick-nav-result-icon {
+    flex-shrink: 0;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.quick-nav-result-text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.quick-nav-result-text strong {
+    font-size: 13px;
+    color: #ececec;
+    line-height: 1.35;
+}
+
+.quick-nav-result-text small {
+    font-size: 11px;
+    color: #8a8a8a;
+    line-height: 1.4;
+}
+
+.quick-nav-no-result {
+    margin: 6px 0 0 0;
+    font-size: 13px;
+    color: #8a8a8a;
+    text-align: center;
+    padding: 10px 0;
+}
