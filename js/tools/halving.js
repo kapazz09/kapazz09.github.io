@@ -31,6 +31,8 @@ Object.assign(BitcoinTools, {
                 const minutesRemaining = blocksRemaining * 10;
                 const daysRemaining = (minutesRemaining / 60 / 24).toFixed(1);
 
+                this.renderHalvingInsight(currentHeight);
+
                 if (container) {
                     container.innerHTML =
                         '<div class="result-row"><span>Block Saat Ini</span><strong>' + currentHeight.toLocaleString("en-US") + '</strong></div>' +
@@ -43,6 +45,28 @@ Object.assign(BitcoinTools, {
             .catch(() => {
                 if (container) container.innerHTML = '<p style="color:#c2410c;">Gagal memuat data. Coba lagi nanti.</p>';
             });
+    },
+
+    // Box "Apa Artinya Ini?" -- reward dihitung dari tinggi blok (bukan angka
+    // hardcode) supaya otomatis benar setelah halving berikutnya terjadi.
+    renderHalvingInsight(currentHeight) {
+        const box = document.getElementById("halvingInsight");
+        if (!box) return;
+
+        const halvingInterval = 210000;
+        const epoch = Math.floor(currentHeight / halvingInterval);
+        const currentReward = 50 / Math.pow(2, epoch);
+        const nextReward = currentReward / 2;
+
+        box.innerHTML =
+            '<h4>\u{1F4A1} Apa Artinya Ini?</h4>' +
+            '<p>Artinya: setiap ~4 tahun, jumlah Bitcoin baru yang dihasilkan tiap blok dipotong separuh ' +
+            '(<strong>halving</strong>) \u2014 <strong>block reward</strong> saat ini ' +
+            '<strong>' + currentReward + ' BTC</strong> per blok, akan turun jadi <strong>' + nextReward +
+            ' BTC</strong> setelah halving berikutnya. Ini bagian dari desain suplai tetap Bitcoin ' +
+            '(maksimal 21 juta koin), BUKAN jaminan harga akan naik \u2014 halving hanya memengaruhi laju ' +
+            'penambahan suplai baru.</p>';
+        box.style.display = "block";
     },
 
     //------------------------------------------------

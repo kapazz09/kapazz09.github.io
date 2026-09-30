@@ -22,6 +22,7 @@ Object.assign(BitcoinTools, {
         fetch("https://mempool.space/api/v1/fees/recommended")
             .then(res => res.json())
             .then(data => {
+                this.utxoFeeTiers = data; // simpan semua tier (fastestFee, halfHourFee, dst) untuk perbandingan di box insight
                 const feeInput = document.getElementById("utxoFeeRate");
                 if (feeInput) feeInput.value = data.halfHourFee;
                 if (info) info.textContent = "Fee rate saat ini: " + data.halfHourFee + " sat/vB (dimuat otomatis)";
@@ -53,6 +54,33 @@ Object.assign(BitcoinTools, {
             ? "$" + feeUsd.toFixed(4) + (feeIdr !== null ? " / Rp" + Math.round(feeIdr).toLocaleString("id-ID") : "")
             : "Refresh price dulu di DCA Calculator";
 
+        this.renderUtxoInsight(inputs, outputs, feeRate, vBytes, feeSats);
+
         document.getElementById("utxoResult").style.display = "block";
+    },
+
+    // Box "Apa Artinya Ini?" -- kalimat perbandingan tier "Cepat" hanya muncul
+    // kalau data tier sudah dimuat DAN fee rate user lebih rendah dari tier itu.
+    renderUtxoInsight(inputs, outputs, feeRate, vBytes, feeSats) {
+        const box = document.getElementById("utxoInsight");
+        if (!box) return;
+
+        let html =
+            '<h4>\u{1F4A1} Apa Artinya Ini?</h4>' +
+            '<p>Artinya: transaksi dengan <strong>' + inputs + ' input</strong> dan <strong>' + outputs +
+            ' output</strong> ini membutuhkan sekitar <strong>' + Math.round(feeSats).toLocaleString("en-US") +
+            ' satoshi</strong> untuk dikirim di fee rate <strong>' + feeRate + ' sat/vB</strong> saat ini.</p>';
+
+        const fastest = this.utxoFeeTiers && Number(this.utxoFeeTiers.fastestFee);
+        if (fastest && fastest > feeRate) {
+            const multiple = Math.round((fastest / feeRate) * 10) / 10;
+            const feeAtFastest = Math.round(vBytes * fastest);
+            html +=
+                '<p>Kalau kamu pilih tingkat fee \'Cepat\' saat ini (' + fastest + ' sat/vB), biaya yang sama bisa ' +
+                'jadi sekitar <strong>' + multiple + 'x</strong> lebih mahal (~' +
+                feeAtFastest.toLocaleString("en-US") + ' sats).</p>';
+        }
+
+        box.innerHTML = html;
     }
 });

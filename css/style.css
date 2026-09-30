@@ -2166,6 +2166,89 @@ body.modal-open .quick-nav-fab {
     color: #222;
 }
 
+/* =====================================================
+   BOX "APA ARTINYA INI?" -- dipakai bersama di UTXO & Fee,
+   Halving Countdown, Mining Profit, Lightning Channel.
+===================================================== */
+.tool-insight-box {
+    margin-top: 16px;
+    background: rgba(247, 147, 26, 0.06);
+    border: 1px solid rgba(247, 147, 26, 0.35);
+    border-radius: 14px;
+    padding: 16px 18px;
+    animation: fadeResult .4s ease;
+}
+
+.tool-insight-box h4 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: #f7931a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tool-insight-box p {
+    margin: 0 0 8px 0;
+    font-size: 13.5px;
+    color: #555;
+    line-height: 1.6;
+}
+
+.tool-insight-box p:last-child {
+    margin-bottom: 0;
+}
+
+.tool-insight-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #f7931a;
+    text-decoration: none;
+}
+
+.tool-insight-link:hover {
+    text-decoration: underline;
+}
+
+/* =====================================================
+   WALLET BALANCE CHECKER -- rincian UTXO (mini-explorer)
+===================================================== */
+.wallet-utxo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wallet-utxo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafafa;
+    border: 1px solid #ececec;
+    border-radius: 12px;
+    padding: 12px 14px;
+    text-decoration: none;
+    transition: .2s;
+}
+
+.wallet-utxo-item:hover {
+    border-color: #f7931a;
+    background: #fff8ef;
+}
+
+.wallet-utxo-item .wallet-utxo-value {
+    font-weight: 700;
+    color: #222;
+    font-size: 14px;
+}
+
+.wallet-utxo-item .wallet-utxo-meta {
+    font-size: 11.5px;
+    color: #888;
+}
+
 @keyframes fadeResult {
 
     from {

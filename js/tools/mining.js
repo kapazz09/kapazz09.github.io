@@ -83,6 +83,32 @@ Object.assign(BitcoinTools, {
         document.getElementById("miningCost").textContent = fmt(dailyCostUSD);
         document.getElementById("miningProfit").textContent = (dailyProfitUSD >= 0 ? "+" : "-") + fmt(Math.abs(dailyProfitUSD));
 
+        this.renderMiningInsight(hashrateTH, elecCost, dailyProfitUSD, fmt);
+
         document.getElementById("miningResult").style.display = "block";
+    },
+
+    // Box "Apa Artinya Ini?" -- kalimatnya menyesuaikan hasil untung / rugi.
+    renderMiningInsight(hashrateTH, elecCost, dailyProfitUSD, fmt) {
+        const box = document.getElementById("miningInsight");
+        if (!box) return;
+
+        const isProfit = dailyProfitUSD >= 0;
+        const amountText = fmt(Math.abs(dailyProfitUSD));
+
+        const lead =
+            '<p>Artinya: dengan hashrate <strong>' + hashrateTH + ' TH/s</strong>, biaya listrik <strong>$' +
+            elecCost + ' per kWh</strong>, dan harga BTC saat ini, kamu diperkirakan <strong>' +
+            (isProfit ? 'untung' : 'rugi') + '</strong> sekitar <strong>' + amountText + '</strong> per hari.</p>';
+
+        const explain = isProfit
+            ? '<p>Ingat, profitabilitas mining sangat bergantung pada harga listrik, efisiensi alat, dan harga BTC ' +
+              'yang bisa berubah kapan saja \u2014 angka ini estimasi hari ini, bukan jaminan jangka panjang.</p>'
+            : '<p>Ini terjadi kalau biaya operasional lebih besar dari nilai Bitcoin yang berhasil di-mining.</p>';
+
+        box.innerHTML =
+            '<h4>\u{1F4A1} Apa Artinya Ini?</h4>' + lead + explain +
+            '<a class="tool-insight-link" href="materi/mining-pool/index.html" target="_blank">' +
+            '\u{1F517} Pelajari lebih lanjut soal mining di Materi #7 \u2192</a>';
     }
 });
