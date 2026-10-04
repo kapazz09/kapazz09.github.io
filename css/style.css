@@ -1627,10 +1627,17 @@ body.modal-open {
     box-shadow: 0 8px 24px rgba(247, 147, 26, 0.45);
     z-index: 9990;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* Paksa browser kasih tombol ini "layer" GPU sendiri, supaya tidak
+       ikut ke-repaint bareng konten yang di-scroll di belakangnya. */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .quick-nav-fab:hover {
-    transform: translateY(-3px) scale(1.05);
+    transform: translateZ(0) translateY(-3px) scale(1.05);
     box-shadow: 0 12px 30px rgba(247, 147, 26, 0.55);
 }
 
@@ -1833,6 +1840,14 @@ body.modal-open .quick-nav-fab {
     .quick-nav-fab svg {
         width: 20px;
         height: 20px;
+    }
+
+    /* Tombol "kembali ke atas" ditumpuk berjejer VERTIKAL di atas tombol
+       pencarian (bukan tumpang tindih) -- khusus mobile, karena di
+       desktop kedua tombol ini sudah cukup berjauhan dan tidak bentrok. */
+    .scroll-top-btn {
+        right: 14px;
+        bottom: 68px;
     }
 
     .quick-nav-panel {
