@@ -142,6 +142,17 @@
         </div>
     </section>
 
+    <!-- ============ TOMBOL COBA SENDIRI ============ -->
+    <div class="try-it-wrap">
+        <button type="button" class="try-it-card" data-open-embed="halving">
+            <span class="try-it-icon" aria-hidden="true">⏳</span>
+            <span class="try-it-text">
+                <span class="try-it-label">🔬 Coba Sendiri: Cek Countdown Halving Berikutnya →</span>
+                <span class="try-it-sub">Buka Halving Countdown tanpa keluar dari halaman ini</span>
+            </span>
+        </button>
+    </div>
+
     <!-- ============ BAGIAN 3: SOLO MINING VS MINING POOL ============ -->
     <section class="materi-section" id="section-3">
         <span class="section-tag">Bagian 3</span>
@@ -296,6 +307,17 @@
         </div>
     </section>
 
+    <!-- ============ TOMBOL COBA SENDIRI ============ -->
+    <div class="try-it-wrap">
+        <button type="button" class="try-it-card" data-open-embed="mining">
+            <span class="try-it-icon" aria-hidden="true">⛏️</span>
+            <span class="try-it-text">
+                <span class="try-it-label">🔬 Coba Sendiri: Hitung Estimasi Profit Mining-mu →</span>
+                <span class="try-it-sub">Buka Mining Profit Calculator tanpa keluar dari halaman ini</span>
+            </span>
+        </button>
+    </div>
+
     <!-- ============ BAGIAN 9: MINI-QUIZ CHECKPOINT ============ -->
     <section class="materi-section" id="section-9">
         <span class="section-tag">Bagian 9</span>
@@ -369,11 +391,150 @@
     </div>
 </div>
 
+<!-- ===== MODAL EMBED 1: HALVING COUNTDOWN (pakai js/tools/halving.js dari root) ===== -->
+<div class="embed-tool-backdrop" id="embedHalvingBackdrop" onclick="closeEmbedOnBackdrop(event)">
+    <div class="embed-tool-box" role="dialog" aria-modal="true" aria-labelledby="embedHalvingTitle">
+        <button type="button" class="embed-tool-close" onclick="closeEmbed('halving')" aria-label="Tutup">✕</button>
+        <h3 id="embedHalvingTitle">⏳ Halving Countdown</h3>
+        <p class="embed-tool-desc">Estimasi waktu menuju halving Bitcoin berikutnya.</p>
+
+        <div class="embed-result" id="halvingContainer">
+            <div class="skeleton-row">
+                <span class="skeleton-block"></span>
+                <span class="skeleton-block"></span>
+                <span class="skeleton-block"></span>
+                <span class="skeleton-block short"></span>
+            </div>
+        </div>
+        <div class="tool-insight-box" id="halvingInsight" style="display:none;"></div>
+    </div>
+</div>
+
+<!-- ===== MODAL EMBED 2: MINING PROFIT CALCULATOR (pakai js/tools/mining.js dari root) ===== -->
+<div class="embed-tool-backdrop" id="embedMiningBackdrop" onclick="closeEmbedOnBackdrop(event)">
+    <div class="embed-tool-box" role="dialog" aria-modal="true" aria-labelledby="embedMiningTitle">
+        <button type="button" class="embed-tool-close" onclick="closeEmbed('mining')" aria-label="Tutup">✕</button>
+        <h3 id="embedMiningTitle">⛏️ Mining Profit Calculator</h3>
+        <p class="embed-tool-desc">Estimasi profit mining harian (perkiraan, bukan angka pasti).</p>
+
+        <div class="embed-field">
+            <label for="miningHashrate">Hashrate Anda (TH/s)</label>
+            <div class="embed-input"><span>TH/s</span><input type="number" id="miningHashrate" placeholder="100" value="100" inputmode="decimal"></div>
+        </div>
+        <div class="embed-field">
+            <label for="miningPower">Konsumsi Daya (Watt)</label>
+            <div class="embed-input"><span>W</span><input type="number" id="miningPower" placeholder="3000" value="3000" inputmode="numeric"></div>
+        </div>
+        <div class="embed-field">
+            <label for="miningElecCost">Biaya Listrik per kWh ($)</label>
+            <div class="embed-input"><span>$</span><input type="text" inputmode="decimal" id="miningElecCost" placeholder="0,10" value="0,10"></div>
+        </div>
+        <div class="embed-field">
+            <label for="miningPoolFee">Pool Fee (%)</label>
+            <div class="embed-input"><span>%</span><input type="number" id="miningPoolFee" placeholder="1" value="1" step="any" inputmode="decimal"></div>
+        </div>
+        <div class="embed-field">
+            <button type="button" id="loadNetworkBtn" class="embed-load-btn">Load Network Data</button>
+            <p id="networkHashrateInfo" class="embed-fee-info">Network hashrate belum dimuat.</p>
+        </div>
+        <button type="button" class="embed-calc-btn" id="miningCalcBtn">Calculate Profit</button>
+
+        <div class="embed-result" id="miningResult" style="display:none;">
+            <h4>Estimasi Harian</h4>
+            <div class="embed-result-row"><span>BTC Ditambang</span><strong id="miningBTC"></strong></div>
+            <div class="embed-result-row"><span>Pendapatan</span><strong id="miningRevenue"></strong></div>
+            <div class="embed-result-row"><span>Biaya Listrik</span><strong id="miningCost"></strong></div>
+            <div class="embed-result-row"><span>Profit Bersih</span><strong id="miningProfit"></strong></div>
+            <div class="tool-insight-box" id="miningInsight"></div>
+        </div>
+        <p class="embed-tool-note">*Estimasi disederhanakan. Tidak memperhitungkan perubahan difficulty, harga BTC yang fluktuatif, atau downtime.</p>
+    </div>
+</div>
+
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="glossary-data.js"></script>
 <script src="script.js"></script>
 <script src="../shared/site-index.js"></script>
 <script src="../shared/quick-nav.js"></script>
+<!-- Logika kedua kalkulator = SATU SUMBER dengan Bitcoin Toolkit di beranda (core + halving + mining dari root) -->
+<script src="../../js/tools/core.js"></script>
+<script src="../../js/tools/halving.js"></script>
+<script src="../../js/tools/mining.js"></script>
+<script>
+    // BitcoinTools.init() TIDAK dipanggil (supaya quiz/glossary/mempool/dll tidak ikut termuat).
+    // Dipasang manual: event Mining Profit; Halving Countdown dimuat saat modalnya dibuka.
+    // Terpisah dari simulasi mining di Bagian 1 (ID simulasi: mine..., ID tool: mining.../halving...).
+    (function () {
+        var T = (typeof BitcoinTools !== "undefined") ? BitcoinTools : null;
+        var halvingLoadedAt = 0;
+        var pricePending = false;
+
+        function loadPriceOnce() {
+            if (!T || T.btcPrice || pricePending) return;
+            pricePending = true;
+            Promise.resolve(T.loadPrice()).then(function () { pricePending = false; }, function () { pricePending = false; });
+        }
+
+        // --- Mining: pesan "harga belum termuat" bawaan mining.js menyebut DCA Calculator (tidak ada di sini).
+        // Listener 1 (sebelum listener mining.js) mengganti pesan itu; listener 2 (sesudahnya) memulihkan alert.
+        var calcBtn = document.getElementById("miningCalcBtn");
+        var realAlert = window.alert;
+        if (calcBtn) {
+            calcBtn.addEventListener("click", function () {
+                window.alert = function (msg) {
+                    if (typeof msg === "string" && msg.indexOf("Harga BTC belum termuat") === 0) {
+                        msg = "Harga BTC belum termuat. Tunggu sebentar lalu klik Calculate Profit lagi.";
+                    }
+                    return realAlert.call(window, msg);
+                };
+            });
+        }
+        if (T && T.bindMiningEvents) T.bindMiningEvents();
+        if (calcBtn) {
+            calcBtn.addEventListener("click", function () {
+                window.alert = realAlert;
+                if (T && !T.btcPrice) loadPriceOnce();
+            });
+        }
+
+        // --- Buka / tutup modal
+        window.openEmbed = function (name) {
+            var backdrop = document.getElementById(name === "halving" ? "embedHalvingBackdrop" : "embedMiningBackdrop");
+            if (!backdrop) return;
+            backdrop.classList.add("open");
+            document.body.style.overflow = "hidden";
+            if (!T) return;
+            if (name === "halving") {
+                var c = document.getElementById("halvingContainer");
+                var failed = c && c.textContent.indexOf("Gagal memuat") !== -1;
+                if (T.loadHalvingData && (!halvingLoadedAt || failed || Date.now() - halvingLoadedAt > 300000)) {
+                    halvingLoadedAt = Date.now();
+                    T.loadHalvingData();
+                }
+            } else {
+                loadPriceOnce();
+            }
+        };
+        window.closeEmbed = function (name) {
+            var backdrop = document.getElementById(name === "halving" ? "embedHalvingBackdrop" : "embedMiningBackdrop");
+            if (backdrop) backdrop.classList.remove("open");
+            if (!document.querySelector(".embed-tool-backdrop.open")) document.body.style.overflow = "";
+        };
+        window.closeEmbedOnBackdrop = function (e) {
+            var t = e.target;
+            if (t && t.classList && t.classList.contains("embed-tool-backdrop")) {
+                t.classList.remove("open");
+                if (!document.querySelector(".embed-tool-backdrop.open")) document.body.style.overflow = "";
+            }
+        };
+        document.querySelectorAll("[data-open-embed]").forEach(function (btn) {
+            btn.addEventListener("click", function () { window.openEmbed(btn.getAttribute("data-open-embed")); });
+        });
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") { window.closeEmbed("halving"); window.closeEmbed("mining"); }
+        });
+    })();
+</script>
 
 <button type="button" class="quick-nav-fab" id="quickNavFab" onclick="openQuickNav()"
     aria-label="Navigasi cepat & cari lintas materi">

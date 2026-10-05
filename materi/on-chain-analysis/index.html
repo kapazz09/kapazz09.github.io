@@ -121,6 +121,17 @@
             <p class="diagram-hint">Tap salah satu kotak di atas untuk lihat penjelasan lebih detail.</p>
         </section>
 
+        <!-- ========== TOMBOL COBA SENDIRI ========== -->
+        <div class="try-it-wrap">
+            <button type="button" class="try-it-card" data-open-embed-wallet>
+                <span class="try-it-icon" aria-hidden="true">🔎</span>
+                <span class="try-it-text">
+                    <span class="try-it-label">🔬 Coba Sendiri: Cek Data On-Chain Alamat Manapun →</span>
+                    <span class="try-it-sub">Buka Wallet Balance Checker tanpa keluar dari halaman ini</span>
+                </span>
+            </button>
+        </div>
+
         <!-- ========== SECTION 2 ========== -->
         <section class="materi-section" id="section-2">
             <span class="section-tag">Bagian 2</span>
@@ -228,6 +239,17 @@
                     institusi yang memindahkan dana karena alasan operasional, bukan keputusan jual/beli.</p>
             </div>
         </section>
+
+        <!-- ========== TOMBOL COBA SENDIRI ========== -->
+        <div class="try-it-wrap">
+            <button type="button" class="try-it-card" data-open-embed-wallet>
+                <span class="try-it-icon" aria-hidden="true">🔎</span>
+                <span class="try-it-text">
+                    <span class="try-it-label">🔬 Coba Sendiri: Lihat Riwayat & Rincian UTXO Sebuah Alamat →</span>
+                    <span class="try-it-sub">Buka Wallet Balance Checker tanpa keluar dari halaman ini</span>
+                </span>
+            </button>
+        </div>
 
         <!-- ========== SECTION 4 ========== -->
         <section class="materi-section" id="section-4">
@@ -420,10 +442,108 @@
         </div>
     </div>
 
+    <!-- ===== MODAL EMBED: WALLET BALANCE CHECKER (pakai js/tools/wallet.js dari root) ===== -->
+    <div class="embed-tool-backdrop" id="embedWalletBackdrop" onclick="closeEmbedWalletOnBackdrop(event)">
+        <div class="embed-tool-box" role="dialog" aria-modal="true" aria-labelledby="embedWalletTitle">
+            <button type="button" class="embed-tool-close" onclick="closeEmbedWallet()" aria-label="Tutup">✕</button>
+            <h3 id="embedWalletTitle">🔎 Wallet Balance Checker</h3>
+            <p class="embed-tool-desc">Cek saldo alamat Bitcoin (data on-chain publik).</p>
+
+            <div class="embed-field">
+                <label for="walletAddressInput">Alamat Bitcoin</label>
+                <div class="embed-input"><span>₿</span><input type="text" id="walletAddressInput" placeholder="bc1q..." autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
+            </div>
+            <button type="button" class="embed-calc-btn" id="walletCheckBtn">Cek Saldo</button>
+
+            <div class="embed-result" id="walletResult" style="display:none;">
+                <h4>Hasil</h4>
+                <div class="embed-result-row"><span>Saldo</span><strong id="walletBalance"></strong></div>
+                <div class="embed-result-row"><span>Total Diterima</span><strong id="walletReceived"></strong></div>
+                <div class="embed-result-row"><span>Total Dikirim</span><strong id="walletSent"></strong></div>
+                <div class="embed-result-row"><span>Jumlah Transaksi</span><strong id="walletTxCount"></strong></div>
+                <div class="embed-result-row"><span>Jumlah UTXO</span><strong id="walletUtxoCount"></strong></div>
+                <div class="embed-result-row"><span>Address Type</span><strong id="walletAddressType"></strong></div>
+                <div class="embed-result-row" id="walletFirstSeenRow"><span>First Seen</span><strong id="walletFirstSeen"></strong></div>
+                <div class="embed-result-row" id="walletLastActivityRow"><span>Last Activity</span><strong id="walletLastActivity"></strong></div>
+                <div class="embed-result-row"><span>Saldo (Live)</span><strong id="walletBalanceFiat"></strong></div>
+
+                <a href="#" target="_blank" rel="noopener" id="walletMempoolLink" class="tool-insight-link">🔗 Lihat di Mempool.space</a>
+                <p id="walletFallbackNote" class="embed-fallback-note" style="display:none;">Detail lengkap sedang tidak tersedia, menampilkan data dasar saja.</p>
+
+                <div id="walletUtxoDetails" class="embed-utxo-details" style="display:none;">
+                    <h4>📋 Rincian UTXO</h4>
+                    <div id="walletUtxoList" class="wallet-utxo-list"></div>
+                    <button type="button" id="walletUtxoShowMoreBtn" class="embed-load-btn" style="display:none;"></button>
+                </div>
+
+                <a href="../utxo-fee-alamat/index.html" target="_blank" class="tool-insight-link">🔗 Pelajari lebih lanjut soal UTXO di Materi #3 →</a>
+            </div>
+            <p class="embed-wallet-disclaimer">⚠️ <strong>Disclaimer:</strong> Semua data transaksi Bitcoin bersifat publik dan bisa dilihat siapa saja di blockchain — bukan berarti anonim (pseudonymous). Gunakan tool ini secara bertanggung jawab; jangan gunakan untuk melacak atau mengganggu privasi orang lain.</p>
+        </div>
+    </div>
+
     <script src="glossary-data.js"></script>
     <script src="script.js"></script>
     <script src="../shared/site-index.js"></script>
     <script src="../shared/quick-nav.js"></script>
+    <!-- Logika kalkulator = SATU SUMBER dengan Bitcoin Toolkit di beranda (core.js + wallet.js dari root) -->
+    <script src="../../js/tools/core.js"></script>
+    <script src="../../js/tools/wallet.js"></script>
+    <script>
+        // Hanya pasang event Wallet Checker (BitcoinTools.init() TIDAK dipanggil, supaya tidak
+        // ikut memuat quiz/glossary/mempool/halving yang tidak dipakai di halaman ini).
+        // Tombol scan QR sengaja tidak disertakan di modal ini (wallet.js melewati tombol yang tidak ada).
+        (function () {
+            var T = (typeof BitcoinTools !== "undefined") ? BitcoinTools : null;
+            var pricePending = false;
+
+            function loadPriceOnce() {
+                if (!T || T.btcPrice || pricePending) return;
+                pricePending = true;
+                Promise.resolve(T.loadPrice()).then(function () { pricePending = false; }, function () { pricePending = false; });
+            }
+
+            if (T && T.bindWalletEvents) T.bindWalletEvents();
+
+            // wallet.js menulis "Buka DCA Calculator agar harga live termuat" kalau harga BTC belum ada;
+            // DCA Calculator tidak ada di halaman ini, jadi teks itu diganti.
+            var fiat = document.getElementById("walletBalanceFiat");
+            if (fiat && window.MutationObserver) {
+                new MutationObserver(function () {
+                    if (fiat.textContent.indexOf("Buka DCA Calculator") !== -1) {
+                        fiat.textContent = "Harga live belum termuat";
+                    }
+                }).observe(fiat, { childList: true, characterData: true, subtree: true });
+            }
+            var checkBtn = document.getElementById("walletCheckBtn");
+            if (checkBtn) {
+                checkBtn.addEventListener("click", function () { if (T && !T.btcPrice) loadPriceOnce(); });
+            }
+
+            window.openEmbedWallet = function () {
+                var backdrop = document.getElementById("embedWalletBackdrop");
+                if (!backdrop) return;
+                backdrop.classList.add("open");
+                document.body.style.overflow = "hidden";
+                loadPriceOnce();
+            };
+            window.closeEmbedWallet = function () {
+                var backdrop = document.getElementById("embedWalletBackdrop");
+                if (backdrop) backdrop.classList.remove("open");
+                document.body.style.overflow = "";
+            };
+            window.closeEmbedWalletOnBackdrop = function (e) {
+                if (e.target && e.target.id === "embedWalletBackdrop") window.closeEmbedWallet();
+            };
+
+            document.querySelectorAll("[data-open-embed-wallet]").forEach(function (btn) {
+                btn.addEventListener("click", window.openEmbedWallet);
+            });
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape") window.closeEmbedWallet();
+            });
+        })();
+    </script>
 
     <button type="button" class="quick-nav-fab" id="quickNavFab" onclick="openQuickNav()"
         aria-label="Navigasi cepat & cari lintas materi">

@@ -196,6 +196,17 @@
             </div>
         </section>
 
+        <!-- ========== TOMBOL COBA SENDIRI ========== -->
+        <div class="try-it-wrap">
+            <button type="button" class="try-it-card" data-open-embed-utxo>
+                <span class="try-it-icon" aria-hidden="true">🧮</span>
+                <span class="try-it-text">
+                    <span class="try-it-label">🔬 Coba Sendiri: Lihat Bagaimana Jumlah UTXO Memengaruhi Transaksimu →</span>
+                    <span class="try-it-sub">Buka UTXO & Fee Calculator tanpa keluar dari halaman ini</span>
+                </span>
+            </button>
+        </div>
+
         <!-- ========== SECTION 4 ========== -->
         <section class="materi-section" id="section-4">
             <span class="section-tag">Bagian 4</span>
@@ -227,6 +238,17 @@
             </div>
             <p class="diagram-hint">Tap tiap kotak di atas untuk penjelasan lebih detail.</p>
         </section>
+
+        <!-- ========== TOMBOL COBA SENDIRI ========== -->
+        <div class="try-it-wrap">
+            <button type="button" class="try-it-card" data-open-embed-utxo>
+                <span class="try-it-icon" aria-hidden="true">🧮</span>
+                <span class="try-it-text">
+                    <span class="try-it-label">🔬 Coba Sendiri: Hitung Estimasi Fee Transaksimu →</span>
+                    <span class="try-it-sub">Buka UTXO & Fee Calculator tanpa keluar dari halaman ini</span>
+                </span>
+            </button>
+        </div>
 
         <!-- ========== SECTION 5 ========== -->
         <section class="materi-section" id="section-5">
@@ -440,10 +462,99 @@
         </div>
     </div>
 
+    <!-- ===== MODAL EMBED: UTXO & FEE CALCULATOR (pakai js/tools/utxo.js dari root) ===== -->
+    <div class="embed-tool-backdrop" id="embedUtxoBackdrop" onclick="closeEmbedUtxoOnBackdrop(event)">
+        <div class="embed-tool-box" role="dialog" aria-modal="true" aria-labelledby="embedUtxoTitle">
+            <button type="button" class="embed-tool-close" onclick="closeEmbedUtxo()" aria-label="Tutup">✕</button>
+            <h3 id="embedUtxoTitle">🧮 UTXO &amp; Fee Calculator</h3>
+            <p class="embed-tool-desc">Estimasi ukuran transaksi dan fee (native SegWit).</p>
+
+            <div class="embed-field">
+                <label for="utxoInputs">Jumlah Input (UTXO)</label>
+                <div class="embed-input"><span>#</span><input type="number" id="utxoInputs" value="1" inputmode="numeric" min="1"></div>
+            </div>
+            <div class="embed-field">
+                <label for="utxoOutputs">Jumlah Output</label>
+                <div class="embed-input"><span>#</span><input type="number" id="utxoOutputs" value="2" inputmode="numeric" min="1"></div>
+            </div>
+            <div class="embed-field">
+                <label for="utxoFeeRate">Fee Rate (sat/vB)</label>
+                <button type="button" id="loadFeeRateBtn" class="embed-load-btn">Load Current Fee Rate</button>
+                <p id="feeRateInfo" class="embed-fee-info"></p>
+                <div class="embed-input"><span>sat/vB</span><input type="number" id="utxoFeeRate" value="10" inputmode="decimal" min="1"></div>
+            </div>
+            <button type="button" class="embed-calc-btn" id="utxoCalcBtn">Calculate</button>
+
+            <div class="embed-result" id="utxoResult" style="display:none;">
+                <h4>Estimasi</h4>
+                <div class="embed-result-row"><span>Ukuran Transaksi</span><strong id="utxoSize"></strong></div>
+                <div class="embed-result-row"><span>Estimasi Fee (sat)</span><strong id="utxoFeeSat"></strong></div>
+                <div class="embed-result-row"><span>Estimasi Fee</span><strong id="utxoFeeUsd"></strong></div>
+                <div class="tool-insight-box" id="utxoInsight"></div>
+            </div>
+            <p class="embed-tool-note">*Estimasi berdasarkan rumus umum native SegWit (P2WPKH): 10.5 + (input × 68) + (output × 31) vBytes.</p>
+        </div>
+    </div>
+
     <script src="glossary-data.js"></script>
     <script src="script.js"></script>
     <script src="../shared/site-index.js"></script>
     <script src="../shared/quick-nav.js"></script>
+    <!-- Logika kalkulator = SATU SUMBER dengan Bitcoin Toolkit di beranda (core.js + utxo.js dari root) -->
+    <script src="../../js/tools/core.js"></script>
+    <script src="../../js/tools/utxo.js"></script>
+    <script>
+        // Hanya pasang event UTXO (BitcoinTools.init() TIDAK dipanggil, supaya tidak
+        // ikut memuat quiz/glossary/mempool/halving yang tidak dipakai di halaman ini).
+        (function () {
+            var priceRequested = false;
+
+            if (typeof BitcoinTools !== "undefined" && BitcoinTools.bindUtxoEvents) {
+                BitcoinTools.bindUtxoEvents();
+            }
+
+            // Dipasang SETELAH listener utxo.js -> jalan sesudah hitung. Kalau harga BTC
+            // belum termuat, ganti pesan bawaan yang merujuk ke DCA Calculator (tidak ada di sini).
+            var calcBtn = document.getElementById("utxoCalcBtn");
+            if (calcBtn) {
+                calcBtn.addEventListener("click", function () {
+                    var usdEl = document.getElementById("utxoFeeUsd");
+                    var res = document.getElementById("utxoResult");
+                    if (!usdEl || !res || res.style.display === "none") return;
+                    if (typeof BitcoinTools !== "undefined" && !BitcoinTools.btcPrice) {
+                        usdEl.textContent = "Harga BTC belum termuat";
+                        BitcoinTools.loadPrice();
+                    }
+                });
+            }
+
+            window.openEmbedUtxo = function () {
+                var backdrop = document.getElementById("embedUtxoBackdrop");
+                if (!backdrop) return;
+                backdrop.classList.add("open");
+                document.body.style.overflow = "hidden";
+                if (!priceRequested && typeof BitcoinTools !== "undefined" && !BitcoinTools.btcPrice) {
+                    priceRequested = true;
+                    BitcoinTools.loadPrice();
+                }
+            };
+            window.closeEmbedUtxo = function () {
+                var backdrop = document.getElementById("embedUtxoBackdrop");
+                if (backdrop) backdrop.classList.remove("open");
+                document.body.style.overflow = "";
+            };
+            window.closeEmbedUtxoOnBackdrop = function (e) {
+                if (e.target && e.target.id === "embedUtxoBackdrop") window.closeEmbedUtxo();
+            };
+
+            document.querySelectorAll("[data-open-embed-utxo]").forEach(function (btn) {
+                btn.addEventListener("click", window.openEmbedUtxo);
+            });
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape") window.closeEmbedUtxo();
+            });
+        })();
+    </script>
 
     <button type="button" class="quick-nav-fab" id="quickNavFab" onclick="openQuickNav()"
         aria-label="Navigasi cepat & cari lintas materi">

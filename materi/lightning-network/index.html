@@ -211,6 +211,17 @@
             </div>
         </section>
 
+        <!-- ========== TOMBOL COBA SENDIRI ========== -->
+        <div class="try-it-wrap">
+            <button type="button" class="try-it-card" data-open-embed-channel>
+                <span class="try-it-icon" aria-hidden="true">⚡</span>
+                <span class="try-it-text">
+                    <span class="try-it-label">🔬 Coba Sendiri: Hitung Kapasitas Channel yang Kamu Butuhkan →</span>
+                    <span class="try-it-sub">Buka Lightning Channel Capacity tanpa keluar dari halaman ini</span>
+                </span>
+            </button>
+        </div>
+
         <!-- ========== SECTION 4 ========== -->
         <section class="materi-section" id="section-4">
             <span class="section-tag">Bagian 4</span>
@@ -300,6 +311,17 @@
                     wallet non-custodial begitu mulai menyimpan/bertransaksi rutin dalam jumlah yang berarti.</p>
             </div>
         </section>
+
+        <!-- ========== TOMBOL COBA SENDIRI ========== -->
+        <div class="try-it-wrap">
+            <button type="button" class="try-it-card" data-open-embed-channel>
+                <span class="try-it-icon" aria-hidden="true">⚡</span>
+                <span class="try-it-text">
+                    <span class="try-it-label">🔬 Coba Sendiri: Simulasikan Kapasitas Channel-mu →</span>
+                    <span class="try-it-sub">Buka Lightning Channel Capacity tanpa keluar dari halaman ini</span>
+                </span>
+            </button>
+        </div>
 
         <!-- ========== SECTION 6 ========== -->
         <section class="materi-section" id="section-6">
@@ -424,10 +446,76 @@
         </div>
     </div>
 
+    <!-- ===== MODAL EMBED: LIGHTNING CHANNEL CAPACITY (pakai js/tools/channel.js dari root) ===== -->
+    <div class="embed-tool-backdrop" id="embedChannelBackdrop" onclick="closeEmbedChannelOnBackdrop(event)">
+        <div class="embed-tool-box" role="dialog" aria-modal="true" aria-labelledby="embedChannelTitle">
+            <button type="button" class="embed-tool-close" onclick="closeEmbedChannel()" aria-label="Tutup">✕</button>
+            <h3 id="embedChannelTitle">⚡ Lightning Channel Capacity</h3>
+            <p class="embed-tool-desc">Pahami outbound vs inbound liquidity dalam channel Lightning.</p>
+
+            <div class="embed-field">
+                <label for="channelTotal">Total Kapasitas Channel (sat)</label>
+                <div class="embed-input"><span>sat</span><input type="number" id="channelTotal" value="500000" inputmode="numeric" min="1"></div>
+            </div>
+            <div class="embed-field">
+                <label for="channelLocal">Local Balance / Saldo Anda (sat)</label>
+                <div class="embed-input"><span>sat</span><input type="number" id="channelLocal" value="200000" inputmode="numeric" min="0"></div>
+            </div>
+            <button type="button" class="embed-calc-btn" id="channelCalcBtn">Hitung Kapasitas</button>
+
+            <div class="embed-result" id="channelResult" style="display:none;">
+                <h4>Hasil</h4>
+                <div class="channel-bar">
+                    <div class="channel-bar-local" id="channelBarLocal"></div>
+                    <div class="channel-bar-remote" id="channelBarRemote"></div>
+                </div>
+                <div class="embed-result-row"><span>Outbound (bisa kirim)</span><strong id="channelOutbound"></strong></div>
+                <div class="embed-result-row"><span>Inbound (bisa terima)</span><strong id="channelInbound"></strong></div>
+                <div class="tool-insight-box" id="channelInsight"></div>
+            </div>
+            <p class="embed-tool-note">*Outbound liquidity = saldo yang bisa Anda kirim keluar. Inbound liquidity = kapasitas orang lain mengirim ke Anda lewat channel ini.</p>
+        </div>
+    </div>
+
     <script src="glossary-data.js"></script>
     <script src="script.js"></script>
     <script src="../shared/site-index.js"></script>
     <script src="../shared/quick-nav.js"></script>
+    <!-- Logika kalkulator = SATU SUMBER dengan Bitcoin Toolkit di beranda (core.js + channel.js dari root) -->
+    <script src="../../js/tools/core.js"></script>
+    <script src="../../js/tools/channel.js"></script>
+    <script>
+        // Hanya pasang event Channel Capacity (BitcoinTools.init() TIDAK dipanggil, supaya tidak
+        // ikut memuat harga/quiz/glossary/mempool/halving yang tidak dipakai di halaman ini).
+        // Terpisah total dari simulasi kirim/tutup channel di Bagian 3 (ID-nya berbeda: channelSim...).
+        (function () {
+            if (typeof BitcoinTools !== "undefined" && BitcoinTools.bindChannelEvents) {
+                BitcoinTools.bindChannelEvents();
+            }
+
+            window.openEmbedChannel = function () {
+                var backdrop = document.getElementById("embedChannelBackdrop");
+                if (!backdrop) return;
+                backdrop.classList.add("open");
+                document.body.style.overflow = "hidden";
+            };
+            window.closeEmbedChannel = function () {
+                var backdrop = document.getElementById("embedChannelBackdrop");
+                if (backdrop) backdrop.classList.remove("open");
+                document.body.style.overflow = "";
+            };
+            window.closeEmbedChannelOnBackdrop = function (e) {
+                if (e.target && e.target.id === "embedChannelBackdrop") window.closeEmbedChannel();
+            };
+
+            document.querySelectorAll("[data-open-embed-channel]").forEach(function (btn) {
+                btn.addEventListener("click", window.openEmbedChannel);
+            });
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape") window.closeEmbedChannel();
+            });
+        })();
+    </script>
 
     <button type="button" class="quick-nav-fab" id="quickNavFab" onclick="openQuickNav()"
         aria-label="Navigasi cepat & cari lintas materi">
