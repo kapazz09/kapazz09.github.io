@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Sertifikat — Kapazz Bitcoin</title>
+    <meta name="description" content="Verifikasi keaslian Sertifikat Belajar Kapazz Bitcoin dengan Certificate ID.">
+    <link rel="shortcut icon" href="../assets/icons/favicon.ico">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="verify-page">
+
+        <header class="verify-header">
+            <a href="../index.html" class="back-btn">← Kembali ke Beranda</a>
+            <h1>🔍 Verifikasi Sertifikat Kapazz Bitcoin</h1>
+            <p class="verify-subtitle">Masukkan Certificate ID untuk memastikan keasliannya</p>
+        </header>
+
+        <main>
+            <div class="verify-card">
+                <label for="certIdInput" class="verify-label">Certificate ID</label>
+                <input type="text" id="certIdInput" class="verify-input" placeholder="Contoh: KAPAZZ-BTC-20260922-X7K2"
+                    autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="40">
+                <button type="button" id="verifyBtn" class="verify-btn">Verify</button>
+            </div>
+
+            <div id="verifyResult" class="verify-result" aria-live="polite" style="display:none;"></div>
+        </main>
+
+    </div>
+
+    <script>
+        // Web App Apps Script yang SAMA dengan rating & komentar (lihat RATING_API_URL di js/ratings.js).
+        // Kalau URL deploy Web App berubah, ubah di sini DAN di js/ratings.js.
+        var VERIFY_API_URL = "https://script.google.com/macros/s/AKfycbyDNTDrhLTfLINt4c4t1EU1ox5wZEKpDrPWEn5gsLn4pgAQMP8o2qRwIIQ2YcRqZTQ/exec";
+        var CERT_ID_PATTERN = /^KAPAZZ-BTC-\d{8}-[A-Z0-9]{4}$/;
+
+        var input = document.getElementById("certIdInput");
+        var btn = document.getElementById("verifyBtn");
+        var box = document.getElementById("verifyResult");
+
+        function clearBox() {
+            while (box.firstChild) box.removeChild(box.firstChild);
+        }
+
+        function addLine(parent, className, text) {
+            var el = document.createElement("p");
+            el.className = className;
+            el.textContent = text;
+            parent.appendChild(el);
+            return el;
+        }
+
+        function showMessage(text) {
+            clearBox();
+            box.className = "verify-result verify-result--neutral";
+            addLine(box, "verify-msg", text);
+            box.style.display = "block";
+        }
+
+        function showFound(data) {
+            clearBox();
+            box.className = "verify-result verify-result--found";
+            addLine(box, "verify-found-title", "✓ Certificate ditemukan");
+            addLine(box, "verify-found-label", "Diberikan kepada");
+            addLine(box, "verify-found-name", data.nama || "-");
+            addLine(box, "verify-found-line", "✓ Telah menyelesaikan " + (Number(data.jumlahModul) || 8) + " modul");
+            addLine(box, "verify-found-date", "Tanggal terbit: " + (data.tanggalTerbit || "-"));
+            box.style.display = "block";
+        }
+
+        function setBusy(isBusy) {
+            btn.disabled = isBusy;
+            btn.textContent = isBusy ? "Memeriksa..." : "Verify";
+        }
+
+        function verifyCertificate() {
+            var id = input.value.replace(/\s+/g, "").toUpperCase();
+            input.value = id;
+
+            if (!id) {
+                showMessage("Masukkan Certificate ID dulu.");
+                return;
+            }
+            if (!CERT_ID_PATTERN.test(id)) {
+                showMessage("Certificate ID tidak ditemukan. Periksa kembali ID yang kamu masukkan.");
+                return;
+            }
+
+            setBusy(true);
+            var controller = (typeof AbortController !== "undefined") ? new AbortController() : null;
+            var timer = controller ? setTimeout(function () { controller.abort(); }, 20000) : null;
+
+            fetch(VERIFY_API_URL + "?action=verifyCertificate&id=" + encodeURIComponent(id),
+                controller ? { signal: controller.signal } : undefined)
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    if (data && data.found === true) {
+                        showFound(data);
+                    } else {
+                        showMessage("Certificate ID tidak ditemukan. Periksa kembali ID yang kamu masukkan.");
+                    }
+                })
+                .catch(function () {
+                    showMessage("Gagal menghubungi server. Periksa koneksi internetmu lalu coba lagi.");
+                })
+                .then(function () {
+                    if (timer) clearTimeout(timer);
+                    setBusy(false);
+                });
+        }
+
+        btn.addEventListener("click", verifyCertificate);
+        input.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") verifyCertificate();
+        });
+    </script>
+
+</body>
+
+</html>

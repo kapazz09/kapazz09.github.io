@@ -1,0 +1,221 @@
+/* ==================================================
+   KAPAZZ BITCOIN — VERIFIKASI SERTIFIKAT
+   Halaman berdiri sendiri, mandiri (tidak bergantung file
+   di folder lain). Tema mengikuti gaya dark + oranye #f7931a
+   yang sama dengan halaman changelog dan materi.
+   ================================================== */
+
+:root {
+    --vf-orange: #f7931a;
+    --vf-orange-light: #ffb347;
+
+    --vf-bg: #101014;
+    --vf-bg-alt: #17171d;
+    --vf-card: rgba(255, 255, 255, 0.05);
+    --vf-card-border: rgba(255, 255, 255, 0.1);
+
+    --vf-green: #22c55e;
+    --vf-green-soft: rgba(34, 197, 94, 0.1);
+
+    --vf-text: #ececec;
+    --vf-text-dim: #b6b6b6;
+    --vf-text-faint: #8a8a8a;
+
+    --vf-font: 'Inter', Arial, sans-serif;
+    --vf-radius: 16px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--vf-bg) 0%, var(--vf-bg-alt) 100%);
+    color: var(--vf-text);
+    font-family: var(--vf-font);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+.verify-page {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 28px 20px 60px 20px;
+}
+
+@media (max-width: 480px) {
+    .verify-page {
+        padding: 20px 14px 48px 14px;
+    }
+}
+
+/* ---------- HEADER ---------- */
+.verify-header {
+    margin-bottom: 26px;
+}
+
+.back-btn {
+    display: inline-block;
+    color: var(--vf-text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    transition: color 0.2s ease;
+}
+
+.back-btn:hover {
+    color: var(--vf-orange);
+}
+
+.verify-header h1 {
+    font-size: 24px;
+    line-height: 1.35;
+    margin: 0 0 10px 0;
+    color: #fff;
+}
+
+@media (max-width: 480px) {
+    .verify-header h1 {
+        font-size: 20px;
+    }
+}
+
+.verify-subtitle {
+    font-size: 14.5px;
+    color: var(--vf-text-dim);
+    margin: 0;
+}
+
+/* ---------- FORM ---------- */
+.verify-card {
+    background: var(--vf-card);
+    border: 1px solid var(--vf-card-border);
+    border-left: 3px solid var(--vf-orange);
+    border-radius: var(--vf-radius);
+    padding: 20px 22px;
+}
+
+@media (max-width: 480px) {
+    .verify-card {
+        padding: 16px 16px;
+    }
+}
+
+.verify-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vf-text-dim);
+}
+
+.verify-input {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    padding: 0 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--vf-card-border);
+    border-radius: 12px;
+    color: var(--vf-text);
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    outline: none;
+}
+
+.verify-input::placeholder {
+    color: var(--vf-text-faint);
+    font-size: 14px;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.verify-input:focus {
+    border-color: var(--vf-orange);
+}
+
+.verify-btn {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    margin-top: 14px;
+    border: none;
+    border-radius: 12px;
+    background: var(--vf-orange);
+    color: #101014;
+    font-family: var(--vf-font);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.verify-btn:hover {
+    background: var(--vf-orange-light);
+}
+
+.verify-btn:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+/* ---------- HASIL ---------- */
+.verify-result {
+    margin-top: 18px;
+    padding: 18px 20px;
+    border-radius: var(--vf-radius);
+    border: 1px solid var(--vf-card-border);
+    background: var(--vf-card);
+}
+
+.verify-result p {
+    margin: 0;
+}
+
+.verify-result--neutral .verify-msg {
+    font-size: 14.5px;
+    color: var(--vf-text-dim);
+}
+
+.verify-result--found {
+    background: var(--vf-green-soft);
+    border-color: rgba(34, 197, 94, 0.45);
+    border-left: 3px solid var(--vf-green);
+}
+
+.verify-found-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--vf-green);
+    margin-bottom: 12px !important;
+}
+
+.verify-found-label {
+    font-size: 12.5px;
+    color: var(--vf-text-faint);
+}
+
+.verify-found-name {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.35;
+    color: var(--vf-orange-light);
+    overflow-wrap: anywhere;
+    margin-bottom: 12px !important;
+}
+
+.verify-found-line {
+    font-size: 14.5px;
+    color: var(--vf-text);
+}
+
+.verify-found-date {
+    font-size: 13.5px;
+    color: var(--vf-text-dim);
+    margin-top: 4px !important;
+}

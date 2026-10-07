@@ -589,7 +589,78 @@ function wrapCenteredText(ctx, text, centerX, startY, maxWidth, lineHeight) {
     return y;
 }
 
+// ---------- VERIFIKASI SERTIFIKAT: Certificate ID + simpan ke server ----------
+// Format ID: KAPAZZ-BTC-{YYYYMMDD}-{4 karakter acak A-Z0-9}.
+// Disimpan ke sheet "Certificates" lewat Web App Apps Script yang sama
+// dengan rating & komentar (RATING_API_URL di ratings.js), action=saveCertificate.
+const CERT_MAX_ATTEMPTS = 3;
+const CERT_TOTAL_MODULES = 8;
+let certGenerating = false;
+
+function makeCertificateId(ymd) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const buf = new Uint32Array(4);
+    if (window.crypto && window.crypto.getRandomValues) {
+        window.crypto.getRandomValues(buf);
+    } else {
+        for (let i = 0; i < buf.length; i++) buf[i] = Math.floor(Math.random() * 4294967296);
+    }
+    let rand = '';
+    for (let i = 0; i < 4; i++) rand += chars[buf[i] % chars.length];
+    return 'KAPAZZ-BTC-' + ymd + '-' + rand;
+}
+
+function saveCertificateToServer(id, name, tanggal) {
+    if (typeof RATING_API_URL === 'undefined') {
+        return Promise.reject(new Error('API belum siap'));
+    }
+    const url = RATING_API_URL + '?action=saveCertificate' +
+        '&id=' + encodeURIComponent(id) +
+        '&nama=' + encodeURIComponent(name) +
+        '&tanggalTerbit=' + encodeURIComponent(tanggal) +
+        '&jumlahModul=' + CERT_TOTAL_MODULES;
+    return fetch(url)
+        .then(res => res.json())
+        .then(data => (data && data.status) ? data.status : 'error');
+}
+
+function setCertGenerating(isBusy) {
+    certGenerating = isBusy;
+    const btn = document.getElementById('certGenerateBtn');
+    if (!btn) return;
+    btn.disabled = isBusy;
+    btn.textContent = isBusy ? 'Menyimpan...' : 'Generate Sertifikat';
+}
+
+function copyTextFallback(text, onDone) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    if (ok) onDone(); else alert('Salin manual Certificate ID ini: ' + text);
+}
+
+function copyCertificateId(id, btn) {
+    const done = () => {
+        btn.textContent = '✓ Tersalin';
+        setTimeout(() => { btn.textContent = '📋 Salin'; }, 1800);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(id).then(done).catch(() => copyTextFallback(id, done));
+    } else {
+        copyTextFallback(id, done);
+    }
+}
+
 function generateCertificate() {
+    if (certGenerating) return;
+
     const input = document.getElementById('certNameInput');
     let name = input ? input.value.trim() : '';
 
@@ -599,6 +670,35 @@ function generateCertificate() {
     }
     if (name.length > 30) name = name.slice(0, 30).trim();
 
+    const now = new Date();
+    const tanggal = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const ymd = now.getFullYear() +
+        String(now.getMonth() + 1).padStart(2, '0') +
+        String(now.getDate()).padStart(2, '0');
+
+    setCertGenerating(true);
+
+    // Simpan ID ke server DULU; sertifikat baru digambar kalau berhasil.
+    // Kalau server balas "duplicate", acak ulang 4 karakter dan coba lagi (maks 3x).
+    const attempt = (n) => {
+        const certId = makeCertificateId(ymd);
+        return saveCertificateToServer(certId, name, tanggal).then(status => {
+            if (status === 'success') return certId;
+            if (status === 'duplicate' && n < CERT_MAX_ATTEMPTS) return attempt(n + 1);
+            throw new Error(status);
+        });
+    };
+
+    attempt(1).then(certId => {
+        setCertGenerating(false);
+        renderCertificate(name, tanggal, certId);
+    }, () => {
+        setCertGenerating(false);
+        alert('Gagal menyimpan sertifikat ke server. Periksa koneksi internetmu lalu coba lagi.');
+    });
+}
+
+function renderCertificate(name, tanggal, certId) {
     const canvas = document.getElementById('certCanvas');
     if (!canvas || !canvas.getContext) return;
     const ctx = canvas.getContext('2d');
@@ -673,12 +773,15 @@ function generateCertificate() {
     wrapCenteredText(ctx, bodyText, W / 2, 450, W - 320, 30);
 
     // ---------- FOOTER ----------
-    const tanggal = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-
     ctx.textAlign = 'left';
     ctx.fillStyle = '#9a9aa2';
     ctx.font = '16px Arial, sans-serif';
     ctx.fillText('Diterbitkan pada ' + tanggal, 90, H - 80);
+
+    // Certificate ID (untuk verifikasi di halaman verify)
+    ctx.fillStyle = '#b8b8c0';
+    ctx.font = '14px "Courier New", monospace';
+    ctx.fillText('Certificate ID: ' + certId, 90, H - 56);
 
     ctx.textAlign = 'right';
     ctx.fillStyle = ORANGE;
@@ -718,6 +821,14 @@ function generateCertificate() {
     const previewView = document.getElementById('certPreviewView');
     if (formView) formView.style.display = 'none';
     if (previewView) previewView.style.display = 'block';
+
+    const idText = document.getElementById('certIdText');
+    if (idText) idText.textContent = certId;
+    const copyBtn = document.getElementById('certIdCopyBtn');
+    if (copyBtn) {
+        copyBtn.textContent = '📋 Salin';
+        copyBtn.onclick = () => copyCertificateId(certId, copyBtn);
+    }
 
     const downloadBtn = document.getElementById('certDownloadBtn');
     if (downloadBtn) {

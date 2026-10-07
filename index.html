@@ -999,7 +999,7 @@
                 <div class="input-box cert-input-box">
                     <input type="text" id="certNameInput" placeholder="Masukkan nama untuk sertifikat" maxlength="30">
                 </div>
-                <button type="button" class="calculate-btn" onclick="generateCertificate()">Generate
+                <button type="button" class="calculate-btn" id="certGenerateBtn" onclick="generateCertificate()">Generate
                     Sertifikat</button>
             </div>
 
@@ -1008,6 +1008,12 @@
                     <canvas id="certCanvas" width="1200" height="850"></canvas>
                 </div>
                 <button type="button" class="calculate-btn" id="certDownloadBtn">⬇️ Download</button>
+                <p class="cert-id-line">
+                    <span>Certificate ID: <strong id="certIdText"></strong></span>
+                    <span>— simpan untuk verifikasi</span>
+                    <button type="button" class="cert-id-copy-btn" id="certIdCopyBtn"
+                        aria-label="Salin Certificate ID">📋 Salin</button>
+                </p>
                 <button type="button" class="cert-back-btn" onclick="showCertForm()">← Ganti Nama</button>
             </div>
         </div>
@@ -1092,6 +1098,8 @@
             <a href="uji-diri/index.html">🧠 Uji Diri</a>
             <span>•</span>
             <a href="changelog/index.html">📜 Changelog</a>
+            <span>•</span>
+            <a href="verify/index.html">🔍 Verifikasi Sertifikat</a>
         </nav>
 
         <p>Built with HTML • CSS • JavaScript</p>

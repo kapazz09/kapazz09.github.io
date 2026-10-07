@@ -2708,3 +2708,43 @@ body.modal-open .quick-nav-fab {
     width: 100% !important;
     border-radius: 12px;
 }
+
+/* ==================================================
+   SERTIFIKAT: BARIS CERTIFICATE ID + TOMBOL SALIN
+   ================================================== */
+.cert-id-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px 8px;
+    margin: 12px 0 0 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #666;
+}
+
+.cert-id-line strong {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: #222;
+    letter-spacing: 0.3px;
+    overflow-wrap: anywhere;
+}
+
+.cert-id-copy-btn {
+    min-height: 30px;
+    padding: 4px 10px;
+    border: 1px solid #f7931a;
+    border-radius: 8px;
+    background: rgba(247, 147, 26, 0.08);
+    color: #d97706;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.cert-id-copy-btn:hover {
+    background: rgba(247, 147, 26, 0.16);
+}
