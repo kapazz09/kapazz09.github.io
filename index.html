@@ -976,21 +976,21 @@
             </button>
         </div>
 
-        <!-- TINGKAT 2: ALTERNATIF LOKAL (QRIS) -->
-        <button type="button" class="support-card support-card--local" onclick="openCryptoModal('qris')">
-            <img src="assets/img/qris-icon.png" width="40" height="40" class="support-card-icon support-card-icon--qris"
-                loading="lazy" alt="QRIS">
-            <span class="support-card-text">
-                <span class="support-card-title">🇮🇩 QRIS</span>
-                <span class="support-card-sub">Alternatif lokal — scan pakai e-wallet / m-banking</span>
-            </span>
-        </button>
-
-        <!-- TINGKAT 3: CRYPTO LAINNYA (collapsed default) -->
-        <button type="button" class="support-more-toggle" id="supportMoreToggle" onclick="toggleMoreCrypto(this)"
-            aria-expanded="false" aria-controls="supportMorePanel">
-            🪙 Crypto Lainnya <span class="support-more-arrow" aria-hidden="true">▼</span>
-        </button>
+        <!-- TINGKAT 2 (QRIS, alternatif lokal) + TINGKAT 3 (tombol Crypto Lainnya) dalam 1 baris -->
+        <div class="support-secondary">
+            <button type="button" class="support-card support-card--local" onclick="openCryptoModal('qris')">
+                <img src="assets/img/qris-icon.png" width="40" height="40"
+                    class="support-card-icon support-card-icon--qris" loading="lazy" alt="QRIS">
+                <span class="support-card-text">
+                    <span class="support-card-title">🇮🇩 QRIS</span>
+                    <span class="support-card-sub">Alternatif lokal</span>
+                </span>
+            </button>
+            <button type="button" class="support-more-toggle" id="supportMoreToggle" onclick="toggleMoreCrypto(this)"
+                aria-expanded="false" aria-controls="supportMorePanel">
+                🪙 Crypto Lainnya <span class="support-more-arrow" aria-hidden="true">▼</span>
+            </button>
+        </div>
         <div class="support-more-panel" id="supportMorePanel">
             <div class="crypto-icons">
                 <img src="https://cdn.simpleicons.org/ethereum/3c3c3d" width="50" height="50" class="icon-crypto"

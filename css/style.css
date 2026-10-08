@@ -2762,12 +2762,26 @@ body.modal-open .quick-nav-fab {
 /* ==================================================
    SUPPORT MY JOURNEY: HIERARKI BERTINGKAT
    Tingkat 1 = Bitcoin + Lightning (utama), Tingkat 2 = QRIS,
-   Tingkat 3 = Crypto Lainnya (collapsed)
+   Tingkat 3 = Crypto Lainnya (collapsed).
+   Tinggi kotak dibuat ringkas: jarak & padding dirapatkan,
+   bentuk kartu tetap sama (ikon di atas, judul di bawahnya).
    ================================================== */
+.crypto-support {
+    padding: 12px 20px 14px 20px;
+}
+
+.crypto-support .fuel-heading {
+    margin: 4px 0 14px 0;
+}
+
+.crypto-support .fuel-subtitle {
+    margin-bottom: 8px;
+}
+
 .crypto-support .support-primary {
     display: flex;
-    gap: 12px;
-    margin: 16px auto 0 auto;
+    gap: 10px;
+    margin: 8px auto 0 auto;
     max-width: 520px;
 }
 
@@ -2795,63 +2809,64 @@ body.modal-open .quick-nav-fab {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 18px 10px;
+    gap: 2px;
+    padding: 8px 8px;
     border: 3px solid #f7931a;
     border-radius: 16px;
 }
 
 .crypto-support .support-card--btc {
     background: linear-gradient(135deg, rgba(247, 147, 26, 0.16), rgba(247, 147, 26, 0.04));
-    box-shadow: 0 8px 22px rgba(247, 147, 26, 0.22);
+    box-shadow: 0 6px 16px rgba(247, 147, 26, 0.22);
 }
 
 .crypto-support .support-card--ln {
     border-color: #2196f3;
     background: linear-gradient(135deg, rgba(33, 150, 243, 0.14), rgba(33, 150, 243, 0.03));
-    box-shadow: 0 8px 22px rgba(33, 150, 243, 0.2);
+    box-shadow: 0 6px 16px rgba(33, 150, 243, 0.2);
 }
 
 .crypto-support .support-card--primary .support-card-icon {
-    width: 56px;
-    height: 56px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 2px;
 }
 
 .crypto-support .support-card--primary .support-card-title {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 800;
 }
 
 .crypto-support .support-card-title {
     display: block;
-    line-height: 1.3;
+    line-height: 1.25;
 }
 
 .crypto-support .support-card-sub {
     display: block;
-    font-size: 12px;
-    line-height: 1.4;
+    font-size: 11.5px;
+    line-height: 1.3;
     color: #666;
 }
 
 .crypto-support .support-card--local {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
     max-width: 520px;
-    margin: 12px auto 0 auto;
-    padding: 10px 14px;
+    margin: 8px auto 0 auto;
+    padding: 5px 12px;
     text-align: left;
     border: 2px solid #ffb347;
     border-radius: 14px;
-    box-shadow: 0 4px 14px rgba(247, 147, 26, 0.12);
+    box-shadow: 0 3px 10px rgba(247, 147, 26, 0.12);
 }
 
 .crypto-support .support-card--local .support-card-icon {
     flex: 0 0 auto;
-    width: 40px;
-    height: 40px;
+    width: 34px;
+    height: 34px;
 }
 
 .crypto-support .support-card-icon--qris {
@@ -2867,22 +2882,26 @@ body.modal-open .quick-nav-fab {
 }
 
 .crypto-support .support-card--local .support-card-title {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 800;
+}
+
+.crypto-support .support-card--local .support-card-sub {
+    font-size: 11px;
 }
 
 .crypto-support .support-more-toggle {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin-top: 16px;
-    padding: 8px 16px;
+    margin-top: 8px;
+    padding: 5px 14px;
     border: 1px solid rgba(0, 0, 0, 0.12);
-    border-radius: 20px;
+    border-radius: 18px;
     background: rgba(255, 255, 255, 0.7);
     color: #555;
     font-family: inherit;
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 700;
     cursor: pointer;
     transition: border-color 0.2s ease, color 0.2s ease;
@@ -2915,17 +2934,21 @@ body.modal-open .quick-nav-fab {
 }
 
 @media (max-width: 480px) {
+    .crypto-support {
+        padding: 12px 16px 14px 16px;
+    }
+
     .crypto-support .support-primary {
-        gap: 10px;
+        gap: 8px;
     }
 
     .crypto-support .support-card--primary {
-        padding: 14px 6px;
+        padding: 7px 6px;
     }
 
     .crypto-support .support-card--primary .support-card-icon {
-        width: 46px;
-        height: 46px;
+        width: 44px;
+        height: 44px;
     }
 
     .crypto-support .support-card--primary .support-card-title {
@@ -2937,16 +2960,21 @@ body.modal-open .quick-nav-fab {
     }
 
     .crypto-support .support-card--local {
-        padding: 9px 12px;
+        gap: 8px;
+        padding: 5px 10px;
     }
 
     .crypto-support .support-card--local .support-card-icon {
-        width: 34px;
-        height: 34px;
+        width: 32px;
+        height: 32px;
     }
 
     .crypto-support .support-card--local .support-card-title {
-        font-size: 14px;
+        font-size: 13.5px;
+    }
+
+    .crypto-support .support-card--local .support-card-sub {
+        font-size: 10.5px;
     }
 }
 
