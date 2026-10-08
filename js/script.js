@@ -392,6 +392,31 @@ function toggleFaq(btn) {
     if (item) item.classList.toggle('open');
 }
 
+// Support My Journey: buka/tutup bagian "Crypto Lainnya" (default tertutup).
+// Tinggi panel dihitung dari isi aslinya supaya transisi slide halus di ukuran layar apapun.
+function toggleMoreCrypto(btn) {
+    const panel = document.getElementById('supportMorePanel');
+    if (!panel) return;
+    const willOpen = btn.getAttribute('aria-expanded') !== 'true';
+    btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+
+    if (willOpen) {
+        panel.classList.add('open');
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        const done = () => {
+            panel.removeEventListener('transitionend', done);
+            if (panel.classList.contains('open')) panel.style.maxHeight = 'none';
+        };
+        panel.addEventListener('transitionend', done);
+    } else {
+        // dari "none" ke tinggi nyata dulu, baru ke 0, supaya animasi tutup tetap halus
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        void panel.offsetHeight;
+        panel.classList.remove('open');
+        panel.style.maxHeight = '0px';
+    }
+}
+
 // ==================================================
 // LEARNING PATH: status "Tandai Selesai" per materi
 // Disimpan di localStorage browser (per-perangkat saja,

@@ -346,3 +346,73 @@ body {
     border-color: var(--uji-orange);
     color: var(--uji-orange-light);
 }
+
+
+/* ---------- RINGKASAN: PROGRESS BAR + BADGE LEVEL ---------- */
+.summary-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 4px 0 16px 0;
+}
+
+.summary-progress-track {
+    flex: 1;
+    min-width: 0;
+    height: 14px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.summary-progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--uji-orange), var(--uji-orange-light));
+    box-shadow: 0 0 12px rgba(247, 147, 26, 0.5);
+    transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.summary-progress-percent {
+    flex: 0 0 auto;
+    min-width: 46px;
+    text-align: right;
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--uji-orange-light);
+}
+
+.summary-level {
+    margin: 0 0 16px 0;
+}
+
+.level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 13.5px;
+    font-weight: 700;
+}
+
+.level-badge--newbie {
+    background: #e5e5e5;
+    color: #555;
+}
+
+.level-badge--aware {
+    background: linear-gradient(135deg, #f7931a, #ffb347);
+    color: #fff;
+}
+
+.level-badge--master {
+    background: linear-gradient(135deg, #d4af37, #f5d576);
+    color: #4a3800;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .summary-progress-fill {
+        transition: none;
+    }
+}

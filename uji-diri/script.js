@@ -177,6 +177,8 @@ function renderSummary() {
     if (!stage) return;
 
     const total = SCENARIOS.length;
+    const percent = Math.round((correctCount / total) * 100);
+    const level = getSecurityLevel(correctCount, total);
     let message;
     let showLink = false;
 
@@ -193,6 +195,13 @@ function renderSummary() {
         '<div class="summary-card card-enter">' +
         '<p class="summary-score">Kamu berhasil menghindari <strong>' + correctCount + ' dari ' + total +
         '</strong> skenario penipuan!</p>' +
+        '<div class="summary-progress">' +
+        '<div class="summary-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + percent + '" aria-label="Skor ' + percent + ' persen">' +
+        '<div class="summary-progress-fill" id="summaryProgressFill" style="width:0%"></div>' +
+        '</div>' +
+        '<span class="summary-progress-percent">' + percent + '%</span>' +
+        '</div>' +
+        '<div class="summary-level"><span class="level-badge ' + level.className + '">' + level.label + '</span></div>' +
         '<p class="summary-message">' + message + '</p>' +
         (showLink ? '<a href="../materi/privasi-keamanan/index.html" class="summary-link">📖 Pelajari Materi Privasi & Keamanan</a>' : '') +
         '<div class="summary-actions">' +
@@ -201,8 +210,27 @@ function renderSummary() {
         '</div>' +
         '</div>';
 
+    // Isi bar dianimasikan dari 0% ke skor sebenarnya
+    const fill = document.getElementById('summaryProgressFill');
+    if (fill) {
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            fill.style.width = percent + '%';
+        }));
+    }
+
     const retryBtn = document.getElementById('retryBtn');
     if (retryBtn) retryBtn.addEventListener('click', () => initGame(true));
+}
+
+// Level berdasarkan skor: 0-2 benar = Baru Mulai Waspada, 3-4 = Security Aware, 5 = Security Master
+function getSecurityLevel(correct, total) {
+    if (correct >= total) {
+        return { label: '\uD83D\uDEE1\uFE0F\uD83D\uDEE1\uFE0F Security Master', className: 'level-badge--master' };
+    }
+    if (correct >= 3) {
+        return { label: '\uD83D\uDEE1\uFE0F Security Aware', className: 'level-badge--aware' };
+    }
+    return { label: '\uD83D\uDD13 Baru Mulai Waspada', className: 'level-badge--newbie' };
 }
 
 document.addEventListener('DOMContentLoaded', () => {

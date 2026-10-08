@@ -258,11 +258,11 @@
                     <span class="faq-icon">+</span>
                 </button>
                 <div class="faq-answer">
-                    <p>Legal sebagai aset investasi/komoditas dan diawasi Bappebti (sekarang di bawah OJK), tapi
-                        <strong>belum</strong> sah sebagai alat pembayaran resmi menggantikan Rupiah. Jadi kamu boleh
-                        beli, simpan, dan jual Bitcoin lewat exchange berizin, tapi tidak bisa dipakai bayar belanja
-                        harian secara legal di Indonesia.
-                    </p>
+                    <p>Pengaturan dan pengawasan perdagangan aset keuangan digital, termasuk aset kripto, telah
+                        beralih dari Bappebti ke OJK. Transisi ini resmi tuntas 20 Januari 2026, dan OJK menerbitkan
+                        aturan baru (berlaku efektif 1 September 2026) yang mengatur perdagangan aset ini secara lebih
+                        rinci.</p>
+                    <p class="faq-updated">Terakhir diperbarui: September 2026</p>
                 </div>
             </div>
 
@@ -330,6 +330,7 @@
                         <strong>belajar dulu</strong> cara kerjanya (coba tools DCA Calculator di bawah) sebelum
                         menambah jumlah dana, dan jangan pakai uang yang kamu butuhkan untuk kebutuhan pokok.
                     </p>
+                    <p class="faq-updated">Terakhir diperbarui: September 2026</p>
                 </div>
             </div>
         </div>
@@ -957,23 +958,52 @@
         <h2 class="fuel-heading">❤️ Support My Bitcoin Journey</h2>
         <p class="fuel-subtitle">If my learning materials or tools have helped you, feel free to support my journey</p>
 
-        <div class="crypto-icons">
-            <img src="https://cdn.simpleicons.org/bitcoin/f7931a" width="50" height="50" class="icon-crypto"
-                loading="lazy" alt="Bitcoin BTC" onclick="openCryptoModal('btc')" style="cursor:pointer;">
-            <img src="https://cdn.simpleicons.org/ethereum/3c3c3d" width="50" height="50" class="icon-crypto"
-                loading="lazy" alt="Ethereum ETH" onclick="openCryptoModal('eth')" style="cursor:pointer;">
-            <img src="https://cdn.simpleicons.org/tether/26a17b" width="50" height="50" class="icon-crypto"
-                loading="lazy" alt="USDT BEP20" onclick="openCryptoModal('usdt')" style="cursor:pointer;">
-            <img src="https://cdn.simpleicons.org/binance/F0B90B" width="50" height="50" class="icon-crypto"
-                loading="lazy" alt="BNB" onclick="openCryptoModal('bnb')" style="cursor:pointer;">
-            <img src="https://cdn.simpleicons.org/xrp/25A768" width="50" height="50" class="icon-crypto" loading="lazy"
-                alt="XRP" onclick="openCryptoModal('xrp')" style="cursor:pointer;">
-            <img src="https://cdn.simpleicons.org/solana/9945FF" width="50" height="50" class="icon-crypto"
-                loading="lazy" alt="Solana SOL" onclick="openCryptoModal('sol')" style="cursor:pointer;">
-            <img src="https://cdn.simpleicons.org/lightning/2196f3" width="50" height="50" class="icon-crypto"
-                loading="lazy" alt="Lightning Address" onclick="openCryptoModal('lightning')" style="cursor:pointer;">
-            <img src="assets/img/qris-icon.png" width="50" height="50" class="icon-crypto icon-qris" loading="lazy"
-                alt="QRIS" onclick="openCryptoModal('qris')" style="cursor:pointer;">
+        <!-- TINGKAT 1: UTAMA (Bitcoin on-chain + Lightning Address) -->
+        <div class="support-primary">
+            <button type="button" class="support-card support-card--primary support-card--btc"
+                onclick="openCryptoModal('btc')">
+                <img src="https://cdn.simpleicons.org/bitcoin/f7931a" width="56" height="56"
+                    class="support-card-icon" loading="lazy" alt="Bitcoin BTC">
+                <span class="support-card-title">Bitcoin</span>
+                <span class="support-card-sub">Alamat on-chain</span>
+            </button>
+            <button type="button" class="support-card support-card--primary support-card--ln"
+                onclick="openCryptoModal('lightning')">
+                <img src="https://cdn.simpleicons.org/lightning/2196f3" width="56" height="56"
+                    class="support-card-icon" loading="lazy" alt="Lightning Address">
+                <span class="support-card-title">Lightning</span>
+                <span class="support-card-sub">Lightning Address</span>
+            </button>
+        </div>
+
+        <!-- TINGKAT 2: ALTERNATIF LOKAL (QRIS) -->
+        <button type="button" class="support-card support-card--local" onclick="openCryptoModal('qris')">
+            <img src="assets/img/qris-icon.png" width="40" height="40" class="support-card-icon support-card-icon--qris"
+                loading="lazy" alt="QRIS">
+            <span class="support-card-text">
+                <span class="support-card-title">🇮🇩 QRIS</span>
+                <span class="support-card-sub">Alternatif lokal — scan pakai e-wallet / m-banking</span>
+            </span>
+        </button>
+
+        <!-- TINGKAT 3: CRYPTO LAINNYA (collapsed default) -->
+        <button type="button" class="support-more-toggle" id="supportMoreToggle" onclick="toggleMoreCrypto(this)"
+            aria-expanded="false" aria-controls="supportMorePanel">
+            🪙 Crypto Lainnya <span class="support-more-arrow" aria-hidden="true">▼</span>
+        </button>
+        <div class="support-more-panel" id="supportMorePanel">
+            <div class="crypto-icons">
+                <img src="https://cdn.simpleicons.org/ethereum/3c3c3d" width="50" height="50" class="icon-crypto"
+                    loading="lazy" alt="Ethereum ETH" onclick="openCryptoModal('eth')" style="cursor:pointer;">
+                <img src="https://cdn.simpleicons.org/tether/26a17b" width="50" height="50" class="icon-crypto"
+                    loading="lazy" alt="USDT BEP20" onclick="openCryptoModal('usdt')" style="cursor:pointer;">
+                <img src="https://cdn.simpleicons.org/binance/F0B90B" width="50" height="50" class="icon-crypto"
+                    loading="lazy" alt="BNB" onclick="openCryptoModal('bnb')" style="cursor:pointer;">
+                <img src="https://cdn.simpleicons.org/xrp/25A768" width="50" height="50" class="icon-crypto"
+                    loading="lazy" alt="XRP" onclick="openCryptoModal('xrp')" style="cursor:pointer;">
+                <img src="https://cdn.simpleicons.org/solana/9945FF" width="50" height="50" class="icon-crypto"
+                    loading="lazy" alt="Solana SOL" onclick="openCryptoModal('sol')" style="cursor:pointer;">
+            </div>
         </div>
     </div>
 
