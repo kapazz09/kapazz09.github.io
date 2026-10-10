@@ -187,8 +187,8 @@
         <div class="learning-progress-bar">
             <div class="learning-progress-fill" id="learningProgressFill" style="width:0%;"></div>
         </div>
-        <button type="button" class="calculate-btn cert-generate-btn" id="certOpenBtn" style="display:none;"
-            onclick="openCertModal()">🎓 Buat Sertifikatku</button>
+        <button type="button" class="calculate-btn cert-generate-btn" id="examOpenBtn" style="display:none;"
+            onclick="openExamModal()">📝 Ikuti Ujian Akhir</button>
         <a href="#" class="continue-learning-btn" id="continueLearningBtn" style="display:none;">
             <span class="continue-learning-icon">↩️</span>
             <span class="continue-learning-text">Lanjutkan dari...</span>
@@ -1029,6 +1029,8 @@
                 <div class="input-box cert-input-box">
                     <input type="text" id="certNameInput" placeholder="Masukkan nama untuk sertifikat" maxlength="30">
                 </div>
+                <p class="cert-modal-note">Periksa ejaan namamu — sertifikat hanya bisa dibuat sekali setelah lulus ujian.</p>
+                <p class="cert-error" id="certError" role="alert" style="display:none;"></p>
                 <button type="button" class="calculate-btn" id="certGenerateBtn" onclick="generateCertificate()">Generate
                     Sertifikat</button>
             </div>
@@ -1044,7 +1046,6 @@
                     <button type="button" class="cert-id-copy-btn" id="certIdCopyBtn"
                         aria-label="Salin Certificate ID">📋 Salin</button>
                 </p>
-                <button type="button" class="cert-back-btn" onclick="showCertForm()">← Ganti Nama</button>
             </div>
         </div>
     </div>
@@ -1169,6 +1170,26 @@
         </div>
     </div>
 
+    <!-- ===== MODAL UJIAN AKHIR (isi dirender oleh js/exam.js) ===== -->
+    <div class="tool-modal-backdrop" id="examModalBackdrop" onclick="closeExamModalOnBackdrop(event)">
+        <div class="tool-display exam-modal-box anim-fade-scale" id="examModalBox" role="dialog" aria-modal="true"
+            aria-label="Ujian Akhir">
+            <button class="modal-close-btn" onclick="closeExamModal()" aria-label="Tutup">✕</button>
+            <div id="examView"></div>
+        </div>
+    </div>
+
+    <!-- ===== DIALOG KONFIRMASI UJIAN / SERTIFIKAT (dipakai js/exam.js) ===== -->
+    <div class="exam-confirm-backdrop" id="examConfirmBackdrop">
+        <div class="exam-confirm-box" role="alertdialog" aria-modal="true" aria-labelledby="examConfirmMsg">
+            <p class="exam-confirm-msg" id="examConfirmMsg"></p>
+            <div class="exam-confirm-actions">
+                <button type="button" class="exam-confirm-no" id="examConfirmNo">Batal</button>
+                <button type="button" class="exam-confirm-yes" id="examConfirmYes">Ya, tutup</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/script.js"></script>
     <script src="js/about-translations.js"></script>
     <script src="js/tools/core.js"></script>
@@ -1184,6 +1205,8 @@
     <script src="js/tools/glossary.js"></script>
     <script src="js/ratings.js"></script>
     <script src="js/comments.js"></script>
+    <script src="js/exam-questions.js"></script>
+    <script src="js/exam.js"></script>
 </body>
 
 </html>

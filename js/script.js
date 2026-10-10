@@ -485,8 +485,10 @@ function updateLearningProgressUI() {
     if (text) text.textContent = doneCount + ' dari ' + total + ' materi selesai';
     if (fill) fill.style.width = Math.round((doneCount / total) * 100) + '%';
 
-    const certBtn = document.getElementById('certOpenBtn');
-    if (certBtn) certBtn.style.display = (doneCount >= total) ? 'block' : 'none';
+    // 8/8 materi -> SELALU tombol "Ikuti Ujian Akhir" (js/exam.js).
+    // Sertifikat hanya bisa dibuat tepat setelah lulus ujian, tidak ada tombol permanen.
+    const examBtn = document.getElementById('examOpenBtn');
+    if (examBtn) examBtn.style.display = (doneCount >= total) ? 'block' : 'none';
 
     updateContinueLearningButton(Array.from(items), doneCount, total);
 }
@@ -533,6 +535,10 @@ function openCertModal() {
     if (!backdrop) return;
 
     showCertForm();
+    certRetryId = null;
+    certHasFailed = false;
+    clearCertError();
+    setCertGenerating(false);
 
     box.classList.remove('anim-fade-scale');
     void box.offsetWidth;
@@ -545,14 +551,21 @@ function openCertModal() {
     if (input) setTimeout(() => input.focus(), 150);
 }
 
-function closeCertModal() {
+// force=true dipakai setelah user mengonfirmasi (lihat requestCertClose di js/exam.js).
+// Selama hak sertifikat aktif / sertifikat belum diunduh, penutupan dicegat dan
+// dialog konfirmasi yang tampil.
+function closeCertModal(force) {
+    if (!force && typeof requestCertClose === 'function' && requestCertClose()) return;
     const backdrop = document.getElementById('certModalBackdrop');
     if (backdrop) backdrop.classList.remove('open');
-    document.body.classList.remove('modal-open');
+    if (!document.querySelector('.tool-modal-backdrop.open')) document.body.classList.remove('modal-open');
 }
 
 function closeCertModalOnBackdrop(event) {
-    if (event.target.id === 'certModalBackdrop') closeCertModal();
+    if (event.target.id !== 'certModalBackdrop') return;
+    // Pengaman: selama hak sertifikat belum terpakai, tap di luar modal diabaikan
+    if (typeof certRightIsActive === 'function' && certRightIsActive()) return;
+    closeCertModal();
 }
 
 function showCertForm() {
@@ -644,17 +657,41 @@ function saveCertificateToServer(id, name, tanggal) {
         '&nama=' + encodeURIComponent(name) +
         '&tanggalTerbit=' + encodeURIComponent(tanggal) +
         '&jumlahModul=' + CERT_TOTAL_MODULES;
-    return fetch(url)
+
+    // Batas waktu 15 detik supaya tidak menggantung selamanya kalau koneksi buruk
+    const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    const timer = controller ? setTimeout(() => controller.abort(), 15000) : null;
+
+    return fetch(url, controller ? { signal: controller.signal } : undefined)
         .then(res => res.json())
-        .then(data => (data && data.status) ? data.status : 'error');
+        .then(data => (data && data.status) ? data.status : 'error')
+        .finally(() => { if (timer) clearTimeout(timer); });
 }
+
+// Status alur generate (untuk fitur "Coba Lagi" kalau penyimpanan gagal)
+let certRetryId = null;     // ID dari percobaan gagal (dipakai ulang kecuali server balas "duplicate")
+let certHasFailed = false;
 
 function setCertGenerating(isBusy) {
     certGenerating = isBusy;
     const btn = document.getElementById('certGenerateBtn');
     if (!btn) return;
     btn.disabled = isBusy;
-    btn.textContent = isBusy ? 'Menyimpan...' : 'Generate Sertifikat';
+    btn.textContent = isBusy ? 'Menyimpan...' : (certHasFailed ? '🔄 Coba Lagi' : 'Generate Sertifikat');
+}
+
+function showCertError(message) {
+    const el = document.getElementById('certError');
+    if (!el) return;
+    el.textContent = message;
+    el.style.display = 'block';
+}
+
+function clearCertError() {
+    const el = document.getElementById('certError');
+    if (!el) return;
+    el.textContent = '';
+    el.style.display = 'none';
 }
 
 function copyTextFallback(text, onDone) {
@@ -686,6 +723,12 @@ function copyCertificateId(id, btn) {
 function generateCertificate() {
     if (certGenerating) return;
 
+    // Sertifikat hanya bisa dibuat selama hak dari lulus ujian masih aktif (js/exam.js)
+    if (typeof certRightIsActive === 'function' && !certRightIsActive()) {
+        showCertError('Sertifikat hanya bisa dibuat langsung setelah lulus Ujian Akhir. Ikuti ujian lagi untuk membuatnya.');
+        return;
+    }
+
     const input = document.getElementById('certNameInput');
     let name = input ? input.value.trim() : '';
 
@@ -701,13 +744,19 @@ function generateCertificate() {
         String(now.getMonth() + 1).padStart(2, '0') +
         String(now.getDate()).padStart(2, '0');
 
+    clearCertError();
     setCertGenerating(true);
 
     // Simpan ID ke server DULU; sertifikat baru digambar kalau berhasil.
     // Kalau server balas "duplicate", acak ulang 4 karakter dan coba lagi (maks 3x).
+    // Setelah gagal koneksi, ID yang sama dipakai ulang di percobaan berikutnya.
+    let lastId = null;
+    let lastStatus = 'network';
     const attempt = (n) => {
-        const certId = makeCertificateId(ymd);
+        const certId = (n === 1 && certRetryId) ? certRetryId : makeCertificateId(ymd);
+        lastId = certId;
         return saveCertificateToServer(certId, name, tanggal).then(status => {
+            lastStatus = status;
             if (status === 'success') return certId;
             if (status === 'duplicate' && n < CERT_MAX_ATTEMPTS) return attempt(n + 1);
             throw new Error(status);
@@ -715,11 +764,16 @@ function generateCertificate() {
     };
 
     attempt(1).then(certId => {
+        certRetryId = null;
+        certHasFailed = false;
         setCertGenerating(false);
         renderCertificate(name, tanggal, certId);
     }, () => {
+        // Hak TIDAK hilang, nama di kolom input tetap ada
+        certRetryId = (lastStatus === 'duplicate') ? null : lastId;
+        certHasFailed = true;
         setCertGenerating(false);
-        alert('Gagal menyimpan sertifikat ke server. Periksa koneksi internetmu lalu coba lagi.');
+        showCertError('Gagal menyimpan sertifikat ke server. Periksa koneksi internetmu lalu tekan "Coba Lagi".');
     });
 }
 
@@ -863,8 +917,12 @@ function renderCertificate(name, tanggal, certId) {
             link.download = 'sertifikat-kapazz-bitcoin-' + safeName + '.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
+            if (typeof onCertificateDownloaded === 'function') onCertificateDownloaded();
         };
     }
+
+    // Sertifikat sudah digambar DAN ID tersimpan di server -> hak membuat sertifikat terpakai
+    if (typeof onCertificateIssued === 'function') onCertificateIssued();
 }
 
 // ==================================================
