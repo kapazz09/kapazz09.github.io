@@ -74,6 +74,11 @@
             addLine(box, "verify-found-label", "Diberikan kepada");
             addLine(box, "verify-found-name", data.nama || "-");
             addLine(box, "verify-found-line", "✓ Telah menyelesaikan " + (Number(data.jumlahModul) || 8) + " modul");
+            // Skor ujian & nilai akhir (sertifikat lama tidak punya skor -> baris ini dilewati)
+            if (typeof data.skor === "number") {
+                var nilai = (typeof data.nilaiAkhir === "number") ? data.nilaiAkhir : (data.skor / 21 * 100);
+                addLine(box, "verify-found-line", "✓ Skor ujian " + data.skor + "/21 · Nilai akhir " + nilai.toFixed(1));
+            }
             addLine(box, "verify-found-date", "Tanggal terbit: " + (data.tanggalTerbit || "-"));
             box.style.display = "block";
         }
@@ -123,6 +128,18 @@
         input.addEventListener("keydown", function (e) {
             if (e.key === "Enter") verifyCertificate();
         });
+
+        // Dibuka dari QR / link verifikasi (?id=...): isi otomatis dan langsung verifikasi.
+        // Tanpa parameter id, perilaku lama (input manual) tetap.
+        (function () {
+            var params;
+            try { params = new URLSearchParams(window.location.search); } catch (e) { return; }
+            var fromUrl = (params.get("id") || "").replace(/\s+/g, "").toUpperCase();
+            if (fromUrl) {
+                input.value = fromUrl;
+                verifyCertificate();
+            }
+        })();
     </script>
 
 </body>

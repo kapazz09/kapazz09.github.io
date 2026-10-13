@@ -575,60 +575,8 @@ function showCertForm() {
     if (previewView) previewView.style.display = 'none';
 }
 
-// Helper: tulis teks dengan jarak antar-huruf manual (letter-spacing
-// versi Canvas2D, supaya kompatibel di semua browser tanpa bergantung
-// pada properti ctx.letterSpacing yang belum didukung semua browser).
-function drawSpacedText(ctx, text, centerX, y, spacing) {
-    const widths = [...text].map(ch => ctx.measureText(ch).width);
-    const totalWidth = widths.reduce((a, b) => a + b, 0) + spacing * (text.length - 1);
-    let x = centerX - totalWidth / 2;
-    const align = ctx.textAlign;
-    ctx.textAlign = 'left';
-    [...text].forEach((ch, i) => {
-        ctx.fillText(ch, x, y);
-        x += widths[i] + spacing;
-    });
-    ctx.textAlign = align;
-}
-
-// Helper: gambar persegi dengan sudut membulat (fallback manual,
-// tidak bergantung pada ctx.roundRect yang belum ada di semua browser).
-function drawRoundedRect(ctx, x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
-}
-
-// Helper: bungkus teks body jadi beberapa baris supaya tidak
-// keluar dari lebar maksimum yang ditentukan.
-function wrapCenteredText(ctx, text, centerX, startY, maxWidth, lineHeight) {
-    const words = text.split(' ');
-    let line = '';
-    let y = startY;
-    const lines = [];
-    words.forEach(word => {
-        const test = line ? line + ' ' + word : word;
-        if (ctx.measureText(test).width > maxWidth && line) {
-            lines.push(line);
-            line = word;
-        } else {
-            line = test;
-        }
-    });
-    if (line) lines.push(line);
-    lines.forEach(l => {
-        ctx.fillText(l, centerX, y);
-        y += lineHeight;
-    });
-    return y;
-}
-
 // ---------- VERIFIKASI SERTIFIKAT: Certificate ID + simpan ke server ----------
-// Format ID: KAPAZZ-BTC-{YYYYMMDD}-{4 karakter acak A-Z0-9}.
+// Format ID: KAPAZZ-BTC-{YYYYMMDD}-{4 karakter acak: A-Z tanpa I/O + angka 2-9}.
 // Disimpan ke sheet "Certificates" lewat Web App Apps Script yang sama
 // dengan rating & komentar (RATING_API_URL di ratings.js), action=saveCertificate.
 const CERT_MAX_ATTEMPTS = 3;
@@ -636,7 +584,8 @@ const CERT_TOTAL_MODULES = 8;
 let certGenerating = false;
 
 function makeCertificateId(ymd) {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    // Tanpa 0, O, 1, I supaya ID mudah dibaca/diketik (32 karakter -> acak merata tanpa bias)
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     const buf = new Uint32Array(4);
     if (window.crypto && window.crypto.getRandomValues) {
         window.crypto.getRandomValues(buf);
@@ -648,7 +597,7 @@ function makeCertificateId(ymd) {
     return 'KAPAZZ-BTC-' + ymd + '-' + rand;
 }
 
-function saveCertificateToServer(id, name, tanggal) {
+function saveCertificateToServer(id, name, tanggal, score) {
     if (typeof RATING_API_URL === 'undefined') {
         return Promise.reject(new Error('API belum siap'));
     }
@@ -656,7 +605,8 @@ function saveCertificateToServer(id, name, tanggal) {
         '&id=' + encodeURIComponent(id) +
         '&nama=' + encodeURIComponent(name) +
         '&tanggalTerbit=' + encodeURIComponent(tanggal) +
-        '&jumlahModul=' + CERT_TOTAL_MODULES;
+        '&jumlahModul=' + CERT_TOTAL_MODULES +
+        '&skor=' + encodeURIComponent(score);
 
     // Batas waktu 15 detik supaya tidak menggantung selamanya kalau koneksi buruk
     const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
@@ -708,15 +658,16 @@ function copyTextFallback(text, onDone) {
     if (ok) onDone(); else alert('Salin manual Certificate ID ini: ' + text);
 }
 
-function copyCertificateId(id, btn) {
+// Salin teks (ID atau link verifikasi) + umpan balik di tombol
+function copyCertificateText(text, btn, label) {
     const done = () => {
         btn.textContent = '✓ Tersalin';
-        setTimeout(() => { btn.textContent = '📋 Salin'; }, 1800);
+        setTimeout(() => { btn.textContent = label; }, 1800);
     };
     if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(id).then(done).catch(() => copyTextFallback(id, done));
+        navigator.clipboard.writeText(text).then(done).catch(() => copyTextFallback(text, done));
     } else {
-        copyTextFallback(id, done);
+        copyTextFallback(text, done);
     }
 }
 
@@ -726,6 +677,13 @@ function generateCertificate() {
     // Sertifikat hanya bisa dibuat selama hak dari lulus ujian masih aktif (js/exam.js)
     if (typeof certRightIsActive === 'function' && !certRightIsActive()) {
         showCertError('Sertifikat hanya bisa dibuat langsung setelah lulus Ujian Akhir. Ikuti ujian lagi untuk membuatnya.');
+        return;
+    }
+
+    // Skor yang dicetak = skor ujian yang BARU SAJA lulus (dari memori, bukan localStorage)
+    const score = (typeof certRightScore === 'function') ? certRightScore() : null;
+    if (!Number.isInteger(score) || score < 16 || score > CERT_TOTAL_QUESTIONS) {
+        showCertError('Skor ujian tidak valid. Ikuti ujian lagi untuk membuat sertifikat.');
         return;
     }
 
@@ -739,7 +697,7 @@ function generateCertificate() {
     if (name.length > 30) name = name.slice(0, 30).trim();
 
     const now = new Date();
-    const tanggal = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const tanggal = formatTanggalIndonesia(now);
     const ymd = now.getFullYear() +
         String(now.getMonth() + 1).padStart(2, '0') +
         String(now.getDate()).padStart(2, '0');
@@ -755,7 +713,7 @@ function generateCertificate() {
     const attempt = (n) => {
         const certId = (n === 1 && certRetryId) ? certRetryId : makeCertificateId(ymd);
         lastId = certId;
-        return saveCertificateToServer(certId, name, tanggal).then(status => {
+        return saveCertificateToServer(certId, name, tanggal, score).then(status => {
             lastStatus = status;
             if (status === 'success') return certId;
             if (status === 'duplicate' && n < CERT_MAX_ATTEMPTS) return attempt(n + 1);
@@ -763,137 +721,32 @@ function generateCertificate() {
         });
     };
 
-    attempt(1).then(certId => {
-        certRetryId = null;
-        certHasFailed = false;
-        setCertGenerating(false);
-        renderCertificate(name, tanggal, certId);
+    // Template + font dimuat DULU (sebelum ID disimpan), supaya gagal muat tidak menghabiskan ID.
+    loadCertificateAssets().then(() => {
+        return attempt(1).then(certId => {
+            certRetryId = null;
+            certHasFailed = false;
+            setCertGenerating(false);
+            renderCertificate(name, tanggal, certId, score);
+        }, () => {
+            // Hak TIDAK hilang, nama di kolom input tetap ada
+            certRetryId = (lastStatus === 'duplicate') ? null : lastId;
+            certHasFailed = true;
+            setCertGenerating(false);
+            showCertError('Gagal menyimpan sertifikat ke server. Periksa koneksi internetmu lalu tekan "Coba Lagi".');
+        });
     }, () => {
-        // Hak TIDAK hilang, nama di kolom input tetap ada
-        certRetryId = (lastStatus === 'duplicate') ? null : lastId;
         certHasFailed = true;
         setCertGenerating(false);
-        showCertError('Gagal menyimpan sertifikat ke server. Periksa koneksi internetmu lalu tekan "Coba Lagi".');
+        showCertError('Gagal memuat desain sertifikat. Periksa koneksi internetmu lalu tekan "Coba Lagi".');
     });
 }
 
-function renderCertificate(name, tanggal, certId) {
+// Gambar sertifikat (js/certificate.js) lalu tampilkan preview + tombol salin/unduh.
+function renderCertificate(name, tanggal, certId, score) {
     const canvas = document.getElementById('certCanvas');
     if (!canvas || !canvas.getContext) return;
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width;
-    const H = canvas.height;
-    const ORANGE = '#f7931a';
-    const ORANGE_LIGHT = '#ffb347';
-
-    // ---------- BACKGROUND ----------
-    const bg = ctx.createLinearGradient(0, 0, 0, H);
-    bg.addColorStop(0, '#1c1c22');
-    bg.addColorStop(1, '#0a0a0d');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, W, H);
-
-    // ---------- BORDER GANDA ----------
-    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
-    ctx.lineWidth = 2;
-    drawRoundedRect(ctx, 18, 18, W - 36, H - 36, 10);
-    ctx.stroke();
-
-    ctx.strokeStyle = ORANGE;
-    ctx.lineWidth = 5;
-    drawRoundedRect(ctx, 38, 38, W - 76, H - 76, 14);
-    ctx.stroke();
-
-    ctx.textAlign = 'center';
-
-    // ---------- HEADER ----------
-    ctx.fillStyle = ORANGE;
-    ctx.font = '700 56px Georgia, "Times New Roman", serif';
-    ctx.fillText('₿', W / 2, 118);
-
-    ctx.fillStyle = ORANGE;
-    ctx.font = '700 22px Arial, sans-serif';
-    drawSpacedText(ctx, 'KAPAZZ BITCOIN', W / 2, 155, 6);
-
-    // ---------- JUDUL ----------
-    ctx.fillStyle = '#f5f1e8';
-    ctx.font = '700 46px Georgia, "Times New Roman", serif';
-    ctx.fillText('SERTIFIKAT PENYELESAIAN', W / 2, 232);
-
-    ctx.strokeStyle = ORANGE;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(W / 2 - 70, 254);
-    ctx.lineTo(W / 2 + 70, 254);
-    ctx.stroke();
-
-    // ---------- SUB-TEKS ----------
-    ctx.fillStyle = '#cfcfd6';
-    ctx.font = 'italic 22px Georgia, serif';
-    ctx.fillText('Dengan bangga diberikan kepada', W / 2, 300);
-
-    // ---------- NAMA PENERIMA (auto-shrink) ----------
-    let nameFontSize = 68;
-    const maxNameWidth = W - 220;
-    ctx.font = '700 ' + nameFontSize + 'px Georgia, "Times New Roman", serif';
-    while (ctx.measureText(name).width > maxNameWidth && nameFontSize > 28) {
-        nameFontSize -= 2;
-        ctx.font = '700 ' + nameFontSize + 'px Georgia, "Times New Roman", serif';
-    }
-    ctx.fillStyle = ORANGE_LIGHT;
-    ctx.fillText(name, W / 2, 385);
-
-    // ---------- BODY TEXT ----------
-    ctx.fillStyle = '#e4e4e8';
-    ctx.font = '20px Arial, sans-serif';
-    const bodyText = 'telah berhasil menyelesaikan seluruh 8 materi pembelajaran Bitcoin dalam program ' +
-        'Kapazz Bitcoin Journey, mencakup Self-Custody, UTXO & Fee, Privasi & Keamanan, Lightning Network, ' +
-        'BIP, Mining, dan On-Chain Analysis.';
-    wrapCenteredText(ctx, bodyText, W / 2, 450, W - 320, 30);
-
-    // ---------- FOOTER ----------
-    ctx.textAlign = 'left';
-    ctx.fillStyle = '#9a9aa2';
-    ctx.font = '16px Arial, sans-serif';
-    ctx.fillText('Diterbitkan pada ' + tanggal, 90, H - 80);
-
-    // Certificate ID (untuk verifikasi di halaman verify)
-    ctx.fillStyle = '#b8b8c0';
-    ctx.font = '14px "Courier New", monospace';
-    ctx.fillText('Certificate ID: ' + certId, 90, H - 56);
-
-    ctx.textAlign = 'right';
-    ctx.fillStyle = ORANGE;
-    ctx.font = '700 16px Arial, sans-serif';
-    ctx.fillText('kapazz09.github.io', W - 150, H - 80);
-    const linkWidth = ctx.measureText('kapazz09.github.io').width;
-    ctx.strokeStyle = ORANGE;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(W - 150 - linkWidth, H - 74);
-    ctx.lineTo(W - 150, H - 74);
-    ctx.stroke();
-
-    // ---------- STEMPEL / SEAL ----------
-    const sealX = W - 150;
-    const sealY = H - 150;
-    ctx.textAlign = 'center';
-
-    ctx.strokeStyle = ORANGE;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.arc(sealX, sealY, 44, 0, Math.PI * 2);
-    ctx.stroke();
-
-    ctx.strokeStyle = 'rgba(247,147,26,0.5)';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.arc(sealX, sealY, 36, 0, Math.PI * 2);
-    ctx.stroke();
-
-    ctx.fillStyle = ORANGE;
-    ctx.font = '700 34px Georgia, serif';
-    ctx.fillText('₿', sealX, sealY + 12);
+    drawCertificate(canvas, name, tanggal, certId, score);
 
     // ---------- TAMPILKAN PREVIEW ----------
     const formView = document.getElementById('certFormView');
@@ -906,7 +759,12 @@ function renderCertificate(name, tanggal, certId) {
     const copyBtn = document.getElementById('certIdCopyBtn');
     if (copyBtn) {
         copyBtn.textContent = '📋 Salin';
-        copyBtn.onclick = () => copyCertificateId(certId, copyBtn);
+        copyBtn.onclick = () => copyCertificateText(certId, copyBtn, '📋 Salin');
+    }
+    const linkBtn = document.getElementById('certLinkCopyBtn');
+    if (linkBtn) {
+        linkBtn.textContent = '🔗 Salin Link Verifikasi';
+        linkBtn.onclick = () => copyCertificateText(certVerifyUrl(certId), linkBtn, '🔗 Salin Link Verifikasi');
     }
 
     const downloadBtn = document.getElementById('certDownloadBtn');

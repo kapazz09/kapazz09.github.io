@@ -21,6 +21,7 @@ let examState = null;
 // ---- Hak membuat sertifikat (HANYA di memori, bukan localStorage) ----
 let certRightActive = false;     // lulus ujian & sertifikat belum berhasil dibuat
 let certPendingDownload = false; // sertifikat sudah dibuat tapi belum diunduh
+let certExamScore = null;        // skor ujian yang BARU SAJA lulus (dicetak di sertifikat; memori saja)
 
 // ---- Pengaman: history (tombol back) + beforeunload ----
 let examGuardsOn = false;
@@ -208,6 +209,7 @@ function finishExam() {
         // Hak membuat sertifikat: hanya di memori. Aktifkan pengaman penutupan.
         certRightActive = true;
         certPendingDownload = false;
+        certExamScore = score;
         addExamGuards();
 
         setExamView(
@@ -308,10 +310,16 @@ function certRightIsActive() {
     return certRightActive;
 }
 
+// Skor ujian yang baru lulus, untuk dicetak di sertifikat (null kalau hak tidak aktif)
+function certRightScore() {
+    return certRightActive ? certExamScore : null;
+}
+
 // Dipanggil setelah sertifikat BERHASIL digambar DAN Certificate ID tersimpan di server.
 // Sejak saat ini hak terpakai: pengaman penutupan (a) tidak berlaku lagi.
 function onCertificateIssued() {
     certRightActive = false;
+    certExamScore = null;
     certPendingDownload = true;
     removeExamGuards();
 }
@@ -340,6 +348,7 @@ function requestCertClose() {
 function confirmCloseWithRightActive() {
     examConfirm('Kalau ditutup, kamu harus ujian ulang untuk dapat sertifikat. Yakin?', 'Ya, tutup', function () {
         certRightActive = false;
+        certExamScore = null;
         removeExamGuards();
         forceCloseExamModal();
         if (typeof closeCertModal === 'function') closeCertModal(true);

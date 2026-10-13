@@ -3361,3 +3361,21 @@ body.modal-open .quick-nav-fab {
     color: #b91c1c;
 }
 
+/* ==================================================
+   FONT SERTIFIKAT (self-host, lisensi OFL) — dipakai canvas di js/certificate.js
+   ================================================== */
+@font-face {
+    font-family: 'Merriweather';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../assets/fonts/merriweather-700.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('../assets/fonts/noto-sans-500.woff2') format('woff2');
+}
