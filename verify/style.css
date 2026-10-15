@@ -219,3 +219,94 @@ body {
     color: var(--vf-text-dim);
     margin-top: 4px !important;
 }
+
+/* ---------- LIHAT / UNDUH ULANG SERTIFIKAT ---------- */
+.verify-view-btn {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    margin-top: 16px;
+    padding: 10px 14px;
+    border: 2px solid var(--vf-orange);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--vf-orange-light);
+    font-family: var(--vf-font);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.verify-view-btn:hover {
+    background: rgba(247, 147, 26, 0.12);
+}
+
+.verify-view-btn:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.verify-cert-error {
+    margin: 10px 0 0 0 !important;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #fca5a5;
+}
+
+.verify-cert {
+    margin-top: 18px;
+}
+
+.verify-cert canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    border: 1px solid var(--vf-card-border);
+    background: #000;
+}
+
+.verify-cert-note {
+    margin: 10px 0 0 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--vf-text-faint);
+}
+
+.verify-download-btn {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    margin-top: 14px;
+    border: none;
+    border-radius: 12px;
+    background: var(--vf-orange);
+    color: #101014;
+    font-family: var(--vf-font);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.verify-download-btn:hover {
+    background: var(--vf-orange-light);
+}
+
+/* ---------- FONT SERTIFIKAT (self-host, lisensi OFL) — dipakai canvas di js/certificate.js ---------- */
+@font-face {
+    font-family: 'Merriweather';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../assets/fonts/merriweather-700.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('../assets/fonts/noto-sans-500.woff2') format('woff2');
+}

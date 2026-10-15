@@ -34,6 +34,13 @@
             </div>
 
             <div id="verifyResult" class="verify-result" aria-live="polite" style="display:none;"></div>
+
+            <!-- Sertifikat digambar ulang dari data yang tercatat (hanya muncul setelah tombol "Lihat Sertifikat") -->
+            <div id="certPreview" class="verify-cert" style="display:none;">
+                <canvas id="certPreviewCanvas" width="1478" height="1064" aria-label="Pratinjau sertifikat"></canvas>
+                <p class="verify-cert-note">Sertifikat digambar ulang dari data yang tercatat di server.</p>
+                <button type="button" id="certDownloadBtn" class="verify-download-btn">⬇️ Download Sertifikat</button>
+            </div>
         </main>
 
     </div>
@@ -62,13 +69,15 @@
 
         function showMessage(text) {
             clearBox();
+            hideCertPreview();
             box.className = "verify-result verify-result--neutral";
             addLine(box, "verify-msg", text);
             box.style.display = "block";
         }
 
-        function showFound(data) {
+        function showFound(data, id) {
             clearBox();
+            hideCertPreview();
             box.className = "verify-result verify-result--found";
             addLine(box, "verify-found-title", "✓ Certificate ditemukan");
             addLine(box, "verify-found-label", "Diberikan kepada");
@@ -80,7 +89,78 @@
                 addLine(box, "verify-found-line", "✓ Skor ujian " + data.skor + "/21 · Nilai akhir " + nilai.toFixed(1));
             }
             addLine(box, "verify-found-date", "Tanggal terbit: " + (data.tanggalTerbit || "-"));
+
+            // Tombol hanya untuk sertifikat yang punya skor (desain baru butuh skor & nilai akhir)
+            if (typeof data.skor === "number") {
+                var viewBtn = document.createElement("button");
+                viewBtn.type = "button";
+                viewBtn.className = "verify-view-btn";
+                viewBtn.textContent = "🖼️ Lihat Sertifikat";
+                var errLine = addLine(box, "verify-cert-error", "");
+                errLine.style.display = "none";
+                viewBtn.addEventListener("click", function () { openCertificate(data, id, viewBtn, errLine); });
+                box.insertBefore(viewBtn, errLine);
+            }
             box.style.display = "block";
+        }
+
+        // ---------- LIHAT / UNDUH ULANG SERTIFIKAT ----------
+        // Bukan sertifikat baru: gambar dibuat ulang dari data yang tercatat di server
+        // (ID, nama, tanggal, skor sama persis). Library QR, template, dan font baru dimuat
+        // saat tombol ditekan supaya halaman ini tetap ringan saat QR di-scan.
+        var loadedScripts = {};
+
+        function loadScriptOnce(src) {
+            return new Promise(function (resolve, reject) {
+                if (loadedScripts[src]) { resolve(); return; }
+                var el = document.createElement("script");
+                el.src = src;
+                el.onload = function () { loadedScripts[src] = true; resolve(); };
+                el.onerror = function () { el.remove(); reject(new Error("script")); };
+                document.head.appendChild(el);
+            });
+        }
+
+        function loadCertificateTools() {
+            return loadScriptOnce("../js/vendor/qrcode.js")
+                .then(function () { return loadScriptOnce("../js/certificate.js"); })
+                .then(function () { return loadCertificateAssets(); });
+        }
+
+        function hideCertPreview() {
+            var preview = document.getElementById("certPreview");
+            if (preview) preview.style.display = "none";
+        }
+
+        function openCertificate(data, id, viewBtn, errLine) {
+            viewBtn.disabled = true;
+            viewBtn.textContent = "Memuat sertifikat...";
+            errLine.style.display = "none";
+
+            loadCertificateTools().then(function () {
+                var canvas = document.getElementById("certPreviewCanvas");
+                drawCertificate(canvas, data.nama, data.tanggalTerbit, id, data.skor);
+
+                var downloadBtn = document.getElementById("certDownloadBtn");
+                downloadBtn.onclick = function () {
+                    var safeName = String(data.nama).replace(/[^a-zA-Z0-9\u00C0-\u00FF]/g, "") || "saya";
+                    var link = document.createElement("a");
+                    link.download = "sertifikat-kapazz-bitcoin-" + safeName + ".png";
+                    link.href = canvas.toDataURL("image/png");
+                    link.click();
+                };
+
+                var preview = document.getElementById("certPreview");
+                preview.style.display = "block";
+                viewBtn.disabled = false;
+                viewBtn.textContent = "🖼️ Lihat Sertifikat";
+                preview.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, function () {
+                viewBtn.disabled = false;
+                viewBtn.textContent = "🔄 Coba Lagi";
+                errLine.textContent = "Gagal memuat desain sertifikat. Periksa koneksi internetmu lalu tekan \"Coba Lagi\".";
+                errLine.style.display = "block";
+            });
         }
 
         function setBusy(isBusy) {
@@ -101,6 +181,7 @@
                 return;
             }
 
+            hideCertPreview();
             setBusy(true);
             var controller = (typeof AbortController !== "undefined") ? new AbortController() : null;
             var timer = controller ? setTimeout(function () { controller.abort(); }, 20000) : null;
@@ -110,7 +191,7 @@
                 .then(function (res) { return res.json(); })
                 .then(function (data) {
                     if (data && data.found === true) {
-                        showFound(data);
+                        showFound(data, id);
                     } else {
                         showMessage("Certificate ID tidak ditemukan. Periksa kembali ID yang kamu masukkan.");
                     }

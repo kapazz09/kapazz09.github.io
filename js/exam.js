@@ -335,7 +335,7 @@ function requestCertClose() {
         return true;
     }
     if (certPendingDownload) {
-        examConfirm('Sertifikat belum diunduh. Kalau ditutup, kamu harus ujian ulang untuk membuatnya lagi. Tutup?',
+        examConfirm('Sertifikat belum diunduh. Simpan Certificate ID atau link verifikasimu untuk mengunduhnya lagi nanti. Tutup?',
             'Ya, tutup', function () {
                 certPendingDownload = false;
                 if (typeof closeCertModal === 'function') closeCertModal(true);

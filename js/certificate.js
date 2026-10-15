@@ -5,12 +5,19 @@
 // menuliskan elemen dinamis: nama, skor ujian, nilai akhir, tanggal terbit,
 // Certificate ID, dan QR verifikasi.
 // Template : assets/certificate/certificate-template.webp
+// Dipakai juga oleh verify/index.html (tombol "Lihat Sertifikat") untuk menggambar ulang sertifikat
+// dari data yang tercatat di server.
 // Font     : assets/fonts/ (self-host, didaftarkan lewat @font-face di css/style.css)
 // QR       : js/vendor/qrcode.js (qrcode-generator, MIT)
 // ==================================================
 const CERT_W = 1478;
 const CERT_H = 1064;
-const CERT_TEMPLATE_SRC = 'assets/certificate/certificate-template.webp';
+// Alamat dasar situs dihitung dari lokasi file ini (js/certificate.js -> naik satu folder),
+// supaya template bisa dimuat dari halaman manapun (beranda maupun verify/).
+const CERT_SITE_BASE = (document.currentScript && document.currentScript.src)
+    ? new URL('../', document.currentScript.src).href
+    : '';
+const CERT_TEMPLATE_SRC = CERT_SITE_BASE + 'assets/certificate/certificate-template.webp';
 const CERT_VERIFY_BASE = 'https://kapazz09.github.io/verify/';
 const CERT_TOTAL_QUESTIONS = 21;
 
