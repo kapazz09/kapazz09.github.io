@@ -489,6 +489,9 @@ function updateLearningProgressUI() {
     // Sertifikat hanya bisa dibuat tepat setelah lulus ujian, tidak ada tombol permanen.
     const examBtn = document.getElementById('examOpenBtn');
     if (examBtn) examBtn.style.display = (doneCount >= total) ? 'block' : 'none';
+    // Sudah 8/8: siapkan satu ujian di latar belakang (js/exam.js) supaya "Mulai Ujian" instan.
+    // Pengunjung yang belum 8/8 tidak memicu permintaan apa pun.
+    if (doneCount >= total && typeof examPrefetchIfReady === 'function') examPrefetchIfReady();
 
     updateContinueLearningButton(Array.from(items), doneCount, total);
 }
@@ -579,6 +582,9 @@ function showCertForm() {
 // Format ID: KAPAZZ-BTC-{YYYYMMDD}-{4 karakter acak: A-Z tanpa I/O + angka 2-9}.
 // Disimpan ke sheet "Certificates" lewat Web App Apps Script yang sama
 // dengan rating & komentar (RATING_API_URL di ratings.js), action=saveCertificate.
+// Skor TIDAK dikirim dari browser: server mengambil skor dari certToken yang didapat
+// dari hasil ujian (js/exam.js, submitExam). Status balasan: success | duplicate |
+// invalid_token (token kedaluwarsa/terpakai) | error.
 const CERT_MAX_ATTEMPTS = 3;
 const CERT_TOTAL_MODULES = 8;
 let certGenerating = false;
@@ -597,7 +603,7 @@ function makeCertificateId(ymd) {
     return 'KAPAZZ-BTC-' + ymd + '-' + rand;
 }
 
-function saveCertificateToServer(id, name, tanggal, score) {
+function saveCertificateToServer(id, name, tanggal, certToken) {
     if (typeof RATING_API_URL === 'undefined') {
         return Promise.reject(new Error('API belum siap'));
     }
@@ -606,7 +612,7 @@ function saveCertificateToServer(id, name, tanggal, score) {
         '&nama=' + encodeURIComponent(name) +
         '&tanggalTerbit=' + encodeURIComponent(tanggal) +
         '&jumlahModul=' + CERT_TOTAL_MODULES +
-        '&skor=' + encodeURIComponent(score);
+        '&certToken=' + encodeURIComponent(certToken);
 
     // Batas waktu 15 detik supaya tidak menggantung selamanya kalau koneksi buruk
     const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
@@ -680,9 +686,11 @@ function generateCertificate() {
         return;
     }
 
-    // Skor yang dicetak = skor ujian yang BARU SAJA lulus (dari memori, bukan localStorage)
+    // Skor yang dicetak = skor ujian yang BARU SAJA lulus (dari memori, bukan localStorage).
+    // Yang dicatat di server tetap skor dari record certToken, bukan angka ini.
     const score = (typeof certRightScore === 'function') ? certRightScore() : null;
-    if (!Number.isInteger(score) || score < 16 || score > CERT_TOTAL_QUESTIONS) {
+    const certToken = (typeof certRightToken === 'function') ? certRightToken() : null;
+    if (!Number.isInteger(score) || score < 16 || score > CERT_TOTAL_QUESTIONS || !certToken) {
         showCertError('Skor ujian tidak valid. Ikuti ujian lagi untuk membuat sertifikat.');
         return;
     }
@@ -713,7 +721,7 @@ function generateCertificate() {
     const attempt = (n) => {
         const certId = (n === 1 && certRetryId) ? certRetryId : makeCertificateId(ymd);
         lastId = certId;
-        return saveCertificateToServer(certId, name, tanggal, score).then(status => {
+        return saveCertificateToServer(certId, name, tanggal, certToken).then(status => {
             lastStatus = status;
             if (status === 'success') return certId;
             if (status === 'duplicate' && n < CERT_MAX_ATTEMPTS) return attempt(n + 1);
@@ -729,6 +737,15 @@ function generateCertificate() {
             setCertGenerating(false);
             renderCertificate(name, tanggal, certId, score);
         }, () => {
+            if (lastStatus === 'invalid_token') {
+                // Token ditolak server (lebih dari 30 menit, atau sudah dipakai): hak hilang
+                certRetryId = null;
+                certHasFailed = false;
+                setCertGenerating(false);
+                if (typeof examOnCertTokenInvalid === 'function') examOnCertTokenInvalid();
+                showCertError('Sesi sertifikat sudah berakhir. Tutup jendela ini lalu ikuti ujian lagi untuk membuat sertifikat.');
+                return;
+            }
             // Hak TIDAK hilang, nama di kolom input tetap ada
             certRetryId = (lastStatus === 'duplicate') ? null : lastId;
             certHasFailed = true;
