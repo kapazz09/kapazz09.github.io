@@ -70,6 +70,166 @@ Object.assign(BitcoinTools, {
     },
 
     //------------------------------------------------
+    // PANEL "BITCOIN HARI INI" (di dalam modal Halving Countdown)
+    // - Persen sudah ditambang: dihitung dari TINGGI BLOK (jadwal subsidi
+    //   per halaving), bukan dari API lain -> perkiraan.
+    // - Difficulty: mempool.space (hashrate/3d -> currentDifficulty;
+    //   fallback blockchain.info). Perkiraan penyesuaian berikutnya:
+    //   mempool.space /api/v1/difficulty-adjustment (difficultyChange %,
+    //   estimatedRetargetDate ms).
+    // - Berita: file lokal data/bitcoin-news.json (diisi GitHub Actions).
+    // Data yang tidak tersedia ditulis "Data belum tersedia", tidak pernah
+    // NaN / kosong. Semua teks berita dirender dengan textContent.
+    //------------------------------------------------
+    _bitcoinTodayLoadedAt: 0,
+
+    // Total BTC dari jadwal subsidi untuk blok 0..height (dalam satoshi bulat)
+    minedSupplyBtc(height) {
+        if (!Number.isFinite(height) || height < 0) return null;
+        const interval = 210000;
+        let blocksLeft = Math.floor(height) + 1;
+        let subsidy = 5000000000;   // 50 BTC dalam satoshi
+        let sats = 0;
+        while (blocksLeft > 0 && subsidy > 0) {
+            const n = Math.min(blocksLeft, interval);
+            sats += n * subsidy;
+            blocksLeft -= n;
+            subsidy = Math.floor(subsidy / 2);
+        }
+        return sats / 1e8;
+    },
+
+    _btodaySet(id, text) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    },
+
+    renderBitcoinToday(force) {
+        if (!document.getElementById("btodayMinedValue")) return;
+        const now = Date.now();
+        if (!force && now - this._bitcoinTodayLoadedAt < 60000) return;   // jangan ambil ulang tiap buka modal
+        this._bitcoinTodayLoadedAt = now;
+
+        const NA = "Data belum tersedia";
+        const isNum = (v) => typeof v === "number" && Number.isFinite(v);
+
+        this._btodaySet("btodayMinedValue", "Memuat...");
+        this._btodaySet("btodayDiffValue", "Memuat...");
+        this._btodaySet("btodayDiffSub", "");
+
+        // 1) Sudah ditambang (dari tinggi blok)
+        this.fetchWithFallback(
+            "https://mempool.space/api/blocks/tip/height",
+            (data) => data,
+            "https://blockchain.info/q/getblockcount?cors=true",
+            (data) => data
+        ).then(height => {
+            const h = Number(height);
+            const mined = this.minedSupplyBtc(h);
+            if (!isNum(mined)) throw new Error("tinggi blok tidak valid");
+            const pct = (mined / 21000000) * 100;
+            this._btodaySet("btodayMinedValue", pct.toFixed(2).replace(".", ",") + "%");
+            this._btodaySet("btodayMinedSub", "\u2248 " + Math.round(mined).toLocaleString("id-ID") + " dari 21.000.000 BTC");
+        }).catch(() => {
+            this._btodaySet("btodayMinedValue", NA);
+            this._btodaySet("btodayMinedSub", "");
+        });
+
+        // 2) Difficulty saat ini
+        this.fetchWithFallback(
+            "https://mempool.space/api/v1/mining/hashrate/3d",
+            (data) => data.currentDifficulty,
+            "https://blockchain.info/q/getdifficulty?cors=true",
+            (data) => data
+        ).then(diff => {
+            const d = Number(diff);
+            if (!isNum(d) || d <= 0) throw new Error("difficulty tidak valid");
+            this._btodaySet("btodayDiffValue", (d / 1e12).toFixed(2).replace(".", ",") + " T");
+        }).catch(() => {
+            this._btodaySet("btodayDiffValue", NA);
+        });
+
+        // 2b) Perkiraan penyesuaian berikutnya (hanya mempool.space, tanpa fallback)
+        this.fetchWithTimeout("https://mempool.space/api/v1/difficulty-adjustment", 7000)
+            .then(res => { if (!res.ok) throw new Error("not ok"); return res.json(); })
+            .then(data => {
+                const change = Number(data.difficultyChange);
+                const when = Number(data.estimatedRetargetDate);
+                if (!isNum(change) || !isNum(when) || when <= 0) throw new Error("data penyesuaian tidak valid");
+                const sign = change >= 0 ? "+" : "\u2212";
+                const pctText = sign + Math.abs(change).toFixed(2).replace(".", ",") + "%";
+                const dateText = new Date(when).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+                this._btodaySet("btodayDiffSub", "Perkiraan penyesuaian: " + pctText + " (\u2248 " + dateText + ")");
+            })
+            .catch(() => {
+                this._btodaySet("btodayDiffSub", "Perkiraan penyesuaian belum tersedia");
+            });
+
+        // 3) Berita dari file lokal
+        this.renderBitcoinNews();
+    },
+
+    _newsRelativeDate(iso) {
+        const t = Date.parse(iso);
+        if (!Number.isFinite(t)) return "";
+        const diffMin = Math.floor((Date.now() - t) / 60000);
+        if (diffMin < 0) return "";
+        if (diffMin < 60) return Math.max(diffMin, 1) + " menit lalu";
+        const diffH = Math.floor(diffMin / 60);
+        if (diffH < 24) return diffH + " jam lalu";
+        const diffD = Math.floor(diffH / 24);
+        if (diffD < 7) return diffD + " hari lalu";
+        return new Date(t).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+    },
+
+    renderBitcoinNews() {
+        const list = document.getElementById("btodayNewsList");
+        if (!list) return;
+
+        const showEmpty = () => {
+            list.textContent = "";
+            const p = document.createElement("p");
+            p.className = "btoday-news-empty";
+            p.textContent = "Berita belum tersedia saat ini.";
+            list.appendChild(p);
+        };
+
+        fetch("data/bitcoin-news.json", { cache: "no-cache" })
+            .then(res => { if (!res.ok) throw new Error("not ok"); return res.json(); })
+            .then(data => {
+                const items = (data && Array.isArray(data.items) ? data.items : [])
+                    .filter(it => it && typeof it.title === "string" && it.title.trim() && typeof it.url === "string")
+                    .filter(it => /^https?:\/\//i.test(it.url))
+                    .slice(0, 5);
+                if (items.length === 0) { showEmpty(); return; }
+
+                list.textContent = "";
+                items.forEach(it => {
+                    const row = document.createElement("div");
+                    row.className = "btoday-news-item";
+
+                    const a = document.createElement("a");
+                    a.className = "btoday-news-link";
+                    a.href = it.url;
+                    a.target = "_blank";
+                    a.rel = "noopener noreferrer";
+                    a.textContent = it.title.trim();
+                    row.appendChild(a);
+
+                    const meta = document.createElement("span");
+                    meta.className = "btoday-news-meta";
+                    const when = this._newsRelativeDate(it.published);
+                    const source = (typeof it.source === "string") ? it.source.trim() : "";
+                    meta.textContent = [source, when].filter(Boolean).join(" \u00b7 ");
+                    if (meta.textContent) row.appendChild(meta);
+
+                    list.appendChild(row);
+                });
+            })
+            .catch(showEmpty);
+    },
+
+    //------------------------------------------------
     // GRAFIK SIKLUS HALVING (4 siklus sebelumnya, dinormalisasi
     // jadi % perubahan dari harga saat halving supaya bisa
     // dibandingkan langsung meski skala harganya beda jauh)

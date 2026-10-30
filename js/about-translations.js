@@ -24,6 +24,7 @@ const ABOUT_TRANSLATIONS = {
             `Situs ini juga saya lengkapi dengan materi belajar interaktif (bukan sekadar PDF) yang mencakup self-custody, UTXO & fee, privasi, Lightning Network, BIP, mining, hingga on-chain analysis — dan akan terus saya perbarui atau tambahkan seiring pengalaman dan pengetahuan baru yang saya dapatkan. Selain itu, ada berbagai tools interaktif yang saya buat untuk membantu memahami cara kerja dan penggunaan Bitcoin sehari-hari, mulai dari kalkulator DCA, pengecekan saldo wallet, hingga estimasi fee transaksi.`,
             `Jika perjalanan belajar ini bermanfaat atau menginspirasi, dukungan Anda akan sangat berarti untuk membantu saya terus belajar, membuat konten edukasi, dan membangun tools yang berguna bagi komunitas Bitcoin.`
         ],
+        scamRadar: "Lihat Scam Radar",
         readMore: "Baca Selengkapnya",
         close: "Tutup"
     },
@@ -47,6 +48,7 @@ const ABOUT_TRANSLATIONS = {
             `This site also includes interactive learning materials (not just PDFs) covering self-custody, UTXO & fees, privacy, the Lightning Network, BIPs, mining, and on-chain analysis — and I'll keep updating or expanding them as I gain new experience and knowledge. There are also various interactive tools I built to help you understand how Bitcoin actually works and is used day-to-day, from a DCA calculator to a wallet balance checker and transaction fee estimator.`,
             `If this learning journey has been useful or inspiring, your support would mean a lot in helping me keep learning, creating educational content, and building tools that are useful for the Bitcoin community.`
         ],
+        scamRadar: "See Scam Radar",
         readMore: "Read More",
         close: "Close"
     },
@@ -70,6 +72,7 @@ const ABOUT_TRANSLATIONS = {
             `本网站还提供互动式学习资料（不只是PDF），内容涵盖自我托管、UTXO与手续费、隐私、闪电网络、BIP、挖矿以及链上分析——并且会随着我获得新的经验和知识不断更新或补充。此外，我还制作了多种互动工具，帮助你了解比特币的实际运作方式和日常使用，包括DCA计算器、钱包余额查询和交易手续费估算等。`,
             `如果这段学习之旅对你有所帮助或启发，你的支持对我来说意义重大——它能帮助我继续学习、制作教育内容，并为比特币社区打造更多实用的工具。`
         ],
+        scamRadar: "查看诈骗雷达",
         readMore: "阅读更多",
         close: "收起"
     },
@@ -93,6 +96,7 @@ const ABOUT_TRANSLATIONS = {
             `Este sitio también incluye materiales de aprendizaje interactivos (no solo PDFs) que cubren la autocustodia, UTXO y comisiones, privacidad, Lightning Network, BIPs, minería y análisis on-chain — e iré actualizándolos o ampliándolos a medida que adquiera nueva experiencia y conocimiento. También hay varias herramientas interactivas que creé para ayudarte a entender cómo funciona Bitcoin y cómo se usa en el día a día, desde una calculadora de DCA hasta un verificador de saldo de wallet y un estimador de comisiones.`,
             `Si este viaje de aprendizaje te ha sido útil o te ha inspirado, tu apoyo significaría mucho para ayudarme a seguir aprendiendo, crear contenido educativo y construir herramientas útiles para la comunidad Bitcoin.`
         ],
+        scamRadar: "Ver Scam Radar",
         readMore: "Leer Más",
         close: "Cerrar"
     },
@@ -116,6 +120,7 @@ const ABOUT_TRANSLATIONS = {
             `Ce site propose aussi des supports d'apprentissage interactifs (pas seulement des PDF) couvrant l'auto-conservation, les UTXO et les frais, la confidentialité, le Lightning Network, les BIP, le minage et l'analyse on-chain — et je continuerai à les mettre à jour ou à les enrichir au fur et à mesure de mes nouvelles expériences et connaissances. Il y a aussi divers outils interactifs que j'ai créés pour t'aider à comprendre comment Bitcoin fonctionne et s'utilise au quotidien, comme un calculateur de DCA, un vérificateur de solde de wallet et un estimateur de frais de transaction.`,
             `Si ce parcours d'apprentissage vous a été utile ou vous a inspiré, votre soutien compterait énormément pour m'aider à continuer d'apprendre, à créer du contenu éducatif et à construire des outils utiles pour la communauté Bitcoin.`
         ],
+        scamRadar: "Voir Scam Radar",
         readMore: "Lire Plus",
         close: "Fermer"
     },
@@ -139,6 +144,7 @@ const ABOUT_TRANSLATIONS = {
             `На этом сайте также есть интерактивные учебные материалы (не просто PDF), охватывающие самостоятельное хранение, UTXO и комиссии, приватность, Lightning Network, BIP, майнинг и он-чейн анализ — и я буду продолжать их обновлять и дополнять по мере получения нового опыта и знаний. Кроме того, есть различные интерактивные инструменты, которые я создал, чтобы помочь понять, как Bitcoin работает и используется в повседневной жизни: калькулятор DCA, проверка баланса кошелька и оценка комиссии за транзакцию.`,
             `Если это путешествие в мир знаний оказалось полезным или вдохновляющим для вас, ваша поддержка будет много значить — она поможет мне продолжать учиться, создавать образовательный контент и разрабатывать полезные инструменты для биткоин-сообщества.`
         ],
+        scamRadar: "Открыть Scam Radar",
         readMore: "Читать далее",
         close: "Свернуть"
     },
@@ -162,6 +168,7 @@ const ABOUT_TRANSLATIONS = {
             `Este site também traz materiais de aprendizado interativos (não apenas PDFs) que abrangem autocustódia, UTXO e taxas, privacidade, Lightning Network, BIPs, mineração e análise on-chain — e vou continuar atualizando ou ampliando conforme ganho novas experiências e conhecimentos. Há também várias ferramentas interativas que criei para ajudar a entender como o Bitcoin funciona e é usado no dia a dia, como uma calculadora de DCA, verificador de saldo de carteira e estimador de taxa de transação.`,
             `Se essa jornada de aprendizado foi útil ou inspiradora para você, seu apoio significaria muito para me ajudar a continuar aprendendo, criar conteúdo educativo e construir ferramentas úteis para a comunidade Bitcoin.`
         ],
+        scamRadar: "Ver Scam Radar",
         readMore: "Ler Mais",
         close: "Fechar"
     }
@@ -181,7 +188,13 @@ function applyAboutLanguage(lang) {
 
     if (titleEl) titleEl.textContent = t.title;
     if (introEl) introEl.innerHTML = t.intro.map(p => "<p>" + p + "</p>").join("");
-    if (extraEl) extraEl.innerHTML = t.extra.map(p => "<p>" + p + "</p>").join("");
+    if (extraEl) {
+        extraEl.innerHTML = t.extra.map(p => "<p>" + p + "</p>").join("");
+        // Link kecil ke Scam Radar di bawah cerita (isi cerita tidak diubah)
+        if (t.scamRadar) {
+            extraEl.innerHTML += '<p class="about-scam-link"><a href="scam-radar/index.html">\u{1F6A8} ' + t.scamRadar + ' \u2192</a></p>';
+        }
+    }
 
     if (btn) {
         const isOpen = extraEl && extraEl.style.display === "block";

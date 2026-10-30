@@ -171,6 +171,7 @@
             <p>Jika perjalanan belajar ini bermanfaat atau menginspirasi, dukungan Anda akan sangat berarti untuk
                 membantu
                 saya terus belajar, membuat konten edukasi, dan membangun tools yang berguna bagi komunitas Bitcoin.</p>
+            <p class="about-scam-link"><a href="scam-radar/index.html">🚨 Lihat Scam Radar →</a></p>
         </div>
     </div>
 
@@ -236,17 +237,24 @@
             </li>
         </ol>
 
-        <a href="uji-diri/index.html" class="uji-diri-card">
-            <span class="uji-diri-card-icon">🧠</span>
-            <span class="uji-diri-card-text">
-                <strong>Uji Diri: Bisakah Kamu Kenali Penipuan?</strong>
-                <small>5 skenario nyata — coba insting keamananmu</small>
-            </span>
-            <span class="uji-diri-card-arrow">→</span>
-        </a>
+        <div class="waspada-block" id="waspada-penipuan">
+            <h3 class="waspada-title">🛡️ Waspada Penipuan</h3>
+            <div class="waspada-grid">
+                <a href="uji-diri/index.html" class="waspada-card">
+                    <span class="waspada-card-icon">🧠</span>
+                    <strong class="waspada-card-name">Uji Diri</strong>
+                    <small class="waspada-card-desc">5 skenario nyata, coba insting keamananmu</small>
+                </a>
+                <a href="scam-radar/index.html" class="waspada-card">
+                    <span class="waspada-card-icon">🚨</span>
+                    <strong class="waspada-card-name">Scam Radar</strong>
+                    <small class="waspada-card-desc">Modus penipuan terbaru</small>
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div class="faq-section fade-in">
+    <div class="faq-section fade-in" id="faq">
         <div class="faq-header-toggle" onclick="toggleFaqSection()">
             <h2>❓ FAQ</h2>
             <p class="faq-subtitle">Pertanyaan yang sering ditanyakan pemula (klik untuk lihat)</p>
@@ -303,6 +311,8 @@
                         phrase/private key ke siapapun (termasuk yang ngaku "admin"), curigai janji untung besar
                         dalam waktu singkat, dan selalu verifikasi platform/orang yang mengajak sebelum kirim dana
                         apapun.</p>
+                    <p>Modus penipuan terus berganti, jadi saya rangkum yang lagi ramai di Scam Radar.
+                        <a href="scam-radar/index.html" class="faq-scam-link">Lihat Scam Radar →</a></p>
                 </div>
             </div>
 
@@ -540,7 +550,7 @@
                     <p style="font-size:12px;color:#888;margin-top:10px;">*Frekuensi Harian pakai harga hari itu saja;
                         Mingguan/Bulanan pakai <strong>rata-rata harga sepanjang periode itu</strong> (bukan cuma 1
                         tanggal), diambil dari file lokal <code>btc-price-history.json</code> (data sejak 1 Januari
-                        2013, di-update manual sekitar 1x/bulan). Nilai Rp adalah estimasi: harga USD historis
+                        2013, di-update otomatis setiap hari). Nilai Rp adalah estimasi: harga USD historis
                         dikalikan kurs USD/IDR saat ini.</p>
                 </div>
             </div>
@@ -705,6 +715,27 @@
                                 jaminan</strong> pola yang sama akan berulang di masa depan, dan bukan ajakan
                             investasi/finansial.
                         </p>
+                    </div>
+                    <div class="dca-card btoday-panel" id="bitcoinTodayPanel">
+                        <h4 class="btoday-title">📰 Bitcoin Hari Ini</h4>
+                        <div class="btoday-stats">
+                            <div class="btoday-stat">
+                                <span class="btoday-stat-label">Sudah Ditambang</span>
+                                <strong class="btoday-stat-value" id="btodayMinedValue">Memuat...</strong>
+                                <span class="btoday-stat-sub" id="btodayMinedSub"></span>
+                                <span class="btoday-stat-hint">Perkiraan, dihitung dari tinggi blok.</span>
+                            </div>
+                            <div class="btoday-stat">
+                                <span class="btoday-stat-label">Difficulty</span>
+                                <strong class="btoday-stat-value" id="btodayDiffValue">Memuat...</strong>
+                                <span class="btoday-stat-sub" id="btodayDiffSub"></span>
+                            </div>
+                        </div>
+                        <h5 class="btoday-news-title">Berita Bitcoin Terbaru</h5>
+                        <div class="btoday-news-list" id="btodayNewsList">
+                            <p class="btoday-news-empty">Memuat berita...</p>
+                        </div>
+                        <p class="btoday-disclaimer">Berita dari pihak ketiga, hanya judul dan tautan ke sumber. Bukan saran investasi.</p>
                     </div>
                 </div>
             </div>

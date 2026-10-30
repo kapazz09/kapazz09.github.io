@@ -262,6 +262,7 @@ function startExamWithData(data) {
         inProgress: true,
         submitting: false
     };
+    if (typeof kbTrack === 'function') kbTrack('exam_start');
     renderExamQuestion();
 }
 
@@ -394,6 +395,7 @@ function finishExam(s, data) {
     saveLastExamResult(score, total, passed);
 
     if (passed) {
+        if (typeof kbTrack === 'function') kbTrack('exam_pass', { score: score });   // angka skor saja
         // Hak membuat sertifikat + token dari server: hanya di memori. Aktifkan pengaman penutupan.
         certRightActive = true;
         certPendingDownload = false;

@@ -3,6 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H7C1RLHFG2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-H7C1RLHFG2');
+    </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bitcoin Self-Custody & Cold Wallet (Air-Gapped) | Kapazz Bitcoin</title>
     <meta name="description"
@@ -528,6 +537,99 @@
                     mengakses kalau perlu" dan "tidak membuka celah keamanan baru" tidak punya jawaban tunggal
                     yang pas untuk semua orang.</p>
             </div>
+
+            <!-- ===== PANDUAN WARISAN BITCOIN (perluasan Bagian 8) ===== -->
+            <div class="warisan-guide" id="warisanGuide">
+                <h3 class="warisan-heading">Panduan Warisan Bitcoin</h3>
+                <p>
+                    Bitcoin yang tidak bisa diakses keluarga saat pemiliknya meninggal atau tidak mampu
+                    mengelolanya bisa hilang selamanya, karena tidak ada layanan pemulihan. Dua alat di bawah ini
+                    membantu kamu menyiapkannya sekarang: checklist persiapan dan template surat petunjuk.
+                </p>
+
+                <div class="warisan-card">
+                    <h4 class="warisan-card-title">Checklist Persiapan Warisan</h4>
+                    <p class="warisan-card-hint">Centang untuk menandai yang sudah kamu siapkan. Centangan tidak
+                        disimpan, jadi akan kembali kosong kalau halaman dimuat ulang.</p>
+                    <div class="warisan-checklist" id="warisanChecklist">
+                        <label class="warisan-check">
+                            <input type="checkbox">
+                            <span>Tentukan 1-2 orang yang kamu percaya dan beri tahu bahwa petunjuk itu ada.</span>
+                        </label>
+                        <label class="warisan-check">
+                            <input type="checkbox">
+                            <span>Tulis di mana perangkat dan backup berada, TANPA menuliskan seed phrase di surat.</span>
+                        </label>
+                        <label class="warisan-check">
+                            <input type="checkbox">
+                            <span>Jelaskan langkah pertama yang harus dilakukan keluarga, dengan bahasa awam.</span>
+                        </label>
+                        <label class="warisan-check">
+                            <input type="checkbox">
+                            <span>Simpan surat petunjuk di tempat aman yang bisa dijangkau orang tepercaya.</span>
+                        </label>
+                        <label class="warisan-check">
+                            <input type="checkbox">
+                            <span>Ulas isi surat dan lokasi backup minimal setahun sekali.</span>
+                        </label>
+                        <label class="warisan-check">
+                            <input type="checkbox">
+                            <span><em class="warisan-tag">Lanjutan</em> Pertimbangkan pengaturan lanjutan (misalnya
+                                multisig dengan pihak tepercaya) bila saldo besar.</span>
+                        </label>
+                        <label class="warisan-check">
+                            <input type="checkbox">
+                            <span>Untuk aspek hukum waris, konsultasikan ke ahli hukum setempat. Materi ini bukan
+                                nasihat hukum.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="warisan-card">
+                    <h4 class="warisan-card-title">Template Surat Petunjuk untuk Keluarga</h4>
+                    <p class="warisan-card-hint">Cetak, lalu isi dengan tulisan tangan. Jangan isi dan simpan di
+                        perangkat yang terhubung internet, dan jangan tulis seed phrase di surat ini.</p>
+
+                    <div class="warisan-paper" id="warisanTemplate">
+                        <h5 class="warisan-paper-title">Surat Petunjuk Bitcoin untuk Keluarga</h5>
+                        <div class="warisan-field">
+                            <span class="warisan-field-label">Tanggal ditulis:</span>
+                            <span class="warisan-field-line"></span>
+                        </div>
+                        <div class="warisan-field">
+                            <span class="warisan-field-label">Nama saya:</span>
+                            <span class="warisan-field-line"></span>
+                        </div>
+                        <div class="warisan-field">
+                            <span class="warisan-field-label">Orang yang bisa membantu kamu:</span>
+                            <span class="warisan-field-line"></span>
+                        </div>
+                        <div class="warisan-field warisan-field--tall">
+                            <span class="warisan-field-label">Jenis wallet yang saya pakai dan di mana perangkatnya:</span>
+                            <span class="warisan-field-line"></span>
+                            <span class="warisan-field-line"></span>
+                        </div>
+                        <div class="warisan-field warisan-field--tall">
+                            <span class="warisan-field-label">Di mana backup disimpan (lokasi saja, bukan isinya):</span>
+                            <span class="warisan-field-line"></span>
+                            <span class="warisan-field-line"></span>
+                        </div>
+                        <div class="warisan-field warisan-field--tall">
+                            <span class="warisan-field-label">Langkah pertama yang harus dilakukan:</span>
+                            <span class="warisan-field-line"></span>
+                            <span class="warisan-field-line"></span>
+                            <span class="warisan-field-line"></span>
+                        </div>
+                        <p class="warisan-paper-note"><strong>Peringatan:</strong> Orang yang menawarkan "membantu
+                            membuka wallet" dengan imbalan bisa jadi penipu. Jangan serahkan perangkat atau backup
+                            kepada orang asing.</p>
+                        <p class="warisan-paper-note"><strong>Jangan tulis seed phrase di surat ini.</strong></p>
+                    </div>
+
+                    <button type="button" class="warisan-print-btn" id="warisanPrintBtn"
+                        onclick="printWarisanTemplate()">🖨️ Cetak Template</button>
+                </div>
+            </div>
         </section>
 
         <!-- ========== SECTION 9 (MINI-QUIZ) ========== -->
@@ -662,6 +764,34 @@
                 // localStorage penuh/diblokir -- abaikan, tidak fatal
             }
         })();
+    </script>
+    <script>
+        // ==================================================
+        // PANDUAN WARISAN: cetak HANYA kotak template surat.
+        // Kotak template disalin ke wadah sementara di akhir <body>;
+        // saat dicetak (CSS @media print) semua elemen lain disembunyikan.
+        // ==================================================
+        function printWarisanTemplate() {
+            var src = document.getElementById("warisanTemplate");
+            if (!src) return;
+            var old = document.getElementById("warisanPrintRoot");
+            if (old) old.remove();
+
+            var root = document.createElement("div");
+            root.id = "warisanPrintRoot";
+            root.appendChild(src.cloneNode(true));
+            document.body.appendChild(root);
+            document.body.classList.add("print-warisan");
+
+            function cleanup() {
+                document.body.classList.remove("print-warisan");
+                var r = document.getElementById("warisanPrintRoot");
+                if (r) r.remove();
+                window.removeEventListener("afterprint", cleanup);
+            }
+            window.addEventListener("afterprint", cleanup);
+            window.print();
+        }
     </script>
 </body>
 

@@ -3,6 +3,17 @@
 
 <head>
     <meta charset="UTF-8">
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H7C1RLHFG2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        // Halaman ini dibuka dari QR dengan ?id=<Certificate ID>. GA otomatis mengirim URL lengkap,
+        // jadi kirim URL TANPA query supaya Certificate ID tidak ikut terkirim.
+        gtag('config', 'G-H7C1RLHFG2', { page_location: window.location.origin + window.location.pathname });
+    </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verifikasi Sertifikat — Kapazz Bitcoin</title>
     <meta name="description" content="Verifikasi keaslian Sertifikat Belajar Kapazz Bitcoin dengan Certificate ID.">

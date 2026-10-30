@@ -207,6 +207,30 @@ function activateGroupTabs(tool) {
     });
 }
 
+// ==================================================
+// GOOGLE ANALYTICS: event (pakai gtag yang sudah terpasang di index.html).
+// Aman kalau GA diblokir adblock. JANGAN kirim data pribadi (nama, ID
+// sertifikat, alamat Bitcoin, nominal, isi komentar) lewat helper ini.
+// ==================================================
+function kbTrack(name, params) {
+    try {
+        if (typeof gtag === 'function') {
+            gtag('event', name, params || {});
+        }
+    } catch (e) { /* abaikan */ }
+}
+
+// tool_open: sekali tiap tool dibuka. Pindah tab di dalam modal gabungan dihitung
+// membuka tool itu; tool yang sama tidak dihitung dua kali selama modal belum ditutup.
+const TOOL_EVENT_NAMES = { average: 'average_buy' };
+let lastTrackedTool = null;
+
+function trackToolOpen(tool) {
+    if (!tool || tool === lastTrackedTool) return;
+    lastTrackedTool = tool;
+    kbTrack('tool_open', { tool_name: TOOL_EVENT_NAMES[tool] || tool });
+}
+
 function showTool(tool, element) {
     document.querySelectorAll('.tool-icon').forEach(icon => {
         icon.classList.remove('active');
@@ -228,8 +252,13 @@ function showTool(tool, element) {
     void box.offsetWidth; // restart animasi walau tool sama diklik lagi
     box.classList.add(animClass);
 
+    // Modal baru dibuka (bukan sekadar ganti tool) = tool dihitung lagi
+    if (!backdrop.classList.contains('open')) lastTrackedTool = null;
+
     backdrop.classList.add('open');
     document.body.classList.add('modal-open');
+
+    trackToolOpen(tool);
 
     // DCA / Converter / Average berbagi 1 live price — begitu modal
     // grup ini dibuka (di tab manapun), langsung ambil sekali otomatis.
@@ -241,6 +270,9 @@ function showTool(tool, element) {
     }
     if (tool === 'halving' && typeof BitcoinTools !== 'undefined' && BitcoinTools.renderHalvingCycleChart) {
         BitcoinTools.renderHalvingCycleChart();
+    }
+    if (tool === 'halving' && typeof BitcoinTools !== 'undefined' && BitcoinTools.renderBitcoinToday) {
+        BitcoinTools.renderBitcoinToday();
     }
 }
 
@@ -256,6 +288,8 @@ function switchToolTab(tool) {
         icon.classList.toggle('active', icon.dataset.tool === tool);
     });
 
+    trackToolOpen(tool);
+
     if (TOOL_GROUPS[tool] === 'calc' && typeof BitcoinTools !== 'undefined' && !BitcoinTools.btcPrice) {
         BitcoinTools.loadPrice();
     }
@@ -265,6 +299,7 @@ function switchToolTab(tool) {
 }
 
 function closeToolModal() {
+    lastTrackedTool = null;
     document.getElementById('toolModalBackdrop').classList.remove('open');
     document.body.classList.remove('modal-open');
     document.querySelectorAll('.tool-icon').forEach(icon => icon.classList.remove('active'));
@@ -736,6 +771,7 @@ function generateCertificate() {
             certHasFailed = false;
             setCertGenerating(false);
             renderCertificate(name, tanggal, certId, score);
+            kbTrack('certificate_generate');   // tanpa nama / ID sertifikat
         }, () => {
             if (lastStatus === 'invalid_token') {
                 // Token ditolak server (lebih dari 30 menit, atau sudah dipakai): hak hilang
@@ -825,6 +861,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setupToolSwipe();
     restoreLearningProgress();
+
+    // Datang dari link "Baca FAQ" (Scam Radar): buka daftar FAQ dan scroll ke sana
+    if (window.location.hash === '#faq') {
+        const faqList = document.getElementById('faqList');
+        if (faqList && (faqList.style.display === 'none' || faqList.style.display === '')) toggleFaqSection();
+        const faqSection = document.getElementById('faq');
+        if (faqSection) setTimeout(() => faqSection.scrollIntoView(), 150);
+    }
 
     if (window.lucide) {
         lucide.createIcons();
